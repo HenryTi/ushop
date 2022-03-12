@@ -1,0 +1,31 @@
+UQ [BizDev]/[workshop-bus-test] version='0.1.5' author='henry' {
+    SCHEDULE Test;
+}
+
+BUS B FROM [$$$]/[test];
+
+PROC Test() {
+    VAR a INT;
+    SET a=2;
+    BUS B.schema1 SET a1='a', a2=3, a3=unix_timestamp(), a4=1;
+};
+
+ID id1 ver 0.3 UU (
+    id,
+    name char(50),
+);
+
+ID id2 ver 0.3 NU (
+    id,
+    name char(50),
+);
+
+ID id3 ver 0.3 MU (
+    id,
+    name char(50),
+);
+
+ID id4 ver 0.3 UU (
+    id,
+    name char(58),
+);

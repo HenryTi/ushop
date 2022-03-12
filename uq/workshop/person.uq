@@ -1,0 +1,107 @@
+ENUM Gender (
+    female = 0,
+    male = 1,
+);
+
+ID Person ver 0.2 GLOBAL (
+    id,
+    KEY no,
+    name CHAR(100),
+    vice CHAR(50),
+    firstName CHAR(50),
+    lastName CHAR(50),
+    middleName CHAR(50),
+    gender ENUM Gender,
+    year SMALLINT,
+    month TINYINT,
+    day TINYINT,
+    email CHAR(100),
+    mobile CHAR(30),
+    mobileCountry CHAR(10),
+    INDEX email(email),
+    INDEX mobile(mobile),
+);
+
+IX *IxPersonLog ver 0.3 (
+    ix Person,
+    xi TYPE Minute,                 -- unique minute id
+);
+
+ID ClientSurvey Minute (
+    id,
+    client ID,
+);
+
+QUERY GetPersonList(
+    role ENUM Role,
+)
+RETURNS ret (
+    #Person,
+    user ID
+)
+RETURNS roles (
+    person ID,
+    role ENUM Role,
+) {
+    INTO ret SELECT b.id, b.no, b.name, b.vice
+        , b.firstName, b.lastName, b.middleName
+        , b.gender, b.year, b.month, b.day
+        , b.email, b.mobile, b.mobileCountry
+        , c.ix as user
+        FROM IXPersonRole as a
+            JOIN Person as b ON a.ix=b.id
+            LEFT JOIN IxUserPerson as c ON a.ix=c.xi
+        WHERE a.xi=role
+        ORDER BY b.id ASC;
+    INTO roles SELECT a.id as person, b.xi as role
+        FROM ret as a JOIN IxPersonRole as b ON a.id=b.ix;
+};
+
+QUERY PersonSearch(
+    role ENUM Role,
+    key CHAR(30),
+) 
+RETURNS ret (
+    #Person
+)
+{
+    SET key=CONCAT('%', key, '%');
+    INTO ret SELECT b.id, b.no, b.name, b.vice,
+        b.firstName, b.lastName, b.middleName,
+        b.gender, b.year, b.month, b.day, 
+        b.email, b.mobile, b.mobileCountry
+        FROM IXPersonRole as a
+            JOIN Person as b ON a.ix=b.id
+        WHERE a.xi=role
+            AND (b.no LIKE key
+                OR b.name LIKE key
+                OR b.vice LIKE key
+                OR b.firstName LIKE key
+                OR b.lastName LIKE key
+                OR b.middleName LIKE key
+                OR b.email LIKE key
+                OR b.mobile LIKE key
+            )
+        ORDER BY b.id ASC;
+};
+
+QUERY GetPersonLog ver 0.9 (
+    person ID,
+)
+RETURNS ret (
+    log ID,
+    type CHAR(50),
+    value TEXT,
+) {
+    TABLE logs(id ID);
+    INTO logs 
+        SELECT a.xi as id
+        FROM IxPersonLog as a
+        WHERE a.ix=person
+        ORDER BY a.xi DESC;
+    FOR (VAR id ID OF SELECT id FROM Logs) {
+        VAR type CHAR(50), value TEXT;
+        Value IxPersonLog XI=id TYPE INTO type VALUE INTO value;
+        INTO ret SELECT id as log, type, value;
+    }
+};

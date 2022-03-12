@@ -1,0 +1,45 @@
+-- ID has one tag group
+-- a tag group has multiple tag sets
+-- a tag set has multiple tags
+ID TagGroup CONST (
+    id SMALL,
+    KEY name CHAR(50),
+    SYS (create, update),
+)
++ (name)
+VALUES
+('staff-tags'),         -- tag group
+('client-tags'),        -- tag group
+('workshop-tags'),      -- tag group
+('donator-tags'),       -- tag group
+('note-tags'),          -- tag group
+;
+
+ID Tag (
+    id SMALL,
+    KEY name CHAR(50),
+    vice CHAR(100),
+    single TINYINT DEFAULT 0,   -- 默认可以多值
+    SYS (create, update),
+);
+
+ID TagItem ver 0.10 CONST (
+    id SMALL,
+    KEY name CHAR(50),
+    SYS (create, update),
+);
+
+IX *IxTag (
+    ix SMALL,           -- TagGroup | Tag
+    xi SMALL,           -- Tag | TagItem
+);
+
+IX *IxLocalIdTag (
+    ix ID,
+    xi SMALL,
+);
+
+IX *IxGlobalIdTag (
+    ix ID,
+    xi SMALL,
+);

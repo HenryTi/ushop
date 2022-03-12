@@ -1,0 +1,95 @@
+ENUM #EnumOpType (
+    a = 1,
+    b = 2,
+);
+
+-- 一个不可再分的可量化的业务指令
+-- 比如，一个订单明细
+-- 比如，一个会议的环节: 准备材料，准备食物，确定会场，等等
+ID #Biz (
+    id,
+    value DEC(18,4) DEFAULT 1,      -- 不可计量的，就是1
+    stamp TIMESTAMP,                -- 业务指令生成时刻
+    sys (create),                   -- 数据记录生成时刻
+);
+
+-- 业务指令组
+ID #BizPack (
+    id,
+    stamp TIMESTAMP,                -- 业务指令组生成时刻
+    sys (create),                   -- 数据记录生成时刻
+);
+
+-- 指令组和指令对照表
+IX IxBizPack (
+    ix BizPack,
+    xi Biz,
+);
+
+-- 针对业务指令的操作。每一个业务指令，都涉及操作环节。Op就是环节
+-- 比如：订单明细，OP包括发货，收款，退货，等等
+-- 比如：确定会场，OP包括签约，定金，付款，等等
+ID #Op (
+    id,
+    biz ID Biz,
+    type ENUM EnumOpType,           
+    value DEC(18,4) DEFAULT 1,      -- 发生数量
+    stamp TIMESTAMP,                -- 业务操作发生时刻
+    sys (create),                   -- 数据记录生成时刻
+    INDEX biz(biz),
+);
+
+-- 业务科目
+ID #Item (
+    id,
+);
+
+ID #OpiBooking (
+    id,
+    KEY opType ENUM EnumOpType,
+    KEY post ID,
+    KEY postItem ID Item,               -- item to OPIHistory, 要计算的科目
+    KEY item ID Item,                   -- item to ItemHistory, 为了在计算opihistory时去使用ItemHistory中的值
+    ratio DEC(6,2) DEFAULT 100,         -- 实际使用百分比，从itemHistory的value，折算到 OPIHistory, 未来有可能是分段公式
+    start DATE,                         -- 规则开始时间
+    span SMALLINT DEFAULT 10000,        -- 业务记账跨度 默认一万天
+    ratioInit DEC(6,2) DEFAULT 100,     -- 表中预置百分比，从itemHistory的value，折算到 OPIHistory, 未来有可能是分段公式
+    memo INT,                           -- 文本id
+);
+
+-- 落地科目。Item记账在Object和Post组合的名下。
+-- 具体根据业务情况定义
+ID #Opi (
+    id,
+    KEY object ID,
+    KEY post ID,
+    KEY item ID Item,
+);
+
+-- MINUTEID 分钟序ID
+ID #ItemHistory ver 0.1 MINUTEID (
+    -- 26位表达从2021开始的分钟，后面跟16位的序列号。如果重了，就顺序往后加。
+    id,                             -- 分钟序id
+    KEY op ID,                      -- 业务操作id。包含biz。也可以是itemHistory id。当前的值，从这里计算来
+    KEY item ID Item,               -- 科目
+    value DEC(18,4),                -- 数值
+);
+
+ID #OpiHistory MINUTEID (
+    id,
+    opi ID Opi,
+    itemHistory ID,
+    value DEC(18,4),
+    booking ID OpiBooking,          -- 记账动作
+    INDEX opi_id(opi, id) UNIQUE,
+);
+
+-- 各种Item or OpiItem 的按日合计，归一到一张表。写查询会简单很多
+IX IxOpiDate (
+    ix Opi,                         --  Item，对于总账item, object=0, post=0
+    xi Date,
+    value DEC(18,4),
+    rows INT,
+    p0 ID,
+    p1 ID,
+);

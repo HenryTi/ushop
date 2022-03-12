@@ -1,0 +1,10 @@
+ID Draft Minute (
+    id,
+    entity SMALLINT,
+    content TEXT,
+);
+
+IX *IxDraft (
+    ix,
+    xi,
+);

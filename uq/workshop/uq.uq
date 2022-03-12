@@ -1,0 +1,42 @@
+UQ [BizDev]/[workshop] version='0.1.1' author='henry' {
+    -- SCHEDULE Test ON 6:31;
+};
+
+IX IXAll;
+/*
+-- can be removed
+ID LOG UMin (
+    id,
+    prevId ID,              -- 前一个修改记录
+    user INT,               -- $user
+    entity INT,
+    p ID,                   -- 可能是ID的id或者ix
+    px ID,                  -- xi
+    field TEXTID,           -- field = 0, 表示记录删除。
+    value CHAR(100),        -- 用char(12)分开的两端。第一部分是现值，第二部分是原值
+    INDEX user_id(user, id) UNIQUE,
+);
+*/
+ENUM Role ( 
+    staff = 10,
+    counselor = 11,
+    volunteer = 12,
+    board = 13,
+    client = 20,
+    donator = 30,
+);
+
+IX *IxUserPerson (
+    ix User,
+    xi Person INDEX,
+);
+
+IX *IxPersonRole (
+    ix Person,
+    xi ENUM Role INDEX,
+);
+
+BUS B ver 0.3 FROM [$$$]/[test]
+ACCEPT schema1 {
+    LOG CONCAT_WS(',', a1,a2,a3,a4) SUBJECT 'BUS B ';
+};

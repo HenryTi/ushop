@@ -1,0 +1,20 @@
+{
+    "devs": {
+        "bz": {
+            "name": "bizdev",
+            "alias": "bz"
+        }
+    },
+    "uqs": [
+        {
+            "dev": "bz",
+            "name": "workshop",
+            "alias": "Workshop"
+        },
+        {
+            "dev": "bz",
+            "name": "workshop-bus-test",
+            "alias": "WorkshopBusTest"
+        }
+    ]
+}

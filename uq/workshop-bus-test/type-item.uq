@@ -1,0 +1,72 @@
+-- Class bound Prop
+ID PClass (
+    id,
+    KEY no,
+    name CHAR(50),
+);
+
+-- Type bound Prop item
+ID PType (
+    id,
+    KEY no,
+    class ID PClass,
+    discription CHAR(100),
+    picture ID,
+);
+
+ID PProp (
+    id,
+    name CHAR(50),
+    pClass ID PClass,
+);
+
+ID PPropItem (
+    id,
+    KEY pProp ID PProp,
+    KEY name CHAR(50),
+    picture ID,                 -- picture in a independent uq
+);
+
+ID PTypeItem (
+    id,
+    KEY type ID PType,
+    KEY p1 ID PPropItem,
+    KEY p2 ID PPropItem,
+);
+
+ID PPack (
+    id,
+    KEY pType ID PType,
+    KEY name CHAR(10),
+    radiox DEC(12,2),
+    radioy DEC(12,4),
+),
+
+ID PSearial (
+    id,
+    KEY type ID PType,
+    KEY no CHAR(20),
+    validTo DATE,               -- 9999-12-31 if alway valid
+);
+
+ID PItem (
+    id,
+    KEY type ID PType,
+    KEY pack ID PPack,
+    KEY serial ID PSearial,
+);
+
+IX IxPClassProp (
+    ix PClass,
+    xi PProp,
+);
+
+IX IxProp (
+    ix,         // Type or Item
+    xi,         // Prop
+);
+
+IDX PItemPrice (
+    id,
+    price DEC(18,4),
+);

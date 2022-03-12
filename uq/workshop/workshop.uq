@@ -1,0 +1,124 @@
+ID Workshop GLOBAL (
+    id,
+    KEY no,
+    name CHAR(100),
+    vice TEXT,
+    staff ID Person,
+    SYS (create),
+);
+
+-- one class of workshop
+ID Session GLOBAL (
+    id,
+    workshop ID Workshop,       -- 加上workshop，session是自洽的。id就包含所有信息
+    date DATE,
+    vice CHAR(200),
+    time TIME,
+    span SMALLINT,              -- minutes
+);
+
+ID SessionPerson MINUTE (
+    id,
+    KEY session ID Session,
+    KEY person ID Person,
+    workshop ID Workshop,
+    deleted TINYINT DEFAULT 0,
+);
+
+-- IX 就可以表达。反向的xi index不再需要。session中已经包含workshop
+IX *IxWorkshopSession (
+    ix Workshop,
+    xi Session INDEX,
+);
+
+IX *IxSessionStaff (
+    ix Session,
+    xi Person INDEX,            -- staff
+    own TINYINT DEFAULT 0,
+    substitue TINYINT DEFAULT 0,
+    done TINYINT DEFAULT 0,
+);
+
+IX *IxSessionClient (
+    ix Session,
+    xi Person,                  -- attended client
+    deleted TINYINT DEFAULT 0,
+    sys (create, update),
+);
+
+ACT SetSessionStaff(
+    session ID,
+    staff ID,
+    own TINYINT,
+    substitue TINYINT,
+    done TINYINT,
+) {
+    IF own IS NOT NULL {
+        WITH IxSessionStaff as a IX=session XI=staff SET a.own=own;
+    }
+    IF substitue IS NOT NULL {
+        WITH IxSessionStaff as a IX=session XI=staff SET a.substitue=substitue;
+    }
+    IF done IS NOT NULL {
+        WITH IxSessionStaff as a IX=session XI=staff SET a.done=done;
+    }
+};
+
+ACT SaveWorkshopStaff ver 0.1 (
+    id ID,
+    staff ID,
+) {
+    WITH Workshop as a ID=id SET a.staff=staff;
+    FOR (VAR session ID OF SELECT a.xi as session FROM IxWorkshopSession as a WHERE a.ix=id)
+    {
+        WITH IxSessionStaff IX=session SET own=0;
+        WITH IxSessionStaff IX=session XI=staff SET own=1;
+    }
+};
+
+ACT SaveSessionAttendee ver 0.4 (
+    session ID,
+    client ID,
+    deleted TINYINT,
+) {
+    VAR workshop ID, staff ID, clientSession ID, staffSession ID;
+    SET workshop=a.ix FROM IxWorkshopSession as a WHERE a.xi=session;
+    SET staff=a.staff FROM Workshop as a WHERE a.id=workshop;
+    WITH IxSessionClient as a IX=session XI=client SET a.deleted=deleted;
+    IF deleted=0 {
+        SET clientSession = ID(SessionPerson new KEY session=session, person=client);
+        WITH SessionPerson as a ID=clientSession SET a.workshop=workshop, a.deleted=0;
+        -- WITH IxPersonLog IX=client XI=clientSession;
+        SET staffSession = ID(SessionPerson new KEY session=session, person=staff);
+        WITH SessionPerson as a ID=staffSession SET a.workshop=workshop, a.deleted=0;
+        WITH IxPersonLog IX=client XI=staffSession;
+        WITH IxPersonLog IX=staff XI=staffSession;
+        WITH IxStaffClient IX=staff XI=client;
+    }
+    ELSE {
+        SET clientSession = ID(SessionPerson KEY session=session, person=client);
+        WITH SessionPerson as a ID=clientSession SET a.deleted=1;
+        WITH IxPersonLog IX=client XI=clientSession DEL;
+    }
+};
+
+QUERY MySessions (
+)
+RETURNS ret (
+    #Session,
+    workshop ID Workshop,
+    own TINYINT,
+    substitue TINYINT,
+    done TINYINT,
+) {
+    INTO ret SELECT b.id, b.date, b.vice, b.time, b.span
+        , c.ix as workshop
+        , a.own, a.substitue, a.done
+        FROM IxUserPerson as u
+            JOIN IxSessionStaff as a ON a.xi=u.xi
+            JOIN Session as b ON a.ix=b.id
+            JOIN IxWorkshopSession as c ON b.id=c.xi
+        WHERE u.ix=$user AND (a.own > 0 OR a.substitue > 0 OR a.done > 0)
+        ORDER BY b.id DESC
+        LIMIT 1000;
+};
