@@ -1,11 +1,11 @@
-import { IdValue, setReact } from "tonwa-contoller";
+import { IdValue, setReact } from "tonwa-controller";
 import { Uq, ID } from "tonwa-uq";
 import { Schema, UiDate, UiNumberItem, UiSchema, UiTextItem, UiTime } from "tonwa-react";
 import { Session } from "uq-app/uqs/BzWorkshop";
 import { CWorkshop } from "../../CIds";
 import { CId } from "../CId";
-import { renderSessionItem, VSessionList } from "./VSessionList";
-
+//import { renderSessionItem, VSessionList } from "./VSessionList";
+/*
 export class CSession extends CId {
     readonly cWorkshop: CWorkshop;
     readonly tick: number;
@@ -102,7 +102,6 @@ export class CSession extends CId {
         });
         return id;
     }
-
     renderItemInList(item: Session): JSX.Element {
         return renderSessionItem(item);
     }
@@ -115,3 +114,4 @@ export class CSession extends CId {
         return renderSessionItem(idValue as Session);
     }
 }
+*/

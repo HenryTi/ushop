@@ -1,5 +1,5 @@
 import { CClient } from "../../CIds";
-import { deepReact, setReact } from "tonwa-contoller";
+import { deepReact, setReact } from "tonwa-controller";
 import { Note, Person, SessionPerson } from "uq-app/uqs/BzWorkshop";
 import { CAct } from "../CAct";
 import { VAddNote } from "./VAddNote";

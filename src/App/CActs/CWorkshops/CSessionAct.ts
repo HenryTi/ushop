@@ -1,6 +1,6 @@
 import { CClient, CWorkshop } from "../../CIds";
 import { CActs } from "../CActs";
-import { CSelectOne, deepReact, setReact } from "tonwa-contoller";
+import { CSelectOne, deepReact, setReact } from "tonwa-controller";
 import { CWorkshops, MSession } from ".";
 import { CAct } from "../CAct";
 import { VAttendee } from "./VAttendee";

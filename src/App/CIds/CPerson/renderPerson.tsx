@@ -1,16 +1,17 @@
-import { CUser, User } from "tonwa-contoller";
+import { User, VUser } from "tonwa-controller";
 import { LMR } from "tonwa-react";
 
-export function renderPerson(item: any, cUser?: CUser) {
+export function renderPerson(item: any) {
     let { no, name, firstName, lastName, middleName, user } = item;
     let vUser: any;
-    if (cUser && user) {
-        vUser = cUser.renderUser(user, (user: User) => {
+    if (user) {
+        let renderUser = (user: User) => {
             let { name } = user;
             return <span className="ms-4">
                 user:  {name}
             </span>;
-        });
+        };
+        vUser = <VUser id={user} render={renderUser} />;
     }
     return <>
         <div className="small text-muted me-3">{no} {vUser}</div>

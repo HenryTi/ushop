@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { EasyTime, FA, List, LMR } from "tonwa-react";
 import { renderDate, renderHourMinute } from "../../tool";
 import { CSessionAct } from "./CSessionAct";

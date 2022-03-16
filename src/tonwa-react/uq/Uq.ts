@@ -15,13 +15,16 @@ export class Uq {
 	$_createProxy() {
 		let ret = new Proxy(this.$_uqMan.entities, {
 			get: (target, key, receiver) => {
-				if (key === '$') {
-					return this;
-				}
 				if (key === 'SQL') {
 					return this.$_uqSql;
 				}
 				let lk = (key as string).toLowerCase();
+				if (lk[0] === '$') {
+					switch (lk) {
+						case '$': return this;
+						case '$name': return this.$_uqMan.name;
+					}
+				}
 				let ret = target[lk];
 				if (ret !== undefined) return ret;
 				let func = (this.$_uqMan as any)[key];

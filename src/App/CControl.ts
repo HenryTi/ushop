@@ -1,4 +1,4 @@
-import { Controller } from "tonwa-contoller";
+import { Controller } from "tonwa-controller";
 import { UQs } from "uq-app";
 import { App } from "./App";
 

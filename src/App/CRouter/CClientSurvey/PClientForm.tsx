@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { Form, UiSchema, UiTextItem } from "tonwa-react";
 import { Person } from "uq-app/uqs/BzWorkshop";
 import { CClientSurvey } from "./CClientSurvey";

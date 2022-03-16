@@ -1,6 +1,8 @@
-import { VPage } from "tonwa-contoller";
-import { FA, LMR } from "tonwa-react";
+import { openPage, VPage } from "tonwa-controller";
+import { IconCommand } from "../tool";
+import { PTag } from "../Tag";
 import { CIds } from "./CIds";
+import { RefStaff } from "./CPerson";
 
 export class VStart extends VPage<CIds> {
     header(): string | boolean | JSX.Element {
@@ -8,19 +10,19 @@ export class VStart extends VPage<CIds> {
     }
 
     content() {
-        let { cWorkshop, cStaff, cClient, app } = this.controller;
-        return <div>{
-            [cWorkshop, cStaff, cClient, app.cTag].map((v, index) => {
-                if (v.isVisible() === false) return null;
-                let { caption, icon, iconClass } = v;
-                let right = <FA name="angle-right" />;
-                let vIcon = <FA name={icon} className={(iconClass ?? 'text-primary') + ' me-4'} fixWidth={true} size="lg" />;
-                return <LMR key={index}
-                    className="cursor-pointer bg-white border-bottom py-2 px-3 align-items-center"
-                    left={vIcon}
-                    right={right}
-                    onClick={() => v.openMain()}>{caption}</LMR>
-            })
-        }</div>;
+        let { cWorkshop, cStaff, cClient } = this.controller;
+        return <div>
+            {
+                [cWorkshop, cStaff, cClient].map((v, index) => {
+                    if (v.isVisible() === false) return null;
+                    let { caption, icon, iconClass } = v;
+                    return <IconCommand key={index} caption={caption} icon={icon} iconClass={iconClass}
+                        onClick={() => v.openMain()} />;
+                })
+            }
+            <RefStaff />
+            <IconCommand caption="Tags admin" icon="tag" iconClass="text-danger"
+                onClick={() => openPage(<PTag />)} />
+        </div>;
     }
 }

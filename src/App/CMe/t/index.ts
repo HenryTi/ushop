@@ -1,4 +1,4 @@
-import { buildTFunc } from "tonwa-contoller";
+import { buildTFunc } from "tonwa-controller";
 import { en } from "./en";
 import { zh } from "./zh";
 

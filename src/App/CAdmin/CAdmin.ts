@@ -1,6 +1,6 @@
 import { UQs } from "uq-app";
 import { App } from "../App";
-//import { CAdminBase } from "tonwa-contoller";
+//import { CAdminBase } from "tonwa-controller";
 //import { VRoleSettings } from "./VRoleSettings";
 
 export class CAdmin /*extends CAdminBase<App>*/ {

@@ -1,21 +1,21 @@
 import { Schema, UiSchema, UiTextAreaItem, UiTextItem, UiPick } from "tonwa-react";
 import { Uq } from "tonwa-uq";
-import { IdValue } from "tonwa-contoller";
+import { IdValue } from "tonwa-controller";
 import { Workshop } from "uq-app/uqs/BzWorkshop";
 import { CId } from "../CId";
 import { renderWorkshopItem } from "./renderItem";
 import { CIds } from "../CIds";
 import { VEditWorkshop } from "./VEditWorkshop";
-import { CSession } from "./CSession";
+// import { CSession } from "./CSession";
 import { CIdPick } from "../CIdPick";
 import { VAddWorkshop } from "./VAddWorkshop";
 
 export class CWorkshop extends CId {
-    readonly cSession: CSession;
+    //    readonly cSession: CSession;
 
     constructor(cIds: CIds) {
         super(cIds);
-        this.cSession = new CSession(this);
+        //        this.cSession = new CSession(this);
     }
     get tagGroupName() { return 'workshop-tags'; }
     get uq(): Uq { return this.uqs.BzWorkshop; };
@@ -70,8 +70,8 @@ export class CWorkshop extends CId {
 
     protected async beforeEdit() {
         await super.beforeEdit();
-        await this.cTagInput.beforeEdit(this.tagGroupName, this.deepData.currentItem.id);
-        await this.cSession.loadToList()
+        //await this.cTagInput.beforeEdit(this.tagGroupName, this.deepData.currentItem.id);
+        //await this.cSession.loadToList()
     }
 
     protected async loadList(): Promise<any[]> {

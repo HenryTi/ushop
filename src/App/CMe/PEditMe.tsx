@@ -3,7 +3,7 @@ import {
     Edit, UiSchema, Prop, FA, IconText, PropGrid
 } from "tonwa";
 import { tonwa } from "tonwa-core";
-import { Page } from 'tonwa-contoller';
+import { Page } from 'tonwa-controller';
 import { t } from "./t";
 
 export function PEditMe() {

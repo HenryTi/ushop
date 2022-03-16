@@ -1,4 +1,4 @@
-import { Page } from "tonwa-contoller";
+import { Page } from "tonwa-controller";
 import { appConfig } from "../../uq-app/appConfig";
 
 export function PAbout() {

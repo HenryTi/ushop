@@ -1,6 +1,7 @@
 import { Widget } from './widget';
-import { UiPick } from '../../schema';
+import { Pick, UiPick } from '../../schema';
 import { runInAction } from 'mobx';
+import React from 'react';
 
 export class PickWidget extends Widget {
     protected get ui(): UiPick { return this._ui as UiPick };
@@ -32,6 +33,13 @@ export class PickWidget extends Widget {
         if (pick === undefined) {
             return <span>no pick defined!</span>;
         }
-        return <div className={this.className + ' cursor-pointer '} onClick={this.onClick}>{pick.ref()}</div>;
+        let pk: any;
+        if (React.isValidElement(pick)) {
+            pk = pick;
+        }
+        else {
+            pk = (pick as Pick).ref();
+        }
+        return <div className={this.className + ' cursor-pointer '} onClick={this.onClick}>{pk}</div>;
     }
 }

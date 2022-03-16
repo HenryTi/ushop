@@ -8,7 +8,7 @@ interface InputNumberProps extends InputProps {
 }
 
 export class InputNumber<P extends InputNumberProps> extends Input<P, number> {
-    static defaultClassName = 'form-control w-8c d-inline text-right';
+    static defaultClassName = 'form-control w-8c d-inline text-end';
 
     protected get type(): 'text' | 'number' | 'checkbox' | 'radio' { return 'number' }
     protected get max(): number { return this.props.max; }

@@ -1,21 +1,19 @@
 import { App } from "App";
-import { CIdBase, CTagInput } from "tonwa-contoller";
+import { CIdBase } from "tonwa-controller";
 import { UQs } from "uq-app";
 import { CIds } from "./CIds";
 
 export abstract class CId extends CIdBase<App> {
     readonly cIds: CIds;
     readonly uqs: UQs;
-    protected readonly cTagInput: CTagInput;
+    //protected readonly cTagInput: CTagInput;
     constructor(cIds: CIds) {
         super(cIds.app);
         this.cIds = cIds;
         this.uqs = cIds.uqs;
-        this.cTagInput = new CTagInput(this.cIds.app.cTag, this, this.uqs.BzWorkshop.IxGlobalIdTag);
+        //this.cTagInput = new CTagInput(this.cIds.app.cTag, this, this.uqs.BzWorkshop.IxGlobalIdTag);
         this.initID();
     }
-
-    get tagGroupName(): string { return undefined; }
 
     isVisible(): boolean {
         return this.app.meAdmin;
@@ -33,6 +31,7 @@ export abstract class CId extends CIdBase<App> {
         await this.uqs.BzWorkshop.ActIDProp(this.ID, id, name, value);
     }
 
+    /*
     protected async beforeEdit() {
         await super.beforeEdit();
         let tagGroupName = this.tagGroupName;
@@ -40,8 +39,11 @@ export abstract class CId extends CIdBase<App> {
             await this.cTagInput.beforeEdit(tagGroupName, this.deepData.currentItem.id);
         }
     }
-
+    */
+    /*
     renderTagInput() {
+        if (!this.tagGroupName) return null;
         return this.cTagInput.renderInput();
     }
+    */
 }

@@ -1,4 +1,4 @@
-import { VAdmin } from "tonwa-contoller";
+import { VAdmin } from "tonwa-controller";
 import { FA, LMR } from "tonwa-react";
 import { UQs } from "uq-app";
 import { app } from "../App";

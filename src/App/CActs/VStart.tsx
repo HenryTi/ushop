@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { FA, LMR } from "tonwa-react";
 import { CActs } from "./CActs";
 

@@ -1,8 +1,8 @@
-import { CIdBase, VPage, setReact } from "tonwa-contoller";
-import { CEnumSingle } from "tonwa-contoller/CEnumBase";
-import { IX } from "tonwa-uq";
+import { CIdBase, VPage, setReact } from "tonwa-controller";
+import { EnumProps } from "tonwa-controller";
 import { Role } from "uq-app/uqs/BzWorkshop";
-import { CPerson, MPerson } from "../CPerson";
+import { CIds } from "../../CIds";
+import { CPerson } from "../CPerson";
 import { renderStaff } from "./renderStaff";
 import { VEditStaff } from "./VEditStaff";
 
@@ -13,17 +13,32 @@ export const staffRoleCaptions: { [role in Role]?: string } = {
 };
 
 export class CStaff extends CPerson {
-    cRoleSingle: CRoleSingle;
+    //cRoleSingle: CRoleSingle;
     get tagGroupName() { return 'staff-tags'; }
     get personRole(): Role { return Role.staff; }
     get caption() { return 'Staff' }
     get icon() { return 'user' }
     isInRole(role: Role): boolean { return staffRoleCaptions[role] !== undefined; }
+    readonly roleEnumProps: EnumProps;
 
+    constructor(cIds: CIds) {
+        super(cIds);
+        let { BzWorkshop } = this.uqs;
+        this.roleEnumProps = {
+            enums: staffRoles,
+            enumCaptions: staffRoleCaptions,
+            caption: 'Role',
+            uq: BzWorkshop,
+            IX: BzWorkshop.IxPersonRole,
+            onEnumChanged: this.onRoleChanged,
+        }
+    }
+    /*
     protected async beforeEdit() {
         this.cRoleSingle = new CRoleSingle(this);
         await super.beforeEdit();
     }
+    */
 
     get VEdit(): new (c: CIdBase) => VPage<CPerson> {
         return VEditStaff as any;
@@ -59,10 +74,10 @@ export class CStaff extends CPerson {
     }
 
     renderItemInList(item: any): JSX.Element {
-        return renderStaff(item, this.cIds.app.cUser);
+        return renderStaff(item);
     }
 }
-
+/*
 class CRoleSingle extends CEnumSingle<Role> {
     private readonly cStaff: CStaff;
     constructor(cStaff: CStaff) {
@@ -80,3 +95,4 @@ class CRoleSingle extends CEnumSingle<Role> {
         return this.cStaff.onRoleChanged;
     }
 }
+*/

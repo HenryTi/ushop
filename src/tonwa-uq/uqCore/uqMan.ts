@@ -242,13 +242,14 @@ function IDPath(path: string): string { return path; }
 enum EnumResultType { data, sql };
 
 export interface Uq {
+	$: Uq;
+	$name: string;
 	AdminGetList(): Promise<any[]>;
 	AdminSetMe(): Promise<void>;
 	AdminSet(user: number, role: number, assigned: string): Promise<void>;
 	AdminIsMe(): Promise<boolean>;
 
 	IDValue(type: string, value: string): object;
-	$: Uq;
 	Acts(param: any): Promise<any>;
 	ActIX<T>(param: ParamActIX<T>): Promise<number[]>;
 	ActIXSort(param: ParamActIXSort): Promise<void>;
@@ -701,8 +702,12 @@ export class UqMan {
 		let ret = new Proxy(this.entities, {
 			get: (target, key, receiver) => {
 				let lk = (key as string).toLowerCase();
-				if (lk === '$') {
-					return this.$proxy;
+				if (lk[0] === '$') {
+					switch (lk) {
+						default: throw new Error(`unknown ${lk} property in uq`);
+						case '$': return this.$proxy;
+						case '$name': return this.name;
+					}
 				}
 				let ret = target[lk];
 				if (ret !== undefined) return ret;
@@ -800,8 +805,8 @@ export class UqMan {
 		return await this.uqApi.setMeAdmin();
 	}
 
-	protected AdminSet = async (user: number, role: number, name: string, nick: string, icon: string, assigned: string): Promise<void> => {
-		return await this.uqApi.setAdmin(user, role, name, nick, icon, assigned);
+	protected AdminSet = async (user: number, role: number, assigned: string): Promise<void> => {
+		return await this.uqApi.setAdmin(user, role, assigned);
 	}
 
 	protected AdminIsMe = async (): Promise<boolean> => {

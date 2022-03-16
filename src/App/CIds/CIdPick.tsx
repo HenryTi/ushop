@@ -1,4 +1,4 @@
-import { Controller, CSelectOne, deepReact, react, setReact } from "tonwa-contoller";
+import { Controller, CSelectOne, deepReact, react, setReact } from "tonwa-controller";
 import { Pick } from "tonwa-react";
 import { mutedSmall } from "../tool";
 import { CId } from "./CId";

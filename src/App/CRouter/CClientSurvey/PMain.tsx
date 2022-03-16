@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { CClientSurvey } from "./CClientSurvey";
 
 export class PMain extends VPage<CClientSurvey> {

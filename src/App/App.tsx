@@ -1,14 +1,13 @@
 import { User } from 'tonwa-uq';
-import { AppBase, CUser, Nav, UserApi } from "tonwa-contoller";
+import { AppBase, Nav, openPage, UqTagProps, UserApi } from "tonwa-controller";
 import { UQs } from "uq-app";
 import { Role } from "uq-app/uqs/BzWorkshop";
 import { CActs } from "./CActs";
 import { CIds } from "./CIds";
 import { CMe } from "./CMe";
-import { CTag } from "./CTag";
+//import { CTag } from "./CTag";
 import { AutoRun } from "./tool";
 import { routers } from "./CRouter";
-import { CHome } from './CHome';
 import { Db } from './db';
 import { PMain } from './PMain';
 
@@ -22,12 +21,12 @@ export class App extends AppBase {
     meAdmin: boolean;
     meRoles: Roles;
     uqs: UQs;
-    cHome: CHome;
-    cTag: CTag;
+    //cTag: CTag;
     cActs: CActs;
     cIds: CIds;
     cMe: CMe;
-    cUser: CUser;
+    //cUser: CUser;
+    uqTagProps: UqTagProps;
 
     userApi: UserApi;
 
@@ -42,12 +41,25 @@ export class App extends AppBase {
         let autoLoader: Promise<any> = undefined; // new Promise<any>((resolve, reject) => { });
         this.autoRun = new AutoRun(poked, autoLoader);
         this.uqs = uqs;
-        this.cHome = new CHome(this);
-        this.cTag = new CTag(this);
+        //this.cTag = new CTag(this);
         this.cActs = new CActs(this);
         this.cIds = new CIds(this);
         this.cMe = new CMe(this);
-        this.cUser = new CUser(this);
+        //this.cUser = new CUser(this);
+        let uq = this.uqs.BzWorkshop;
+        this.uqTagProps = {
+            uq,
+            TagGroup: uq.TagGroup,
+            Tag: uq.Tag,
+            TagItem: uq.TagItem,
+            IxTag: uq.IxTag,
+            IxIDTag: uq.IxGlobalIdTag,
+            groups: [
+                { name: 'workshop-tags', vice: 'Workshop tags' },
+                { name: 'client-tags', vice: 'Client tags' },
+                { name: 'staff-tags', vice: 'Staff tags' },
+            ],
+        }
     }
 
     openMain() {
@@ -60,7 +72,7 @@ export class App extends AppBase {
         }
         //let cMain = new CMain(this);
         //cMain.openMain();
-        this.nav.open(<PMain />);
+        openPage(<PMain />);
     }
 
     isRole(...roles: Role[]): boolean {
@@ -129,3 +141,6 @@ export class App extends AppBase {
 }
 
 export const app = new App();
+export function useApp() {
+    return app;
+}

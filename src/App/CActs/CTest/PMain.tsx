@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { CTest } from "./CTest";
 
 export class PMain extends VPage<CTest> {

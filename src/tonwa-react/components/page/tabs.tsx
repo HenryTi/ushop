@@ -7,15 +7,15 @@ import { IObservableValue } from 'mobx';
 import '../../css/va-tab.css';
 import { ScrollView } from './scrollView';
 
-export type TabCaption = (selected:boolean) => JSX.Element;
+export type TabCaption = (selected: boolean) => JSX.Element;
 
 export interface TabProp {
-    name: string;
-    caption: TabCaption;
-	content?: () => JSX.Element;
+	name: string;
+	caption: TabCaption;
+	content?: JSX.Element | (() => JSX.Element);
 	page?: IVPage;
-    notify?: IObservableValue<number> | number;
-    load?: () => Promise<void>;
+	notify?: IObservableValue<number> | number;
+	load?: () => Promise<void>;
 	onShown?: () => Promise<void>;
 	isSelected?: boolean;
 	onScroll?: () => void;
@@ -25,27 +25,27 @@ export interface TabProp {
 }
 
 export interface TabsProps {
-    tabs: TabProp[];
-    tabPosition?: 'top' | 'bottom';
-    size?: 'sm' | 'lg' | 'md';
-    tabBg?: string;
-    contentBg?: string;
-    sep?: string;
-    selected?: string;
-    borderColor?: string;
-    borderWidth?: string;
+	tabs: TabProp[];
+	tabPosition?: 'top' | 'bottom';
+	size?: 'sm' | 'lg' | 'md';
+	tabBg?: string;
+	contentBg?: string;
+	sep?: string;
+	selected?: string;
+	borderColor?: string;
+	borderWidth?: string;
 }
 
 class Tab {
 	loaded: boolean = false;
 	selected: boolean = false;
-	
-    name: string;
-    caption: TabCaption;
-	contentBuilder: ()=>JSX.Element;
+
+	name: string;
+	caption: TabCaption;
+	contentBuilder: JSX.Element | (() => JSX.Element);
 	page: IVPage;
-    notify: IObservableValue<number> | number;
-    load?: () => Promise<void>;
+	notify: IObservableValue<number> | number;
+	load?: () => Promise<void>;
 	onShown?: () => Promise<void>;
 	onScroll?: () => void;
 	onScrollTop?: () => Promise<boolean>;
@@ -53,20 +53,22 @@ class Tab {
 	className?: string;
 
 	private _content: JSX.Element;
-	
+
 	constructor() {
 		makeObservable(this, {
-			loaded: observable, 
-			selected: observable, 
+			loaded: observable,
+			selected: observable,
 		});
 	}
-    
-    get content(): JSX.Element {
+
+	get content(): JSX.Element {
 		if (this.load && this.loaded === false) return null;
 		if (this.selected === false) return this._content;
 		if (!this._content) {
 			if (this.contentBuilder !== undefined) {
-				this._content = this.contentBuilder();
+				this._content = (React.isValidElement(this.contentBuilder) === true) ?
+					this.contentBuilder as JSX.Element :
+					(this.contentBuilder as () => JSX.Element)();
 			}
 			else if (this.page !== undefined) {
 				this._content = this.page.content();
@@ -76,46 +78,46 @@ class Tab {
 			}
 		}
 		return this._content;
-    }
+	}
 
-    async shown() {
-        if (this.onShown !== undefined) {
-            await this.onShown();
-        }
-        if (this.load !== undefined) {
+	async shown() {
+		if (this.onShown !== undefined) {
+			await this.onShown();
+		}
+		if (this.load !== undefined) {
 			if (this.loaded === false) {
 				await this.load();
 				runInAction(() => {
 					this.loaded = true;
 				});
 			}
-        }
-    }
+		}
+	}
 }
 
-export const TabCaptionComponent = (label:string|JSX.Element, icon:string, color:string) => <div 
-    className={'d-flex justify-content-center align-items-center flex-column cursor-pointer ' + color}>
-    <div><i className={'fa fa-lg fa-' + icon} /></div>
-    <small>{label}</small>
+export const TabCaptionComponent = (label: string | JSX.Element, icon: string, color: string) => <div
+	className={'d-flex justify-content-center align-items-center flex-column cursor-pointer ' + color}>
+	<div><i className={'fa fa-lg fa-' + icon} /></div>
+	<small>{label}</small>
 </div>;
 
 //export const TabCaption = TabCaptionComponent;
 
 export class TabsView {
 	private props: TabsProps;
-    private size: string;
-    private tabBg: string;
-    private sep: string;
-    selectedTab: Tab;
-    tabArr: Tab[];
+	private size: string;
+	private tabBg: string;
+	private sep: string;
+	selectedTab: Tab;
+	tabArr: Tab[];
 
-    constructor(props: TabsProps) {
+	constructor(props: TabsProps) {
 		this.props = props;
-		let {size, tabs, tabBg: tabBack, sep, selected} = props;
+		let { size, tabs, tabBg: tabBack, sep, selected } = props;
 		this.size = size || 'md';
-        this.tabArr = tabs.map(v => {
-            let tab = new Tab();
-            let {name, caption, content, page, notify, load, onShown, isSelected, onScroll, onScrollTop, onScrollBottom, className} = v;
+		this.tabArr = tabs.map(v => {
+			let tab = new Tab();
+			let { name, caption, content, page, notify, load, onShown, isSelected, onScroll, onScrollTop, onScrollBottom, className } = v;
 			tab.name = name;
 			if (isSelected === true || name === selected) {
 				this.selectedTab = tab;
@@ -129,32 +131,32 @@ export class TabsView {
 				tab.page = page;
 				//contentBuilder = () => {return page.content()};
 			}
-            tab.notify = notify;
-            tab.load = load;
+			tab.notify = notify;
+			tab.load = load;
 			tab.onShown = onShown;
 			tab.onScroll = onScroll;
 			tab.onScrollTop = onScrollTop;
 			tab.onScrollBottom = onScrollBottom;
 			tab.className = className;
-            return tab;
-        });
-        this.tabBg = tabBack;
-        //this.contentBg = contentBack;
-        this.sep = sep;
-        if (this.selectedTab === undefined) {
+			return tab;
+		});
+		this.tabBg = tabBack;
+		//this.contentBg = contentBack;
+		this.sep = sep;
+		if (this.selectedTab === undefined) {
 			this.selectedTab = this.tabArr[0];
 		}
-        this.selectedTab.selected = true;
+		this.selectedTab.selected = true;
 		makeObservable(this, {
-			selectedTab: observable, 
+			selectedTab: observable,
 			tabArr: observable,
 		});
 		setTimeout(() => {
 			this.tabClick(this.selectedTab);
-		}, 100);		
-    }
+		}, 100);
+	}
 
-    tabClick = async (tab:Tab) => {
+	tabClick = async (tab: Tab) => {
 		if (!tab) {
 			tab = this.selectedTab;
 			if (tab === undefined) {
@@ -169,82 +171,82 @@ export class TabsView {
 			tab.selected = true;
 			this.selectedTab = tab;
 		});
-		
+
 		await tab.shown();
-    }
+	}
 
 	private tabs = observer(() => {
-        let {tabPosition, borderColor} = this.props;
-        let bsCur:React.CSSProperties, bsTab:React.CSSProperties
-        if (borderColor) {
-            bsCur = {
-                borderColor: borderColor,
-                borderStyle: 'solid',
-                borderTopWidth: 1,
-                borderLeftWidth: 1,
-                borderRightWidth: 1,
-                borderBottomWidth: 1,
-            }
-            bsTab = {
-                borderColor: borderColor,
-                borderStyle: 'solid',
-                borderTopWidth: 1,
-                borderBottomWidth: 1,
-                borderLeftWidth: 0,
-                borderRightWidth: 0,
+		let { tabPosition, borderColor } = this.props;
+		let bsCur: React.CSSProperties, bsTab: React.CSSProperties
+		if (borderColor) {
+			bsCur = {
+				borderColor: borderColor,
+				borderStyle: 'solid',
+				borderTopWidth: 1,
+				borderLeftWidth: 1,
+				borderRightWidth: 1,
+				borderBottomWidth: 1,
+			}
+			bsTab = {
+				borderColor: borderColor,
+				borderStyle: 'solid',
+				borderTopWidth: 1,
+				borderBottomWidth: 1,
+				borderLeftWidth: 0,
+				borderRightWidth: 0,
 				cursor: 'pointer',
-            }
-            if (tabPosition === 'top') {
-                bsCur.borderBottomWidth = 0;
-                bsCur.borderTopLeftRadius = 10;
-                bsCur.borderTopRightRadius = 10;
-                bsTab.borderTopWidth = 0;
-            }
-            else {
-                bsCur.borderTopWidth = 0;
-                bsCur.borderBottomLeftRadius = 10;
-                bsCur.borderBottomRightRadius = 10;
-                bsTab.borderBottomWidth = 0;
-            }
-        }
+			}
+			if (tabPosition === 'top') {
+				bsCur.borderBottomWidth = 0;
+				bsCur.borderTopLeftRadius = 10;
+				bsCur.borderTopRightRadius = 10;
+				bsTab.borderTopWidth = 0;
+			}
+			else {
+				bsCur.borderTopWidth = 0;
+				bsCur.borderBottomLeftRadius = 10;
+				bsCur.borderBottomRightRadius = 10;
+				bsTab.borderBottomWidth = 0;
+			}
+		}
 		let cn = classNames('tv-tabs', this.tabBg, this.sep, 'tv-tabs-' + this.size);
 		let tabs = <div className={cn}>
-            {this.tabArr.map((v,index) => {
-                let {selected, caption, notify} = v;
-                let notifyCircle:any;
-                if (notify !== undefined) {
-                    let num = typeof notify === 'number'? notify : notify.get();
-                    if (num !== undefined) {
-                        if (num > 0) notifyCircle = <u>{num>99?'99+':num}</u>;
-                        else if (num < 0) notifyCircle = <u className="dot" />;
-                    }
-                }
-                return <div key={index} onClick={()=>this.tabClick(v)} 
-					style={selected===true? bsCur:bsTab}>
+			{this.tabArr.map((v, index) => {
+				let { selected, caption, notify } = v;
+				let notifyCircle: any;
+				if (notify !== undefined) {
+					let num = typeof notify === 'number' ? notify : notify.get();
+					if (num !== undefined) {
+						if (num > 0) notifyCircle = <u>{num > 99 ? '99+' : num}</u>;
+						else if (num < 0) notifyCircle = <u className="dot" />;
+					}
+				}
+				return <div key={index} onClick={() => this.tabClick(v)}
+					style={selected === true ? bsCur : bsTab}>
 					<div>
-					{notifyCircle}
-					{caption(selected)}
+						{notifyCircle}
+						{caption(selected)}
 					</div>
-                </div>
-            })}
+				</div>
+			})}
 		</div>;
 		return tabs;
 	});
 
 	content = observer(() => {
-		let displayNone:React.CSSProperties = {visibility: 'hidden'};
+		let displayNone: React.CSSProperties = { visibility: 'hidden' };
 		return <>
-			{this.tabArr.map((v,index) => {
-				let {tabPosition} = this.props;
-				let {content, page, onScroll, onScrollTop, onScrollBottom, className} = v;
+			{this.tabArr.map((v, index) => {
+				let { tabPosition } = this.props;
+				let { content, page, onScroll, onScrollTop, onScrollBottom, className } = v;
 				let tabs = React.createElement(this.tabs);
-				let pageHeader:any, pageFooter:any;
+				let pageHeader: any, pageFooter: any;
 				if (page !== undefined) {
 					pageHeader = page.header();
 					pageFooter = page.footer();
 				}
-				let header:any, footer:any;
-				let visibility:React.CSSProperties = {visibility:'hidden'};
+				let header: any, footer: any;
+				let visibility: React.CSSProperties = { visibility: 'hidden' };
 				if (tabPosition === 'top') {
 					header = <>
 						<section className="tv-page-header">
@@ -278,8 +280,8 @@ export class TabsView {
 					</>;
 				}
 
-				let style:React.CSSProperties;
-				if (v.selected===false) style = displayNone;
+				let style: React.CSSProperties;
+				if (v.selected === false) style = displayNone;
 				return <ScrollView key={index} className={className}
 					style={style}
 					onScroll={onScroll} onScrollTop={onScrollTop} onScrollBottom={onScrollBottom}>
@@ -291,11 +293,11 @@ export class TabsView {
 		</>;
 	});
 
-    render() {
-		let {tabPosition} = this.props;
+	render() {
+		let { tabPosition } = this.props;
 		let tabs = React.createElement(this.tabs);
-		let header:any, footer:any;
-		let visibility:React.CSSProperties = {display:'none'};
+		let header: any, footer: any;
+		let visibility: React.CSSProperties = { display: 'none' };
 		if (tabPosition === 'top') {
 			header = <header>{tabs}</header>;
 		}
@@ -304,21 +306,21 @@ export class TabsView {
 		}
 		return <>
 			{header}
-			{this.tabArr.map((v,index) => {
-				let style:React.CSSProperties;
-				if (v.selected===false) style = visibility;
+			{this.tabArr.map((v, index) => {
+				let style: React.CSSProperties;
+				if (v.selected === false) style = visibility;
 				return <div key={index} className={classNames(v.className)} style={style}>
 					{v.content}
 				</div>;
 			})}
 			{footer}
 		</>;
-    }
+	}
 };
 
 @observer export class Tabs extends React.Component<TabsProps> {
 	private readonly tabsView: TabsView;
-    constructor(props: TabsProps) {
+	constructor(props: TabsProps) {
 		super(props);
 		this.tabsView = new TabsView(props);
 		/*
@@ -326,16 +328,16 @@ export class TabsView {
 			this.tabsView.tabClick(undefined);
 		}, 100);
 		*/
-    }
+	}
 
-    render() {
+	render() {
 		return this.tabsView.render();
-    }
+	}
 };
 
 @observer export class RootTabs extends React.Component<TabsProps> {
 	private readonly tabsView: TabsView;
-    constructor(props: TabsProps) {
+	constructor(props: TabsProps) {
 		super(props);
 		this.tabsView = new TabsView(props);
 		/*
@@ -343,9 +345,9 @@ export class TabsView {
 			this.tabsView.tabClick(undefined);
 		}, 100);
 		*/
-    }
+	}
 
-    render() {
+	render() {
 		return React.createElement(this.tabsView.content);
-    }
+	}
 };

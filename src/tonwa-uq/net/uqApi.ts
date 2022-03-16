@@ -71,8 +71,8 @@ export class UqApi extends ApiBase {
     async setMeAdmin(): Promise<void> {
         await this.get('set-me-admin');
     }
-    async setAdmin(user: number, role: number, name: string, nick: string, icon: string, assigned: string): Promise<void> {
-        await this.post('set-admin', { user, role, name, nick, icon, assigned });
+    async setAdmin(user: number, role: number, assigned: string): Promise<void> {
+        await this.post('set-admin', { user, role, assigned });
     }
     async isAdmin(): Promise<boolean> {
         let ret = await this.get('is-admin');

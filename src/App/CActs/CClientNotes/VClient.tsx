@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { EasyTime, FA, List } from "tonwa-react";
 import { dateFromMinuteId } from "tonwa-core";
 import { Note, SessionPerson } from "uq-app/uqs/BzWorkshop";
@@ -57,13 +57,16 @@ export class VClient extends VPage<CClientNotes> {
     }
 
     private renderSessionPerson(sessionPerson: SessionPerson) {
+        let { session, person, workshop } = sessionPerson;
+        /*
         let { cWorkshop, cStaff } = this.controller.app.cIds;
         let { cSession } = cWorkshop;
-        let { session, person, workshop } = sessionPerson;
         return <>
             <div>{cWorkshop.renderId(workshop)}</div>
             <div>{cSession.renderId(session)}</div>
             <div>{cStaff.renderId(person)}</div>
         </>;
+        */
+        return <>renderSessionPerson: {session}, {person}, {workshop}</>
     }
 }

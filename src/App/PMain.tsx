@@ -1,6 +1,7 @@
-import { Page } from "tonwa-contoller";
+import { Page } from "tonwa-controller";
 import { TabCaptionComponent, TabProp, TabsProps, t } from "tonwa";
 import { app } from "./App";
+import { TabHome } from "./Home";
 
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
 function caption(label: string | JSX.Element, icon: string) {
@@ -8,9 +9,9 @@ function caption(label: string | JSX.Element, icon: string) {
 }
 
 export function PMain() {
-    let { cHome, cActs, cIds, cMe } = app;
+    let { cActs, cIds, cMe } = app;
     let tabs: TabProp[] = [
-        { name: 'home', caption: caption(t('dev'), 'wrench'), content: cHome.tab },
+        { name: 'home', caption: caption(t('dev'), 'wrench'), content: <TabHome /> },
         { name: 'acts', caption: caption(t('home'), 'home'), content: () => cActs.main(), load: cActs.load },
         { name: 'ids', caption: caption(t('ids'), 'file-text-o'), content: () => cIds.main(), load: cIds.load },
     ]

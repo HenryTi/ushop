@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { BoolSchema, ButtonSchema, Context, Form, Schema, StringSchema, UiButton, UiCheckItem, UiSchema, UiTextAreaItem } from "tonwa-react";
 import { CClientNotes } from ".";
 

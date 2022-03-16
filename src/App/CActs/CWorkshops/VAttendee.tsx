@@ -1,4 +1,4 @@
-import { VPage } from "tonwa-contoller";
+import { VPage } from "tonwa-controller";
 import { FA } from "tonwa-react";
 import { CSessionAct } from "./CSessionAct";
 

@@ -1,4 +1,4 @@
-import { CSelectOne, VPage } from "tonwa-contoller";
+import { CSelectOne, VPage } from "tonwa-controller";
 import { FA, List, LMR } from "tonwa-react";
 import { CClientNotes } from "./CClientNotes";
 

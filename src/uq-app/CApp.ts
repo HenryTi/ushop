@@ -1,5 +1,5 @@
 import { Nav, Tonwa } from "tonwa-core";
-import { Nav as ControlNav } from "tonwa-contoller";
+import { Nav as ControlNav } from "tonwa-controller";
 import { start } from "tonwa";
 import { res } from "./res";
 import { setUI } from "uq-app/uqs";
