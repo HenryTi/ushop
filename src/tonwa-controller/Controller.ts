@@ -88,12 +88,10 @@ export abstract class Controller<A extends AppBase = AppBase> {
     }
 
     openError = () => {
-        let { error } = this.app.shallow;
+        let { error } = this.app;
         if (!error) return;
-        setReact(() => {
-            this.app.shallow.error = null;
-            this.open(PError, error);
-        });
+        error.message = null;
+        this.open(PError, error);
     }
 
     fetch<T>(promise: Promise<T>): Promise<T> {

@@ -2,9 +2,9 @@ import { User } from 'tonwa-uq';
 import { AppBase, Nav, openPage, UqTagProps, UserApi } from "tonwa-controller";
 import { UQs } from "uq-app";
 import { Role } from "uq-app/uqs/BzWorkshop";
-import { CActs } from "./CActs";
-import { CIds } from "./CIds";
-import { CMe } from "./CMe";
+//import { Acts } from "./Acts";
+//import { CIds } from "./IDs";
+//import { CMe } from "./CMe";
 //import { CTag } from "./CTag";
 import { AutoRun } from "./tool";
 import { routers } from "./CRouter";
@@ -22,9 +22,9 @@ export class App extends AppBase {
     meRoles: Roles;
     uqs: UQs;
     //cTag: CTag;
-    cActs: CActs;
-    cIds: CIds;
-    cMe: CMe;
+    //cActs: CActs;
+    //cIds: CIds;
+    //cMe: CMe;
     //cUser: CUser;
     uqTagProps: UqTagProps;
 
@@ -42,9 +42,9 @@ export class App extends AppBase {
         this.autoRun = new AutoRun(poked, autoLoader);
         this.uqs = uqs;
         //this.cTag = new CTag(this);
-        this.cActs = new CActs(this);
-        this.cIds = new CIds(this);
-        this.cMe = new CMe(this);
+        //this.cActs = new CActs(this);
+        //this.cIds = new CIds(this);
+        //this.cMe = new CMe(this);
         //this.cUser = new CUser(this);
         let uq = this.uqs.BzWorkshop;
         this.uqTagProps = {
@@ -98,7 +98,7 @@ export class App extends AppBase {
     async loadBaseData() {
         let { BzWorkshop } = this.uqs;
         let ret = await Promise.all([
-            this.cIds.load(),
+            //this.cIds.load(),
             BzWorkshop.AdminIsMe(),
             BzWorkshop.IX<{ ix: number; a: number; b: number; }>({
                 IX: BzWorkshop.IxUserPerson,
@@ -106,8 +106,8 @@ export class App extends AppBase {
                 ix: undefined,
             })
         ]);
-        this.meRoles = this.buildRoles(ret[2] as any);
-        this.meAdmin = ret[1];
+        this.meRoles = this.buildRoles(ret[1] as any);
+        this.meAdmin = ret[0];
     }
 
     private buildRoles(typeValues: { type: string; value: string }[]): Roles {

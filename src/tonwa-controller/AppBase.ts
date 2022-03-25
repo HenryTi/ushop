@@ -1,8 +1,9 @@
 import { UserApi } from "./UserApi";
 import { Nav } from "./Nav";
-import { setReact, shallowReact } from "./Reactive";
+//import { setReact, shallowReact } from "./Reactive";
 import { Res } from "./ResCollection";
 import { UqTagProps } from "./Tag";
+import { proxy } from "valtio";
 
 export abstract class AppBase {
     lang: string;
@@ -12,14 +13,14 @@ export abstract class AppBase {
         appBase = this;
         this.lang = 'zh';
     }
-    shallow: {
-        error: {
-            name: string;
-            message: string;
-            stack: string;
-        };
-    } = shallowReact({
-        error: null,
+    error = proxy<{
+        name: string;
+        message: string;
+        stack: string;
+    }>({
+        name: null,
+        message: null,
+        stack: null,
     });
 
     //abstract get cUser(): CUser;
@@ -40,19 +41,15 @@ export abstract class AppBase {
     renderRole(el: JSX.Element, ...roles: number[]): JSX.Element { return null; }
     renderAdminOrRole(el: JSX.Element, ...roles: number[]): JSX.Element { return null; }
     setError(err: unknown) {
-        setReact(() => {
-            if (!err) {
-                this.shallow.error = null;
-            }
-            else {
-                let error: Error = err as any;
-                this.shallow.error = {
-                    name: error.name,
-                    message: error.message,
-                    stack: error.stack,
-                };
-            }
-        });
+        if (!err) {
+            this.error.message = null;
+        }
+        else {
+            let error: Error = err as any;
+            this.error.name = error.name;
+            this.error.message = error.message;
+            this.error.stack = error.stack;
+        }
     }
 
     t(str: string): Res {

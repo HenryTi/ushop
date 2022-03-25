@@ -23,7 +23,7 @@ export function ClickSuspense({ promise, children }: Props): JSX.Element {
             let waiting = beforeWaiting(evt.currentTarget);
             try {
                 await promise();
-                await onClick();
+                await onClick(evt);
                 afterWaiting(waiting);
             }
             catch (err) {

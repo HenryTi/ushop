@@ -1,5 +1,6 @@
 import { ReactNode } from "react";
 import { Scroller, TabsProps, Page as TonwaReactPage, LMR, FA } from "tonwa-react";
+import { useSnapshot } from "valtio";
 import { getAppBase } from "./AppBase";
 
 interface PageProps {
@@ -48,15 +49,15 @@ export function Page(props: PageProps) {
 
 function Error() {
     let app = getAppBase();
-    let { error } = app.shallow;
-    if (!error) return null;
-    function openError() {
-        let { error } = app.shallow;
-        if (!error) return;
-        app.shallow.error = null;
-        app.open(<PError error={error} />);
-    }
+    let error = useSnapshot(app.error);
     let { name, message } = error;
+    if (!message) return null;
+    function openError() {
+        let err = app.error;
+        if (!err) return;
+        err.message = null;
+        app.open(<PError error={err} />);
+    }
     return <LMR className="border-bottom bg-light align-items-center text-muted mb-3"
         left={
             <div className="cursor-pointer px-3 py-2" onClick={() => app.setError(null)}>

@@ -1,10 +1,15 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { BrowserRouter, Outlet, Route, Routes } from 'react-router-dom';
 import { NavView, start, TonwaReact } from "tonwa";
 import { CApp } from './CApp';
 import { appConfig } from './appConfig';
+//import { AppRoutes } from 'App/AppWithTabs';
+import { AppRoutes } from 'App/AppWithPageStack';
+import { AuthRoutes } from 'tonwa-nav/AuthRoutes';
 
 export async function startApp() {
+    /*
     let tonwa = new TonwaReact();
     //initNav(tonwa);
     tonwa.setSettings(appConfig);
@@ -14,8 +19,6 @@ export async function startApp() {
     const notLogined: () => Promise<void> = onLogined;
     const userPassword: () => Promise<{ user: string; password: string }> = undefined;
     tonwa.appStart(onLogined);
-    let a = <A />;
-    ta(a);
     ReactDOM.render(
         <React.StrictMode>
             <NavView ref={navView => tonwa.set(navView)}
@@ -25,12 +28,13 @@ export async function startApp() {
         </React.StrictMode>,
         document.getElementById('root')
     );
-}
-
-function A() {
-    console.log('a rended!');
-    return <div>aaaaa</div>;
-}
-
-export function ta(a: any) {
+    */
+    ReactDOM.render(
+        <React.StrictMode>
+            <BrowserRouter>
+                <AppRoutes />
+            </BrowserRouter>
+        </React.StrictMode>,
+        document.getElementById('root')
+    );
 }

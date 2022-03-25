@@ -1,4 +1,5 @@
 export * from './Controller';
+export * from './ControllerBase';
 export * from './View';
 export * from './AppBase';
 export * from './VPage';

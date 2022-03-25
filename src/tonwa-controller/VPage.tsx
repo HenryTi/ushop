@@ -32,7 +32,7 @@ export abstract class VPage<C extends Controller = Controller, P = any> extends 
     private renderError() {
         return this.react(() => {
             let { app } = this.controller;
-            let { error } = app.shallow;
+            let { error } = app;
             if (!error) return null;
             let { name, message } = error;
             return <LMR className="border-bottom bg-light align-items-center text-muted mb-3"
