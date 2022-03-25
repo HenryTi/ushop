@@ -1,5 +1,4 @@
-import { FA, LMR } from "tonwa-react";
-import { useSnapshot } from "valtio";
+import { FA } from "tonwa-react";
 import { useNav } from "./nav";
 import { Error } from "./Error";
 import { PageBackProps, PageFooterProps, PageProps, PageTemplateProps } from "./PageProps";
