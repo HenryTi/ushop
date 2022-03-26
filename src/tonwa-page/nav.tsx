@@ -1,6 +1,7 @@
 import React, { useContext, useEffect, useRef } from "react";
 import { NavigateFunction, NavigateOptions, To, useParams } from "react-router-dom";
 import { proxy, ref, useSnapshot } from "valtio";
+import { AuthProvider, User } from "./AuthProvider";
 
 export interface PageItem {
     name: string;
@@ -14,7 +15,6 @@ export interface AppPageItem extends PageItem {
 }
 
 abstract class NavStack<T extends PageItem> {
-    navigateFunc: NavigateFunction;
     readonly navOptions: NavigateOptions = {
         replace: false,
     }
@@ -26,16 +26,6 @@ abstract class NavStack<T extends PageItem> {
             stack: [],
         });
     }
-    setNavigate(navigateFunc: NavigateFunction) {
-        this.navigateFunc = navigateFunc;
-    }
-}
-
-interface User {
-    id: number;
-    name: string;
-    nick?: string;
-    icon?: string;
 }
 
 interface Error {
@@ -46,12 +36,14 @@ interface Error {
 export class AppNav extends NavStack<AppPageItem> {
     static current = new AppNav();
 
+    private _authProvider: AuthProvider;
     readonly itemsArr: AppPageItem[];
     readonly response: {
         active: AppPageItem;
         user: User;
         error: Error;
     }
+    navigateFunc: NavigateFunction;
     defaultActive: AppPageItem;
 
     constructor(/*navigate: NavigateFunction, pageTemplate: PageTemplateProps/*, initPageItems?: AppPageItem[], defaultActive?: AppPageItem*/) {
@@ -68,9 +60,28 @@ export class AppNav extends NavStack<AppPageItem> {
         //this.data.stack.push(...(initPageItems).map(v => ref(v)));
     }
 
-    logined(user: User) {
-        this.response.user = user;
+    setNavigate(navigateFunc: NavigateFunction) {
+        this.navigateFunc = navigateFunc;
     }
+    setAuthProvider(authProvider: AuthProvider) {
+        this._authProvider = authProvider;
+        this._authProvider.subscribeOnLoginChanged(this.onLoginChanged);
+    }
+    get authProvider(): AuthProvider { return this._authProvider; }
+    loginChanged(user: User): void {
+        this._authProvider.loginChanged(user);
+    }
+    onLoginChanged = (user: User) => {
+        if (user) {
+            this.response.user = user;
+        }
+        else {
+            this.response.user = undefined;
+            this.response.error = undefined;
+        }
+    }
+    setError(err: string, message: string) { this.response.error = ref({ err, message }) }
+    clearError() { this.response.error = undefined; }
 
     setInitTabs(initPageItems: AppPageItem[], defaultActive: AppPageItem) {
         this.defaultActive = defaultActive;
@@ -139,7 +150,7 @@ export class AppNav extends NavStack<AppPageItem> {
 }
 
 export class Nav extends NavStack<PageItem> {
-    private readonly appNav: AppNav;
+    readonly appNav: AppNav;
     readonly appPageItem: AppPageItem;
     private namePages: { [name: string]: JSX.Element } = {};
 
@@ -149,15 +160,9 @@ export class Nav extends NavStack<PageItem> {
         this.appPageItem = appPageItem;
     }
 
-    get response() { return this.appNav.response; }
-    setError(err: string, message: string) { this.appNav.response.error = ref({ err, message }) }
-    clearError() { this.appNav.response.error = undefined; }
-    logined(user: User) {
-        this.appNav.logined(ref(user));
-    }
-    logout() {
-        this.appNav.response.user = undefined;
-    }
+    //get response() { return this.appNav.response; }
+    //setError(err: string, message: string) { this.appNav.response.error = ref({ err, message }) }
+    //clearError() { this.appNav.response.error = undefined; }
 
     initPages(pages: { [name: string]: JSX.Element }) {
         Object.assign(this.namePages, pages);

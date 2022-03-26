@@ -1,9 +1,9 @@
 /* eslint-disable */
 import { UqApi, UqData } from '../net';
 import { Tuid, TuidDiv, TuidImport, TuidInner, TuidBox, TuidsCache } from './tuid';
-import { Action } from './action';
+import { Action, UqAction } from './action';
 import { Sheet } from './sheet';
-import { Query } from './query';
+import { Query, UqQuery } from './query';
 import { Book } from './book';
 import { History } from './history';
 import { Map } from './map';

@@ -1,6 +1,7 @@
 import { makeObservable, observable, ObservableMap } from "mobx";
 import { LocalDb, Net, NetProps } from "tonwa-uq";
 import { env, Nav, Tonwa } from "tonwa-core";
+import { Nav as PageNav } from "tonwa-page";
 import { Page } from './components';
 
 import 'font-awesome/css/font-awesome.min.css';
@@ -12,6 +13,7 @@ import { createLogin, showForget, showRegister } from './components/login';
 import { NavView } from './nav';
 
 export class TonwaReact extends Tonwa {
+    pageNav: PageNav;
     navView: NavView;
 
     constructor() {
@@ -20,6 +22,10 @@ export class TonwaReact extends Tonwa {
             user: observable,
         });
         this.setCreateLogin(createLogin);
+    }
+
+    setPageNav(pageNav: PageNav) {
+        this.pageNav = pageNav;
     }
 
     createWeb(): Net {

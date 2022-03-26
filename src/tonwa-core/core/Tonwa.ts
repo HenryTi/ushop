@@ -201,7 +201,7 @@ export abstract class Tonwa extends TonwaBase {
 				document.onselectstart = function () { return false; }
 				document.oncontextmenu = function () { return false; }
 			}
-			this.nav.clear();
+			this.nav?.clear();
 
 			let user: User = this.local.user.get();
 			if (user === undefined) {

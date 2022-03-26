@@ -2,22 +2,22 @@ import { useNavigate } from "react-router-dom";
 import { AppPageStack } from "./AppPageStack";
 import { appPageStackTemplate } from "./AppPageStackTemplate";
 import { appTabsTemplate } from "./AppTabsTemplate";
+import { AuthProvider } from "./AuthProvider";
 import { AppNav, AppNavContext } from "./nav";
 import { setPageTemplate } from "./PageTemplate";
 
 interface Props {
-    //pages: AppPageItem[];
-    //active?: AppPageItem;
+    authProvider: AuthProvider;
     children: JSX.Element;
 }
 
-export function AppPageStackContainer({ children }: Props) {
+export function AppPageStackContainer({ authProvider, children }: Props) {
     let navigate = useNavigate();
-    //let pageTemplate = appPageStackTemplate;
-    let nav = AppNav.current; //(navigate, pageTemplate));
-    nav.setNavigate(navigate);
+    let appNav = AppNav.current;
+    appNav.setNavigate(navigate);
+    appNav.setAuthProvider(authProvider);
     setPageTemplate(undefined, appPageStackTemplate);
-    return <AppNavContext.Provider value={nav}>
+    return <AppNavContext.Provider value={appNav}>
         <AppPageStack>
             {children}
         </AppPageStack>

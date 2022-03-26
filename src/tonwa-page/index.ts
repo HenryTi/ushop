@@ -5,3 +5,5 @@ export * from './nav';
 export * from './AppPageStackTemplate';
 export * from './AppTabsTemplate';
 export * from './AppContainer';
+export * from './AuthProvider';
+export * from './PageTabs';

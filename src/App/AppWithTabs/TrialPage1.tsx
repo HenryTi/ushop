@@ -1,4 +1,4 @@
-import { useNav, Page } from "tonwa-nav"
+import { useNav, Page } from "tonwa-page"
 
 export function TrialPage1({ id }: { id: number }) {
     let nav = useNav();

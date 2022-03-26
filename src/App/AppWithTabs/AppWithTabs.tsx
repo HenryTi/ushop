@@ -1,4 +1,4 @@
-import { Nav, AppTabs, Page, useNav } from 'tonwa-nav';
+import { Nav, AppTabs, Page, useNav } from 'tonwa-page';
 import { TrialPage1 } from './TrialPage1';
 
 const tabDraft = {

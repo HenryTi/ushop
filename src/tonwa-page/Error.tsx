@@ -6,13 +6,14 @@ import { usePageTemplate } from "./PageTemplate";
 
 export function Error(props: PageProps) {
     let nav = useNav();
+    let { appNav } = nav;
     let { errorPosition } = usePageTemplate(props.template);
-    let { response } = nav;
+    let { response } = appNav;
     let responseSnapshot = useSnapshot(response);
     let { error } = responseSnapshot;
     if (error === undefined) return null;
 
-    let left = <div className="py-2 px-3 cursor-pointer" onClick={() => nav.clearError()}>
+    let left = <div className="py-2 px-3 cursor-pointer" onClick={() => appNav.clearError()}>
         <FA name="times" size="lg" />
     </div>
     function onShow() {

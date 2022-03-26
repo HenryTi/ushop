@@ -5,8 +5,9 @@ export interface PageBackProps {
 }
 
 export interface PageHeaderProps extends PageBackProps {
-    header?: string | JSX.Element;
+    header?: string | boolean | JSX.Element;
     right?: JSX.Element;
+    headerClassName?: string;
 }
 
 export interface PageFooterProps {
@@ -17,9 +18,9 @@ export interface PageContentProps {
     children?: React.ReactNode;
     contentClassName?: string;
 
-    onPageScroll?: (e: any) => void;
-    onPageScrollTop?: (scroller: Scroller) => Promise<boolean>;
-    onPageScrollBottom?: (scroller: Scroller) => Promise<void>;
+    onScroll?: (e: any) => void;
+    onScrollTop?: (scroller: Scroller) => Promise<boolean>;
+    onScrollBottom?: (scroller: Scroller) => Promise<void>;
 }
 
 export interface PageTemplateProps {

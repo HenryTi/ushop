@@ -1,19 +1,18 @@
 import { FA } from "tonwa-react";
 import { useNav } from "./nav";
 import { Error } from "./Error";
-import { PageBackProps, PageFooterProps, PageProps, PageTemplateProps } from "./PageProps";
+import { PageBackProps, PageFooterProps, PageHeaderProps, PageProps, PageTemplateProps } from "./PageProps";
 import { usePageTemplate } from "./PageTemplate";
-import "./tonwa-page.css";
 
 const contentClassName = ' bg-white ';
 
 function Back(props: PageBackProps) {
     let { back } = props;
     let pageNav = useNav();
-    if (pageNav.data.stack.length === 0) {
-        return <div className="pe-3" />;
-    }
     function renderBack(iconName: string) {
+        if (pageNav.data.stack.length === 0) {
+            return <div className="pe-3" />;
+        }
         return <div className="px-3 cursor-pointer" onClick={() => pageNav.close()}>
             <FA name={iconName} />
         </div>;
@@ -26,12 +25,11 @@ function Back(props: PageBackProps) {
     }
 }
 
-function Header(props: PageProps) {
-    let { back, header, right, template: templateName } = props;
-    let template = usePageTemplate(templateName);
-    let { Back } = template;
+function Header(props: PageHeaderProps) {
+    let { back, header, right } = props;
+    let { Back } = appTabsTemplate;
     return <div>
-        <div className="tonwa-page-container d-flex py-2 border-bottom align-items-center bg-light">
+        <div className="d-flex py-2 border-bottom align-items-center bg-light">
             <Back back={back} />
             <div className="">{header}</div>
             <div className="ms-3">{right}</div>
@@ -40,7 +38,7 @@ function Header(props: PageProps) {
 }
 
 function Footer(props: PageFooterProps) {
-    return <div className="tonwa-page-container d-flex align-items-center justify-content-center px-3 py-2 border-top bg-light">
+    return <div className="d-flex align-items-center justify-content-center px-3 py-2 border-top bg-light">
         {props.footer}
     </div>;
 }
@@ -53,17 +51,17 @@ function Content(props: PageProps) {
         contentClassName = templateContentClassName;
         if (!contentClassName) contentClassName = ' bg-white ';
     }
-    return <div className={'tonwa-page-container ' + contentClassName}>
+    return <div className={'tonwa-page-content ' + contentClassName}>
         {props.children}
     </div>;
 }
 
-export const appPageStackTemplate: PageTemplateProps = {
+export const appTabsTemplate: PageTemplateProps = {
     Back,
     Header,
     Footer,
     Content,
     contentClassName,
     Error,
-    errorPosition: 'under-header',
+    errorPosition: 'above-header',
 }

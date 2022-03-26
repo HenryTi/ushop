@@ -1,5 +1,6 @@
 import { User } from 'tonwa-uq';
-import { AppBase, Nav, openPage, UqTagProps, UserApi } from "tonwa-controller";
+import { AppBase, openPage, UqTagProps, UserApi } from "tonwa-controller";
+import { Nav } from "tonwa-page";
 import { UQs } from "uq-app";
 import { Role } from "uq-app/uqs/BzWorkshop";
 //import { Acts } from "./Acts";
@@ -34,6 +35,10 @@ export class App extends AppBase {
         return this.appNav;
     }
 
+    setNav(nav: Nav) {
+        this.appNav = nav;
+    }
+
     init(uqs: UQs, nav: Nav) {
         this.db = new Db(uqs);
         this.appNav = nav;
@@ -64,12 +69,14 @@ export class App extends AppBase {
 
     openMain() {
         this.autoRun.start();
+        /*
         let ret = routers(this);
         if (ret === true) return;
         if (!this.user) {
-            this.nav.openLogin();
+            this.nav?.openLogin();
             return;
         }
+        */
         //let cMain = new CMain(this);
         //cMain.openMain();
         openPage(<PMain />);

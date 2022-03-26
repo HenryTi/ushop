@@ -1,6 +1,7 @@
 import { ReactNode } from "react";
 import { Scroller, TabsProps, Page as TonwaReactPage, LMR, FA } from "tonwa-react";
 import { useSnapshot } from "valtio";
+import { Page as PageBase } from "tonwa-page";
 import { getAppBase } from "./AppBase";
 
 interface PageProps {
@@ -31,20 +32,19 @@ export function Page(props: PageProps) {
     if (logout === undefined) {
         logout = false;
     }
-    return <TonwaReactPage
+    // tabsProps={tabsProps}
+    // logout={logout}
+    return <PageBase
         header={header} right={right} footer={footer}
         onScroll={(e: any) => onPageScroll(e)}
         onScrollTop={(scroller: Scroller) => onPageScrollTop(scroller)}
         onScrollBottom={(scroller: Scroller) => onPageScrollBottom(scroller)}
         back={back}
         headerClassName={headerClassName}
-        className={className}
-        tabsProps={tabsProps}
-        logout={logout}
     >
         <Error />
         {children}
-    </TonwaReactPage>;
+    </PageBase>;
 }
 
 function Error() {

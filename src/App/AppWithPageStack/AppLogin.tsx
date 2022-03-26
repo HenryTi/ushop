@@ -1,9 +1,9 @@
-import { UPage, useNav } from "tonwa-nav";
+import { UPage, useNav } from "tonwa-page";
 
 export function AppLogin() {
     let nav = useNav();
     function onLogined() {
-        nav.logined({} as any);
+        nav.appNav.loginChanged({ name: 'henry', id: 10, nick: 'henry liao' });
         nav.start('/');
     }
     return <UPage header="login" footer={<div>footer</div>}>

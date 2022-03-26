@@ -1,4 +1,4 @@
-import { UPage, useNav } from "tonwa-nav";
+import { UPage, useNav } from "tonwa-page";
 
 export function AppRegister() {
     /*    return <AppPageStack>

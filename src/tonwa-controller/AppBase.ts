@@ -1,5 +1,6 @@
+import { Nav } from "tonwa-page";
 import { UserApi } from "./UserApi";
-import { Nav } from "./Nav";
+//import { Nav } from "./Nav";
 //import { setReact, shallowReact } from "./Reactive";
 import { Res } from "./ResCollection";
 import { UqTagProps } from "./Tag";
@@ -28,11 +29,14 @@ export abstract class AppBase {
     protected abstract get nav(): Nav;
 
     open(page: JSX.Element, afterClose?: () => void): void {
-        this.nav.open(page, afterClose);
+        this.nav.open('', page);
     }
 
     close(level: number = 1): void {
-        this.nav.close(level);
+        //this.nav.close(level);
+        for (let i = 0; i < level; i++) {
+            this.nav.close();
+        }
     }
 
     get UqTagProps(): UqTagProps { return undefined; }

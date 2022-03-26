@@ -1,11 +1,15 @@
+import { useContext } from "react";
 import { Navigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
 import { useNav } from "./nav";
 import { PageProps } from "./PageProps";
 import { usePageTemplate } from "./PageTemplate";
+import { ScrollContext, useScroll } from "./useScroll";
 
 // unanthorized page
 export function UPage(props: PageProps) {
+    let scrollContext = useContext(ScrollContext);
+    let divRef = useScroll();
     let { children, header, back, right, footer, template: templateName } = props;
     let template = usePageTemplate(templateName);
     if (header || back || right) {
@@ -39,7 +43,7 @@ export function UPage(props: PageProps) {
             header = <>{header}{<Error template={templateName} />}</>
             break;
     }
-    return <div className="flex-grow-1 overflow-auto position-relative">
+    return <div ref={divRef} className={'flex-grow-1 ' + scrollContext ? '' : 'overflow-auto'}>
         {header}
         <Content {...props}>{children}</Content>
         {footer && <div className="position-sticky" style={{ bottom: '0' }}>{footer}</div>}
@@ -48,7 +52,7 @@ export function UPage(props: PageProps) {
 
 export function Page(props: PageProps) {
     let nav = useNav();
-    let { user } = useSnapshot(nav.response);
+    let { user } = useSnapshot(nav.appNav.response);
     if (!user) {
         return <Navigate to="/login" replace={true} />;
     }

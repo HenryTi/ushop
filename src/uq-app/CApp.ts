@@ -1,34 +1,41 @@
-import { Nav, Tonwa } from "tonwa-core";
+import { Tonwa } from "tonwa-core";
+import { Nav } from "tonwa-page";
 import { Nav as ControlNav } from "tonwa-controller";
 import { start } from "tonwa";
 import { res } from "./res";
 import { setUI } from "uq-app/uqs";
 import { appConfig } from "./appConfig";
-import { CAppBase } from "tonwa-react";
+import { CAppBase, TonwaReact } from "tonwa-react";
 import { UQs } from './uqs';
 import { app } from "../App";
 
 export class CApp extends CAppBase<UQs> {
+	private appNav: Nav; // AppNav;
+
 	constructor(tonwa: Tonwa) {
 		super(tonwa, appConfig);
 	}
 	// app: App;
+
+	setAppNav(nav: Nav) {
+		this.appNav = nav; // new AppNav(nav);
+	}
 
 	protected async internalStart(isUserLogin: boolean) {
 		this.setRes(res);
 		setUI(this.uqs);
 
 		let tonwa = this.getTonwa();
-		let appNav = new AppNav(tonwa);
+		//let appNav = new AppNav(tonwa);
 		//let app = new App(this.uqs);
 		// this.app = app;
-		app.init(this._uqs, appNav);
+		app.init(this._uqs, this.appNav);
 		//app.appNav = appNav;
 		app.user = this.user;
 		app.userApi = this.net.centerApi;
 		await app.loadBaseData();
 
-		app.openMain();
+		//app.openMain();
 	}
 
 	async initStart() {
@@ -47,19 +54,20 @@ export class CApp extends CAppBase<UQs> {
 
 export class AppNav implements ControlNav {
 	private readonly nav: Nav;
-	private readonly tonwa: Tonwa;
-	constructor(tonwa: Tonwa) {
-		this.nav = tonwa.nav;
-		this.tonwa = tonwa;
+	//private readonly tonwa: Tonwa;
+	constructor(nav: Nav) {
+		this.nav = nav;
 	}
 
 	open(page: JSX.Element, afterClose: () => void): void {
-		this.nav.push(page, afterClose);
+		this.nav.open('', page); //, afterClose);
 	}
 	close(level: number = 1): void {
-		this.nav.pop(level);
+		for (let i = 0; i < level; i++) {
+			this.nav.close();
+		}
 	}
 	openLogin(): void {
-		this.tonwa.showLogin(undefined);
+		//this.tonwa.showLogin(undefined);
 	}
 }

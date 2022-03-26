@@ -1,10 +1,12 @@
-import { Page } from "tonwa-controller";
+//import { Page } from "tonwa-controller";
 import { TabCaptionComponent, TabProp, TabsProps, t } from "tonwa";
 //import { app } from "./App";
 import { TabHome } from "./Home";
 import { PIDs } from "./IDs";
 import { VMe } from "./Me/VMe";
 import { PActs } from "./Acts";
+import { Page, PageTabs, Tab, useNav } from "tonwa-page";
+import { FA } from "tonwa-react";
 
 const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
 function caption(label: string | JSX.Element, icon: string) {
@@ -22,5 +24,43 @@ export function PMain() {
         { name: 'me', caption: caption(t('me'), 'user-o'), content: <VMe /> },
     );
     let tabsProps: TabsProps = { tabs };
-    return <Page tabsProps={tabsProps} />;
+    //return <Page tabsProps={tabsProps} />;
+    //return <P />;
+    function TabTag({ caption, icon }: { caption?: string | JSX.Element; icon?: string; }) {
+        return <div className="d-flex flex-column align-items-center px-2 py-1">
+            <div className="align-self-center py-1"><FA name={icon} size="lg" /></div>
+            <small>{caption}</small>
+        </div>;
+    }
+    return <PageTabs>
+        <Tab name="home" tag={<TabTag caption={t('dev')} icon="wrench" />}>
+            <TabHome />
+        </Tab>
+        <Tab name="acts" tag={<TabTag caption={t('home')} icon="home" />}>
+            <PActs />
+        </Tab>
+        <Tab name="ids" tag={<TabTag caption={t('ids')} icon="file-text-o" />}>
+            <PIDs />
+        </Tab >
+        <Tab name="t1" tag={<TabTag caption="t1" icon="circle-o" />}>
+            <P />
+        </Tab>
+        <Tab name="t2" tag={<TabTag caption="t2" icon="circle-o" />}>
+            <Page header="ddcccc">
+                <div>t2</div>
+            </Page>
+        </Tab>
+    </PageTabs>;
+}
+
+function P() {
+    let nav = useNav();
+    return <Page header="TT1" footer={<div>footer</div>}>
+        <div>
+            t1
+            <button onClick={() => nav.appNav.setError('a', 'bbb')}>error</button>
+            <button onClick={() => nav.appNav.clearError()}>clear error</button>
+        </div>
+        {Array(20).fill(2).map((v, index) => <div key={index}>{v}</div>)}
+    </Page>;
 }

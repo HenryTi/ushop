@@ -1,7 +1,7 @@
 import React, { CSSProperties, useEffect } from "react";
 import { } from "react-router-dom";
 import { Link, Routes, Route } from "react-router-dom";
-import { RoutedTabs, NavTab } from "react-router-tabs";
+//import { RoutedTabs, NavTab } from "react-router-tabs";
 import { proxy, useSnapshot } from "valtio";
 
 interface Item {
@@ -23,7 +23,7 @@ function Container({ items }: { items: Item[] }) {
         ))}
     </div>;
 }
-
+/*
 function UsersPage({ match }: { match: any }) {
     return (
         <div>
@@ -43,7 +43,7 @@ function UsersPage({ match }: { match: any }) {
         </div>
     );
 };
-
+*/
 const stack = proxy<Item[]>([]);
 const timer = proxy({ tick: 0 });
 setInterval(() => {
