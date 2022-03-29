@@ -60,7 +60,7 @@ export class AppNav implements ControlNav {
 	}
 
 	open(page: JSX.Element, afterClose: () => void): void {
-		this.nav.open('', page); //, afterClose);
+		this.nav.open(page); //, afterClose);
 	}
 	close(level: number = 1): void {
 		for (let i = 0; i < level; i++) {

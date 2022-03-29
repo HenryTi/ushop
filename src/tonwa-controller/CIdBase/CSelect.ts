@@ -1,4 +1,4 @@
-import { setReact, shallowReact } from "tonwa-controller";
+import { setReact, shallowReact } from "../Reactive";
 import { IdValue } from ".";
 import { Controller } from "../Controller";
 import { VPage } from "../VPage";

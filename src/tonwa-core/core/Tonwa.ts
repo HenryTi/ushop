@@ -4,6 +4,8 @@ import { Net, User, Guest } from 'tonwa-uq';
 import { resOptions } from '../res';
 import { LocalData, env } from '../tool';
 import { Login } from './Login';
+//import { authProvider } from "tonwa-auth";
+//import { AuthProvider } from "tonwa-page";
 
 export interface NavSettings {
 	oem?: string;
@@ -23,9 +25,9 @@ export abstract class TonwaBase {
 
 	constructor() {
 		this.testing = false;
-		this.net = this.createWeb();
+		this.net = this.createNet();
 	}
-	abstract createWeb(): Net;
+	abstract createNet(): Net;
 	abstract createObservableMap<K, V>(): Map<K, V>;
 	async init() {
 		this.testing = env.testing;
@@ -34,6 +36,7 @@ export abstract class TonwaBase {
 }
 
 export abstract class Tonwa extends TonwaBase {
+	//private readonly authProvider: AuthProvider;
 	private wsHost: string;
 	private local: LocalData = new LocalData();
 	private navigo: Navigo;
@@ -47,6 +50,8 @@ export abstract class Tonwa extends TonwaBase {
 	constructor() {
 		super();
 		tonwa = this;
+		//this.authProvider = authProvider;
+		//authProvider.setAuthApi(this.net.userApi);
 		let { lang, district } = resOptions;
 		this.language = lang;
 		this.culture = district;
@@ -313,17 +318,17 @@ export abstract class Tonwa extends TonwaBase {
 		this.user = user;
 		this.saveLocalUser();
 		this.net.setNetToken(user.id, user.token);
-		this.nav.clear();
+		this.nav?.clear();
 
 		await this.onChangeLogin?.(this.user);
 		if (callback !== undefined) {
 			await callback(user);
 		}
-		else if (this.nav.isWebNav === true) {
+		else if (this.nav?.isWebNav === true) {
 			this.navigate('/index');
 		}
 		else {
-			await this.showAppView(isUserLogin);
+			//await this.showAppView(isUserLogin);
 		}
 	}
 
@@ -331,6 +336,7 @@ export abstract class Tonwa extends TonwaBase {
 
 	// 缓冲登录
 	async logined(user: User, callback?: (user: User) => Promise<void>) {
+		//this.authProvider.loginChanged(user);
 		await this.internalLogined(user, callback, false);
 	}
 

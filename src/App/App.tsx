@@ -11,6 +11,7 @@ import { AutoRun } from "./tool";
 import { routers } from "./CRouter";
 import { Db } from './db';
 import { PMain } from './PMain';
+import { tonwa } from 'tonwa-core';
 
 type Roles = { [role in Role]: number };
 

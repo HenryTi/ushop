@@ -1,10 +1,10 @@
 import { PMain } from "../PMain";
-import { useEffect } from "react";
 import { Page, useNav } from "tonwa-page";
 import { useSnapshot } from "valtio";
 import { tonwa } from "tonwa-core";
 import { TonwaReact } from "tonwa-react";
 import { app } from "../App";
+import { AppLogin } from "./AppImage";
 
 function LoginedUser() {
     let nav = useNav();
@@ -18,6 +18,10 @@ export function AppWithPageStack() {
     let nav = useNav();
     (tonwa as TonwaReact).setPageNav(nav);
     app.setNav(nav);
+    let { user } = useSnapshot(nav.appNav.response);
+    if (!user) {
+        return <AppLogin />;
+    }
     /*
     let nav = useNav();
     let { appNav } = nav;

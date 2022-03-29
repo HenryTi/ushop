@@ -1,18 +1,14 @@
-interface User {
-    id: number;
-    name: string;
-    nick?: string;
-    icon?: string;
-}
+import { AuthApi, AuthProvider as IAuthProvider, OnLoginChanged, User } from "tonwa-page";
 
-type OnLoginChanged = (user: User) => void;
-
-export class AuthProvider {
-    static current: AuthProvider = new AuthProvider();
-    private constructor() { }
-
-    readonly onLoginChangeds: OnLoginChanged[] = [];
+export class AuthProvider implements IAuthProvider {
+    private readonly onLoginChangeds: OnLoginChanged[] = [];
+    guest: number;
+    userApi: AuthApi;
     user: User;
+
+    setAuthApi(authApi: AuthApi): void {
+        this.userApi = authApi;
+    }
 
     subscribeOnLoginChanged(onLoginChanged: OnLoginChanged) {
         let p = this.onLoginChangeds.findIndex(v => v === onLoginChanged);
@@ -33,3 +29,11 @@ export class AuthProvider {
         this.onLoginChangeds.forEach(v => v(user));
     }
 }
+
+/*
+export const authProvider = new AuthProvider();
+
+export function useAuthProvider() {
+    return authProvider;
+}
+*/

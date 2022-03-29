@@ -28,12 +28,12 @@ export class TonwaReact extends Tonwa {
         this.pageNav = pageNav;
     }
 
-    createWeb(): Net {
+    createNet(): Net {
         let props: NetProps = {
             unit: env.unit,
             testing: env.testing,
         }
-        return new WebInReact(props);
+        return new NetInReact(props);
     }
 
     createObservableMap<K, V>(): Map<K, V> {
@@ -183,7 +183,7 @@ class LocalStorageDb extends LocalDb {
     }
 }
 
-class WebInReact extends Net {
+class NetInReact extends Net {
     createLocalDb(): LocalDb {
         return new LocalStorageDb();
     }

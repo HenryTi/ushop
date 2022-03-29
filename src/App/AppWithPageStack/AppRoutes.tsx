@@ -1,11 +1,10 @@
 import { Route, Routes } from "react-router-dom";
 import { AppPageStackContainer, AuthProvider } from "tonwa-page";
-import { AppLogin } from './AppLogin';
-import { AppRegister } from "./AppRegister";
+import { AppLogin, AppRegister } from "./AppImage";
 import { AppWithPageStack } from './AppWithPageStack';
 
-export function AppRoutes({ authProvider }: { authProvider: AuthProvider; }) {
-    return <AppPageStackContainer authProvider={authProvider}>
+export function AppRoutes() {
+    return <AppPageStackContainer>
         <Routes>
             <Route path="/login" element={<AppLogin />} />
             <Route path="/register" element={<AppRegister />} />

@@ -9,16 +9,25 @@ const contentClassName = ' bg-white ';
 function Back(props: PageBackProps) {
     let { back } = props;
     let pageNav = useNav();
-    function renderBack(iconName: string) {
-        if (pageNav.data.stack.length === 0) {
-            return <div className="pe-3" />;
+    function onClickBack() {
+        if (pageNav.data.stack.length === 1) {
+            pageNav.navigate(-1 as any);
         }
-        return <div className="px-3 cursor-pointer" onClick={() => pageNav.close()}>
+        else {
+            pageNav.close();
+        }
+    }
+    function renderBack(iconName: string) {
+        return <div className="px-3 cursor-pointer" onClick={onClickBack}>
             <FA name={iconName} />
         </div>;
     }
     switch (back) {
         default:
+            if (pageNav.data.stack.length === 1) {
+                return <div className="pe-3" />;
+            }
+            return renderBack('angle-left');
         case 'back': return renderBack('angle-left');
         case 'close': return renderBack('close');
         case 'none': return null;
@@ -38,7 +47,7 @@ function Header(props: PageHeaderProps) {
 }
 
 function Footer(props: PageFooterProps) {
-    return <div className="d-flex align-items-center justify-content-center px-3 py-2 border-top bg-light">
+    return <div className="d-flex flex-column">
         {props.footer}
     </div>;
 }

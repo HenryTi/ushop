@@ -1,13 +1,16 @@
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useContext } from 'react';
 import { useParams } from 'react-router-dom';
 import { FA } from 'tonwa-react';
 import { useSnapshot } from 'valtio';
-import { AppNavContext, AppPageItem, AppPageLayers } from './nav';
+import { TabNav } from './AppNav';
+import { AppNavContext, TabItem, TabNavContext, useTabNav } from './nav';
+import { StackContainer } from './StackContainer';
+import { InScrollContext } from './useScroll';
 
 interface AppTabsProps {
-    pages?: AppPageItem[];
-    active?: AppPageItem;
+    pages?: TabItem[];
+    active?: TabItem;
 
     Tab?: (props: { title: string; }) => JSX.Element;
     TabKept?: (props: { title: string; }) => JSX.Element;
@@ -29,57 +32,58 @@ export function AppTabs(props: AppTabsProps) {
         <FA name="times" />
     </div>;
 
-
     const { active_page } = useParams();
-    let nav = useContext(AppNavContext);
-    let { defaultActive, data } = nav;
+    let tabNav = useTabNav();
+    let { appNav, defaultActive, data } = tabNav;
     let { stack } = data;
     let activePage = active_page ? active_page : defaultActive?.name;
     let tabs = useSnapshot(stack);
 
     useEffect(() => {
-        let { defaultActive, data } = nav;
+        let { defaultActive, data } = tabNav;
         let { stack } = data;
         let activePage = active_page ? active_page : defaultActive?.name;
-        nav.setNavOptions({ replace: true });
-        nav.setInitTabs(pages, active);
+        //nav.setNavOptions({ replace: true });
+        tabNav.setInitTabs(pages, active);
         if (!activePage) return;
         let ap = activePage;
         let p = stack.findIndex(v => v.name === activePage);
         if (p < 0) ap = defaultActive?.name;
         if (ap) {
-            nav.navigate(`${ap}`);
+            appNav.navigate(`${ap}`);
         }
-    }, [nav, active, active_page, pages]);
-    function TabContainer(tab: AppPageItem) {
+    }, []);
+    function TabContainer(tab: TabItem) {
         let { name, keep, title } = tab;
         return <li key={name} className="nav-item">
-            <a href="/#"
-                className={'nav-link d-flex align-items-center p-0 ' + (activePage === name ? "active" : "")}
+            <div
+                className={'nav-link d-flex align-items-center p-0 ' + (activePage === name ? "active" : "cursor-pointer")}
                 role="button"
             >
                 {
                     keep === true ?
                         <div className="px-3 py-2"
-                            onClick={() => nav.activate(tab)}>
+                            onClick={() => tabNav.activate(tab)}>
                             <TabKept title={title} />
                         </div>
                         :
                         <>
                             <div className='d-flex align-items-center'
-                                onClick={() => nav.activate(tab)}>
+                                onClick={() => tabNav.activate(tab)}>
                                 <Tab title={title} />
-                                <div onClick={evt => { nav.close(tab); evt.stopPropagation(); }}>
+                                <div onClick={evt => { tabNav.closeTab(tab); evt.stopPropagation(); }}>
                                     <TabClose />
                                 </div>
                             </div>
                         </>
                 }
-            </a>
+            </div>
         </li>
     }
-    return <div className="d-flex flex-column flex-grow-1 overflow-hidden">
-        <ul className="nav nav-tabs">{tabs.map(tab => TabContainer(tab))}</ul>
-        <AppPageLayers active={activePage} appPageItems={tabs} />
-    </div>;
+    return <InScrollContext.Provider value={true}>
+        <div className="d-flex flex-column flex-grow-1 overflow-hidden">
+            <ul className="nav nav-tabs">{tabs.map(tab => TabContainer(tab))}</ul>
+            <StackContainer active={activePage} stackItems={tabs} />
+        </div>
+    </InScrollContext.Provider>;
 }

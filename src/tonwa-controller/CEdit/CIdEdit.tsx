@@ -1,5 +1,5 @@
-import { VPage } from "tonwa-controller";
-import { CEdit } from ".";
+import { VPage } from "../VPage";
+import { CEdit } from "./CEdit";
 
 export class CIdEdit extends CEdit {
     get Page(): new (c: CEdit) => VPage<CEdit> {

@@ -6,7 +6,8 @@ import { VAdd } from "./VAdd";
 import { PIDList } from "./PIDList";
 import { VEditID } from "./VEditID";
 import { IdCache } from "./IdCache";
-import { AppBase, VPage } from "tonwa-controller";
+import { AppBase } from "../AppBase";
+import { VPage } from "../VPage";
 import { mutedSmall } from "../tool";
 
 export enum EnumSelectType {

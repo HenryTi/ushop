@@ -1,11 +1,11 @@
-import { useNav, Page } from "tonwa-page"
+import { useNav, Page, UPage } from "tonwa-page"
 
 export function TrialPage1({ id }: { id: number }) {
     let nav = useNav();
     function onClick() {
-        nav.open('trialpage2', <TrialPage2 />);
+        nav.open(<TrialPage2 />);
     }
-    return <Page header="aaa" footer={<div>footer</div>}>
+    return <UPage header="aaa" footer={<div>footer</div>}>
         <div className="p-3">
             trial page id: {id}
             {Array(50).fill(0).map((v, index) => <br key={index} />)}
@@ -14,7 +14,7 @@ export function TrialPage1({ id }: { id: number }) {
                 <button onClick={() => nav.close()}>close me</button>
             </div>
         </div>
-    </Page>
+    </UPage>
 }
 
 function TrialPage2() {
@@ -23,7 +23,7 @@ function TrialPage2() {
         <div className="p-3">
             trial page 2
             <button onClick={() => nav.close()}>back</button>
-            <button onClick={() => nav.open('trialpage3', <TrialPage3 />)}>trial page 3</button>
+            <button onClick={() => nav.open(<TrialPage3 />)}>trial page 3</button>
         </div>
     </Page>;
 }
@@ -34,6 +34,9 @@ function TrialPage3() {
         <div className="m-5">
             trial page 3
             <button onClick={() => nav.close()}>back</button>
+        </div>
+        <div>
+            <button onClick={() => nav.navigate('logout')}>logout</button>
         </div>
     </Page>;
 }

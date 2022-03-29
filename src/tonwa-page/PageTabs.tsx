@@ -1,6 +1,6 @@
 import React, { ReactElement, useRef } from "react";
 import { proxy, useSnapshot } from "valtio";
-import { ScrollContext, useScroll } from "./useScroll";
+import { InScrollContext, useScroll } from "./useScroll";
 
 interface TabObject {
     name: string;
@@ -49,7 +49,7 @@ export function PageTabs(props: PageTabsProps) {
     let { current: tabs } = useRef(createTabsFromChildren(props.children));
     let tabProxy = useRef(proxy({ active: 0 }));
     let { active } = useSnapshot(tabProxy.current);
-    return <ScrollContext.Provider value={true}>
+    return <InScrollContext.Provider value={true}>
         <div className="flex-grow-1 d-flex flex-column" style={{ overflowY: 'scroll' }}>
             <div ref={divRef} className="tonwa-page-content tab-content flex-grow-1">
                 {tabs.map((v, index) => <div key={v.name}
@@ -67,7 +67,7 @@ export function PageTabs(props: PageTabsProps) {
                 </li>)}
             </ul>
         </div>
-    </ScrollContext.Provider>;
+    </InScrollContext.Provider>;
 }
 
 function invariant(condition: boolean, message: string): asserts condition {

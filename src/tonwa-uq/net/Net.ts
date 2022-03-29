@@ -1,7 +1,8 @@
 /* eslint-disable */
 import { UqTokens } from "./UqTokens";
 import { CenterApi } from "./centerApi";
-import { CallCenterApi, UqTokenApi, UserApi } from "./uqApi";
+import { CallCenterApi, UqTokenApi } from "./uqApi";
+import { UserApi } from "./userApi";
 import { HttpChannel, CenterHttpChannel } from './httpChannel';
 import { GuestApi } from "./guestApi";
 import { MessageHub } from "./messageHub";

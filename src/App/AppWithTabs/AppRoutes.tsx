@@ -1,14 +1,15 @@
 import { Route, Routes } from "react-router-dom";
-import { AppTabsContainer, AuthProvider, useNav } from "tonwa-page";
+import { AppLogin, AppLogout, AppRegister } from "./AppImage";
 import { AppWithTabs } from './AppWithTabs';
 
-export function AppRoutes({ authProvider }: { authProvider: AuthProvider }) {
-    return <AppTabsContainer authProvider={authProvider}>
-        <Routes>
-            <Route path="/" element={<AppWithTabs />}>
-                <Route path=":active_page" element={<AppWithTabs />} />
-                <Route path=":active_page/:sub" element={<AppWithTabs />} />
-            </Route>
-        </Routes>
-    </AppTabsContainer>;
+export function AppRoutes() {
+    return <Routes>
+        <Route path="/login" element={<AppLogin />} />
+        <Route path="/register" element={<AppRegister />} />
+        <Route path="/logout" element={<AppLogout />} />
+        <Route path="/" element={<AppWithTabs />}>
+            <Route path=":active_page" element={<AppWithTabs />} />
+            <Route path=":active_page/:sub" element={<AppWithTabs />} />
+        </Route>
+    </Routes>;
 }

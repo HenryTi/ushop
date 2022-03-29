@@ -1,17 +1,20 @@
-import { Nav, AppTabs, Page, useNav } from 'tonwa-page';
+import { useSnapshot } from "valtio";
+import { AppTabs, useNav, useAppNav, UPage, AppContainer, TabNav, useTabNav, TabNavContext } from 'tonwa-page';
 import { TrialPage1 } from './TrialPage1';
+import { AppLogin } from "./AppImage";
+import { useRef } from "react";
 
 const tabDraft = {
     name: 'draft',
     title: "Draft",
     keep: true,
-    page: <Page contentClassName="bg-success">
+    page: <UPage contentClassName="bg-success">
         <div className="p-2">
             <h4 className="text-info">Draft Tasks</h4>
             <div style={{ height: '10em' }} />
             <div>draft bottom</div>
         </div>
-    </Page>
+    </UPage>
 };
 const tabInProgress = {
     name: "in_progress",
@@ -34,7 +37,7 @@ function TestNav() {
         let tabItem = {
             name,
             title: 'title ' + id,
-            page: <div>content {id}</div>
+            page: <div>content {id}</div>,
         }
         nav.openTab(tabItem);
     }
@@ -57,8 +60,14 @@ const tabCompleted = {
 const tabsArr = [tabDraft, tabInProgress, tabCompleted];
 let tabNo = 0;
 
-export function AppWithTabs() {
-    //pages={tabsArr} active={tabDraft}
+function AppWithTabsContent() {
+    let appNav = useAppNav();
+    //(tonwa as TonwaReact).setPageNav(nav);
+    //app.setNav(nav);
+    let { user } = useSnapshot(appNav.response);
+    if (!user) {
+        return <AppLogin />;
+    }
     return <div className="d-flex flex-column">
         <TopBar />
         <div className="d-flex flex-grow-1 overflow-hidden">
@@ -69,29 +78,44 @@ export function AppWithTabs() {
     </div>;
 }
 
-function onAdd(nav: Nav) {
+export function AppWithTabs() {
+    return <AppContainer>
+        <TabsContainer />
+    </AppContainer>;
+}
+
+function TabsContainer() {
+    let appNav = useAppNav();
+    let { current: tabNav } = useRef(new TabNav(appNav));
+    return <TabNavContext.Provider value={tabNav}>
+        <AppWithTabsContent />
+    </TabNavContext.Provider>;
+}
+
+function onAddTab(tabNav: TabNav) {
     let id = ++tabNo;
     let name = 't' + id;
     let tabItem = {
         name,
         title: 'title ' + id,
-        page: <TrialPage1 id={id} />
+        page: <TrialPage1 id={id} />,
+        onClose: undefined as any,
     }
-    nav.openTab(tabItem);
+    tabNav.openTab(tabItem);
 }
 
 function TopBar() {
-    let nav = useNav();
+    let nav = useTabNav();
     return <div className="py-3">
-        <h4 className="px-3">Tabs <button onClick={() => onAdd(nav)}>+</button></h4>
+        <h4 className="px-3">Tabs <button onClick={() => onAddTab(nav)}>+</button></h4>
     </div>;
 }
 
 function SideBar() {
-    let nav = useNav();
+    let nav = useTabNav();
     return <div className="border px-3">
         <div className="my-2">left side bar</div>
-        <button className="my-2" onClick={() => onAdd(nav)}>新开页面</button>
+        <button className="my-2" onClick={() => onAddTab(nav)}>新开页面</button>
     </div>;
 }
 

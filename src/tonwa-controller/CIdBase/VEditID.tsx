@@ -1,4 +1,4 @@
-import { createEdit } from "tonwa-controller";
+import { createEdit } from "../CEdit";
 // import { VTagInput } from "tonwa-controller/CTagBase/VTagInput";
 import { LMR, Pick } from "tonwa-react";
 import { UqID } from "./UqID";

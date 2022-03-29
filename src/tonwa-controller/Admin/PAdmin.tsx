@@ -168,7 +168,7 @@ export function PAdmin({ data, me, setMeAdmin, setAdmin }: Props) {
 }
 
 /*
-import { User } from "tonwa-controller";
+import { User } from "tonwa-con troller";
 import { FA, Image, List, LMR } from "tonwa-react";
 import { Admin, EnumAdminRoleInEdit } from ".";
 import { VPage } from "../VPage";

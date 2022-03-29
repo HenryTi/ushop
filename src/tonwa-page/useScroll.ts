@@ -1,10 +1,13 @@
-import React, { useLayoutEffect, useRef } from "react";
+import React, { useContext, useEffect, useRef } from "react";
 
 export function useScroll() {
     let divRef = useRef();
-    useLayoutEffect(() => {
-        function resize() {
+    let inScroll = useContext(InScrollContext);
+    useEffect(() => {
+        if (inScroll) return;
+        let resize = () => {
             let el = divRef.current as HTMLElement;
+            if (!el) { return; }
             let els = el.getElementsByClassName('tonwa-page-content');
             let elContent = els[0];
             if (!elContent) return;
@@ -16,6 +19,7 @@ export function useScroll() {
                     h -= (v as HTMLElement).clientHeight;
                 };
             });
+            if (h === 0) return;
             (elContent as any).style.minHeight = h + 'px';
         }
         window.addEventListener('resize', resize);
@@ -25,8 +29,8 @@ export function useScroll() {
             window.removeEventListener('resize', resize);
             window.removeEventListener('DOMSubtreeModified', resize);
         }
-    }, [divRef]);
+    }, []);
     return divRef;
 }
 
-export const ScrollContext = React.createContext<boolean>(true);
+export const InScrollContext = React.createContext<boolean>(undefined);

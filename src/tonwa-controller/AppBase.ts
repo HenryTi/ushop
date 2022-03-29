@@ -29,7 +29,7 @@ export abstract class AppBase {
     protected abstract get nav(): Nav;
 
     open(page: JSX.Element, afterClose?: () => void): void {
-        this.nav.open('', page);
+        this.nav.open(page);
     }
 
     close(level: number = 1): void {

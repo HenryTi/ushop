@@ -4,10 +4,10 @@ import { BrowserRouter } from 'react-router-dom';
 import { NavView, start, TonwaReact } from "tonwa";
 import { CApp } from './CApp';
 import { appConfig } from './appConfig';
-//import { AppRoutes } from 'App/AppWithTabs';
-import { AppRoutes } from 'App/AppWithPageStack';
-import { AuthRoutes } from 'tonwa-page/AuthRoutes';
+import { AppRoutes } from 'App/AppWithTabs';
+//import { AppRoutes } from 'App/AppWithPageStack';
 import { AuthProvider } from 'tonwa-auth';
+import { AuthProviderContext } from 'tonwa-page';
 
 export async function startApp() {
     let tonwa = new TonwaReact();
@@ -19,6 +19,8 @@ export async function startApp() {
     const notLogined: () => Promise<void> = onLogined;
     const userPassword: () => Promise<{ user: string; password: string }> = undefined;
     await tonwa.appStart(onLogined);
+    let authProvider = new AuthProvider();
+    authProvider.setAuthApi(tonwa.net.userApi);
     /*
     ReactDOM.render(
         <React.StrictMode>
@@ -33,7 +35,9 @@ export async function startApp() {
     ReactDOM.render(
         <React.StrictMode>
             <BrowserRouter>
-                <AppRoutes authProvider={AuthProvider.current} />
+                <AuthProviderContext.Provider value={authProvider}>
+                    <AppRoutes />
+                </AuthProviderContext.Provider>
             </BrowserRouter>
         </React.StrictMode>,
         document.getElementById('root')

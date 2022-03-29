@@ -1,6 +1,6 @@
-import { View } from "tonwa-controller";
 import { FA } from "tonwa-react";
 import { CEdit } from "./CEdit";
+import { View } from "../View";
 
 export class VRef extends View<CEdit> {
     render() {

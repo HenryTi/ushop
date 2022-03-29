@@ -1,5 +1,7 @@
-import { AppBase, VPage, shallowReact } from "tonwa-controller";
 import { FieldRule, ItemSchema, Pick, UiItem } from "tonwa-react";
+import { AppBase } from "../AppBase";
+import { VPage } from "../VPage";
+import { shallowReact } from "../Reactive";
 import { Controller } from "../Controller";
 import { VEditIcon, VRef } from "./VRef";
 

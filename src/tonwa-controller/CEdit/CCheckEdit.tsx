@@ -1,7 +1,7 @@
 import { ChangeEvent } from 'react';
 import { CEdit } from './CEdit';
 import { setReact } from '../Reactive';
-import { AppBase } from 'tonwa-controller';
+import { AppBase } from '../AppBase';
 import { EditProps } from '.';
 
 export class CCheckEdit extends CEdit {
