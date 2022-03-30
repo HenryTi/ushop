@@ -82,8 +82,9 @@ export class TabNav extends StackNav<TabItem> {
     }
 
     openTab(pageItem: TabItem) {
-        this.response.active = pageItem;
-        this.data.stack.push(ref(pageItem));
+        let refPageItem = ref(pageItem);
+        this.response.active = refPageItem;
+        this.data.stack.push(refPageItem);
         this.navigate(`/${pageItem.key}`);
         this.itemsArr.push(pageItem);
     }
@@ -102,15 +103,8 @@ export class TabNav extends StackNav<TabItem> {
     closeTab(pageItem?: TabItem) {
         let { stack } = this.data;
         if (stack.length === 0) return;
-        let p: number;
-        if (!pageItem) {
-            let { key } = this.response.active;
-            p = stack.findIndex(v => v.key === key);
-        }
-        else {
-            p = stack.findIndex(v => v === pageItem);
-        }
-        let active: string;
+        pageItem = pageItem ?? this.response.active;
+        let p = stack.findIndex(v => v === pageItem);
         if (p >= 0) {
             let [item] = stack.splice(p, 1);
             let i = this.itemsArr.findIndex(v => v.key === item.key);
@@ -119,11 +113,9 @@ export class TabNav extends StackNav<TabItem> {
             if (len > 0) {
                 let item = this.itemsArr[len - 1];
                 this.response.active = item;
-                active = item.key;
+                let active = item.key;
+                this.navigate(`/${active}`);
             }
-        }
-        if (active) {
-            this.navigate(`/${active}`);
         }
     }
 }
