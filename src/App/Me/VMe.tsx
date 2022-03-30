@@ -2,12 +2,13 @@ import { Image, PropGrid, LMR, FA, Prop } from "tonwa";
 import { appConfig } from '../../uq-app/appConfig';
 import { PAbout } from './PAbout';
 import { tonwa } from "tonwa-core";
-import { app } from '../App';
 import { PEditMe } from "./PEditMe";
 import { t } from "./t";
 import { VMeAdmin } from "./VMeAdmin";
+import { useNav } from "tonwa-page";
 
 export function VMe() {
+    let nav = useNav();
     function MeInfo() {
         let { user } = tonwa;
         if (!user) return null;
@@ -15,7 +16,7 @@ export function VMe() {
         return <LMR className="py-2 cursor-pointer w-100"
             left={<Image className="w-3c h-3c me-3" src={icon || '.user-o'} />}
             right={<FA className="align-self-end" name="angle-right" />}
-            onClick={() => app.open(<PEditMe />)}>
+            onClick={() => nav.open(<PEditMe />)}>
             <div>
                 <div>{userSpan(name, nick)}</div>
                 <div className="small"><span className="text-muted">ID:</span> {id > 10000 ? id : String(id + 10000).substring(1)}</div>
@@ -24,7 +25,7 @@ export function VMe() {
     }
 
     function openAbout() {
-        app.open(<PAbout />);
+        nav.open(<PAbout />);
     }
 
     const { user } = tonwa;

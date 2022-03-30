@@ -4,11 +4,10 @@ import { useSnapshot } from "valtio";
 import { useNav } from "./nav";
 import { PageProps } from "./PageProps";
 import { usePageTemplate } from "./PageTemplate";
-import { InScrollContext, useScroll } from "./useScroll";
+import { useScroll } from "./useScroll";
 
 // unanthorized page
 export function UPage(props: PageProps) {
-    let scrollContext = useContext(InScrollContext);
     let divRef = useScroll();
     let { children, header, back, right, footer, template: templateName } = props;
     let template = usePageTemplate(templateName);
@@ -44,9 +43,9 @@ export function UPage(props: PageProps) {
             break;
     }
     let cnPage = '-inner-page flex-grow-1 ';
-    if (scrollContext) {
-        cnPage += 'overflow-auto';
-    }
+    //if (scrollContext === undefined) {
+    cnPage += 'overflow-auto';
+    //}
     return <div ref={divRef} className={cnPage}>
         {header}
         <Content {...props}>{children}</Content>

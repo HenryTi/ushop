@@ -1,22 +1,11 @@
 import { NavigateFunction, NavigateOptions, To } from "react-router-dom";
 import { proxy, ref } from "valtio";
-import { AuthProvider, User } from "./AuthProvider";
-import { StackItem, TabItem } from "./nav";
+import { User } from "./AuthProvider";
+import { StackItem, StackNav, TabItem } from "./nav";
 
 interface ErrorInPage {
     err: string; // name unique
     message: string;
-}
-
-class StackNav<T extends StackItem> {
-    readonly data: {
-        stack: T[];
-    };
-    constructor() {
-        this.data = proxy({
-            stack: [],
-        });
-    }
 }
 
 export class AppNav extends StackNav<StackItem> {
@@ -39,9 +28,6 @@ export class AppNav extends StackNav<StackItem> {
     }
     setError(err: string, message: string) { this.response.error = ref({ err, message }) }
     clearError() { this.response.error = undefined; }
-    close() {
-        alert('App Nav close');
-    }
     setNavigate(navigateFunc: NavigateFunction) {
         this.navigateFunc = navigateFunc;
     }
@@ -60,7 +46,7 @@ export class TabNav extends StackNav<TabItem> {
     defaultActive: TabItem;
 
     constructor(appNav: AppNav) {
-        super();
+        super(undefined);
         this.appNav = appNav;
         this.itemsArr = [];
         this.response = proxy({
@@ -68,12 +54,6 @@ export class TabNav extends StackNav<TabItem> {
         });
     }
 
-    /*
-    setAuthProvider(authProvider: AuthProvider) {
-        this._authProvider = authProvider;
-        this._authProvider.subscribeOnLoginChanged(this.onLoginChanged);
-    }
-    */
     navigate(to: To, options?: NavigateOptions) {
         this.appNav.navigateFunc(to, options);
     }
@@ -104,32 +84,43 @@ export class TabNav extends StackNav<TabItem> {
     openTab(pageItem: TabItem) {
         this.response.active = pageItem;
         this.data.stack.push(ref(pageItem));
-        this.navigate(`/${pageItem.name}`);
+        this.navigate(`/${pageItem.key}`);
         this.itemsArr.push(pageItem);
     }
 
     activate(pageItem: TabItem) {
-        let { name } = pageItem;
+        let { key: name } = pageItem;
         if (this.response.active !== pageItem) {
             this.response.active = pageItem;
-            let p = this.itemsArr.findIndex(v => v.name === name);
+            let p = this.itemsArr.findIndex(v => v.key === name);
             let ret = this.itemsArr.splice(p, 1);
             this.itemsArr.push(...ret);
             this.navigate(name);
         }
     }
 
-    closeTab(pageItem: TabItem) {
+    closeTab(pageItem?: TabItem) {
         let { stack } = this.data;
         if (stack.length === 0) return;
+        let p: number;
+        if (!pageItem) {
+            let { key } = this.response.active;
+            p = stack.findIndex(v => v.key === key);
+        }
+        else {
+            p = stack.findIndex(v => v === pageItem);
+        }
         let active: string;
-        let p = stack.findIndex(v => v === pageItem);
         if (p >= 0) {
             let [item] = stack.splice(p, 1);
-            let i = this.itemsArr.findIndex(v => v.name === item.name);
+            let i = this.itemsArr.findIndex(v => v.key === item.key);
             if (i >= 0) this.itemsArr.splice(i, 1)
             let len = this.itemsArr.length;
-            if (len > 0) active = this.itemsArr[len - 1].name;
+            if (len > 0) {
+                let item = this.itemsArr[len - 1];
+                this.response.active = item;
+                active = item.key;
+            }
         }
         if (active) {
             this.navigate(`/${active}`);

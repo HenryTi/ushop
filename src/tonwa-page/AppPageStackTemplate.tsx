@@ -4,36 +4,9 @@ import { Error } from "./Error";
 import { PageBackProps, PageFooterProps, PageProps, PageTemplateProps } from "./PageProps";
 import { usePageTemplate } from "./PageTemplate";
 import "./tonwa-page.css";
+import { Back } from "./BackTemplate";
 
 const contentClassName = ' bg-white ';
-
-function Back(props: PageBackProps) {
-    let { back } = props;
-    let pageNav = useNav();
-    function onClickBack() {
-        if (pageNav.data.stack.length === 1) {
-            pageNav.navigate(-1 as any);
-        }
-        else {
-            pageNav.close();
-        }
-    }
-    function renderBack(iconName: string) {
-        return <div className="px-3 cursor-pointer" onClick={onClickBack}>
-            <FA name={iconName} />
-        </div>;
-    }
-    switch (back) {
-        default:
-            if (pageNav.data.stack.length === 1) {
-                return <div className="pe-3" />;
-            }
-            return renderBack('angle-left');
-        case 'back': return renderBack('angle-left');
-        case 'close': return renderBack('close');
-        case 'none': return null;
-    }
-}
 
 function Header(props: PageProps) {
     let { back, header, right, template: templateName } = props;
@@ -68,7 +41,7 @@ function Content(props: PageProps) {
 }
 
 export const appPageStackTemplate: PageTemplateProps = {
-    Back,
+    Back: Back,
     Header,
     Footer,
     Content,

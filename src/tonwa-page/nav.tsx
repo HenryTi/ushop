@@ -3,61 +3,41 @@ import { NavigateOptions, To } from "react-router-dom";
 import { proxy, ref } from "valtio";
 import { AppNav, TabNav } from "./AppNav";
 
-export interface PageItem {
-    page: JSX.Element;
-    pageId: number;
-    onClose?: () => boolean;
-}
-
 export interface StackItem {
-    name: string;
+    key: string;
     page: JSX.Element;
     onClose?: () => boolean;
 }
 
 export interface TabItem extends StackItem {
-    name: string;
-    page: JSX.Element;
     title: string;
     keep?: boolean;
-    onClose?: () => boolean;
 }
 
-export class Nav {
+export class StackNav<T extends StackItem> {
     readonly data: {
-        stack: PageItem[];
+        stack: T[];
     };
-    readonly appNav: AppNav;
-    readonly tabNav: TabNav;
-    private pageId: number;
-
-    constructor(appNav: AppNav, tabNav: TabNav, initPage: React.ReactNode) {
-        this.pageId = 0;
-        this.appNav = appNav;
-        this.tabNav = tabNav;
-        this.data = proxy({
-            stack: [ref({
-                name: undefined,
-                pageId: ++this.pageId,
+    private pageKeyNO: number;
+    constructor(initPage: React.ReactNode) {
+        this.pageKeyNO = 0;
+        let stack = [];
+        if (initPage) {
+            stack.push(ref({
+                key: String(++this.pageKeyNO),
                 page: <>{initPage}</>,
-            })],
+            } as T));
+        }
+        this.data = proxy({
+            stack,
         });
     }
 
-    navigate(to: To, options?: NavigateOptions) {
-        this.appNav.navigate(to, options);
-    }
-
-    openTab(tabItem: TabItem) {
-        this.tabNav.openTab(tabItem);
-    }
-
-    open(page?: JSX.Element, onClose?: () => boolean): void {
+    open(page: JSX.Element, onClose?: () => boolean): void {
         let pageItem = {
-            pageId: ++this.pageId,
-            name: undefined as string, //url, 
+            key: String(++this.pageKeyNO),
             page, onClose,
-        };
+        } as T;
         this.data.stack.push(ref(pageItem));
     }
 
@@ -80,6 +60,26 @@ export class Nav {
         if (onClose?.() === false) return;
         stack.pop();
     }
+}
+
+export class Nav extends StackNav<StackItem> {
+    readonly appNav: AppNav;
+    readonly tabNav: TabNav;
+
+    constructor(appNav: AppNav, tabNav: TabNav, initPage: React.ReactNode) {
+        super(initPage);
+        this.appNav = appNav;
+        this.tabNav = tabNav;
+    }
+
+    navigate(to: To, options?: NavigateOptions) {
+        this.appNav.navigate(to, options);
+    }
+
+    openTab(tabItem: TabItem) {
+        this.tabNav.openTab(tabItem);
+    }
+
 }
 
 export const AppNavContext = React.createContext<AppNav>(undefined);

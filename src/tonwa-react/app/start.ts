@@ -19,4 +19,5 @@ export async function start(CApp: new (tonwa: Tonwa, config: AppConfig) => CAppB
 
 	let cApp = new CApp(tonwa, appConfig);
 	await cApp.start(isUserLogin);
+	return cApp;
 }

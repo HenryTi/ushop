@@ -3,7 +3,6 @@ import { Page, useNav } from "tonwa-page";
 import { useSnapshot } from "valtio";
 import { tonwa } from "tonwa-core";
 import { TonwaReact } from "tonwa-react";
-import { app } from "../App";
 import { AppLogin } from "./AppImage";
 
 function LoginedUser() {
@@ -16,39 +15,16 @@ function LoginedUser() {
 
 export function AppWithPageStack() {
     let nav = useNav();
-    (tonwa as TonwaReact).setPageNav(nav);
-    app.setNav(nav);
     let { user } = useSnapshot(nav.appNav.response);
     if (!user) {
         return <AppLogin />;
     }
     /*
-    let nav = useNav();
-    let { appNav } = nav;
-    useEffect(() => {
-        nav.initPages({
-            try1: <Page1 />,
-            try2: <Page2 />,
-        });
-    }, [nav])
     return <Page header="home" right={<LoginedUser />} footer={<div>footer</div>}>
         <div>home</div>
-        <div>
-            <button onClick={() => nav.navigate('home')}>home</button>
-        </div>
-        <div>
-            <button onClick={() => nav.start('login')}>login</button>
-        </div>
-        <div><button onClick={() => nav.open('try', <Page1 />)}>open page try</button></div>
-        <div><button onClick={() => nav.open('try1')}>open page try1</button></div>
-        <div><button onClick={() => nav.open('try2')}>open page try2</button></div>
-        <div><button onClick={() => appNav.setError('err1', 'ddddd mmmm dd')}>set err1</button></div>
-        <div><button onClick={() => appNav.clearError()}>clear error</button></div>
-        <div><button onClick={() => appNav.loginChanged(undefined)}>logout</button></div>
+        <div><button onClick={() => nav.open(<Page1 />)}>open page 1</button></div>
+        <div><button onClick={() => nav.open(<Page2 />)}>open page 2</button></div>
         <div style={{ height: '180em' }}></div>
-        <div><button onClick={() => nav.open('try', <Page1 />)}>open page try</button></div>
-        <div><button onClick={() => nav.open('try1')}>open page try1</button></div>
-        <div><button onClick={() => nav.open('try2')}>open page try2</button></div>
     </Page>
     */
     return <PMain />;
@@ -57,11 +33,15 @@ export function AppWithPageStack() {
 function Page1() {
     return <Page header="page 1" contentClassName="p-5 bg-success">
         <div>page 1</div>
+        {Array(50).fill(0).map((v, index) => <br key={index} />)}
+        <div>page 1</div>
     </Page>
 }
 
 function Page2() {
     return <Page header="page 2" contentClassName="p-5 bg-success">
+        <div>page 2</div>
+        {Array(50).fill(0).map((v, index) => <br key={index} />)}
         <div>page 2</div>
     </Page>
 }

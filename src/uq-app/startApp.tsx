@@ -4,23 +4,32 @@ import { BrowserRouter } from 'react-router-dom';
 import { NavView, start, TonwaReact } from "tonwa";
 import { CApp } from './CApp';
 import { appConfig } from './appConfig';
-import { AppRoutes } from 'App/AppWithTabs';
-//import { AppRoutes } from 'App/AppWithPageStack';
 import { AuthProvider } from 'tonwa-auth';
 import { AuthProviderContext } from 'tonwa-page';
+import { App, AppRoot } from '../App';
 
 export async function startApp() {
     let tonwa = new TonwaReact();
     //initNav(tonwa);
     tonwa.setSettings(appConfig);
-    const onLogined = async (isUserLogin?: boolean) => {
-        await start(CApp, tonwa, appConfig, isUserLogin);
-    }
-    const notLogined: () => Promise<void> = onLogined;
-    const userPassword: () => Promise<{ user: string; password: string }> = undefined;
-    await tonwa.appStart(onLogined);
+    //const onLogined = async (isUserLogin?: boolean) => {
+    //    await start(CApp, tonwa, appConfig, isUserLogin);
+    //}
+    const notLogined: () => Promise<void> = async () => { };
+    //const userPassword: () => Promise<{ user: string; password: string }> = undefined;
+    await tonwa.appStart(notLogined);
+    let cApp = new CApp(tonwa);
+    await cApp.start(undefined);
     let authProvider = new AuthProvider();
     authProvider.setAuthApi(tonwa.net.userApi);
+
+    let uqApp = new App()
+    uqApp.init(cApp.uqs, tonwa.pageNav);
+    //app.appNav = appNav;
+    uqApp.user = tonwa.user;
+    uqApp.userApi = tonwa.net.centerApi;
+    await uqApp.loadBaseData();
+
     /*
     ReactDOM.render(
         <React.StrictMode>
@@ -36,7 +45,7 @@ export async function startApp() {
         <React.StrictMode>
             <BrowserRouter>
                 <AuthProviderContext.Provider value={authProvider}>
-                    <AppRoutes />
+                    <AppRoot uqApp={uqApp} />
                 </AuthProviderContext.Provider>
             </BrowserRouter>
         </React.StrictMode>,

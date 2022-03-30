@@ -1,4 +1,4 @@
-import { app } from "../../../App";
+import { useUqApp } from "../../../App";
 import { openPage } from "tonwa-controller";
 import { PIDList } from "tonwa-controller";
 import { Role } from "uq-app/uqs/BzWorkshop";
@@ -8,10 +8,11 @@ import { useUqClient } from "./UqClient";
 import { renderPerson } from "../renderPerson";
 
 export function RefClient() {
+    let uqApp = useUqApp();
     let caption = 'Client';
     let icon = 'user-o';
     let iconClass: string = 'text-info';
-    let { BzWorkshop } = app.uqs;
+    let { BzWorkshop } = uqApp.uqs;
     let uqClient = useUqClient({
         uq: BzWorkshop,
         ID: BzWorkshop.Person,

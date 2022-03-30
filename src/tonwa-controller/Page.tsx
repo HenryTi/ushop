@@ -25,7 +25,7 @@ export function Page(props: PageProps) {
         , headerClassName, className, tabsProps
         , logout, onPageScroll, onPageScrollTop, onPageScrollBottom } = props;
     if (!header) header = false;
-    if (!back) back = 'back';
+    //if (!back) back = 'back';
     if (children === undefined) {
         children = <div className="p-3">{header}</div>;
     }

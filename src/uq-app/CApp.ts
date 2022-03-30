@@ -7,7 +7,6 @@ import { setUI } from "uq-app/uqs";
 import { appConfig } from "./appConfig";
 import { CAppBase, TonwaReact } from "tonwa-react";
 import { UQs } from './uqs';
-import { app } from "../App";
 
 export class CApp extends CAppBase<UQs> {
 	private appNav: Nav; // AppNav;
@@ -29,11 +28,6 @@ export class CApp extends CAppBase<UQs> {
 		//let appNav = new AppNav(tonwa);
 		//let app = new App(this.uqs);
 		// this.app = app;
-		app.init(this._uqs, this.appNav);
-		//app.appNav = appNav;
-		app.user = this.user;
-		app.userApi = this.net.centerApi;
-		await app.loadBaseData();
 
 		//app.openMain();
 	}

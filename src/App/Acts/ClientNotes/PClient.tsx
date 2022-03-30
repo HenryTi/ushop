@@ -2,11 +2,12 @@ import { openPage, Page } from "tonwa-controller";
 import { EasyTime, FA, List } from "tonwa-react";
 import { dateFromMinuteId } from "tonwa-core";
 import { Note, Person, SessionPerson } from "uq-app/uqs/BzWorkshop";
-import { app } from "../../App";
+import { useUqApp } from "../../App";
 import { PAddNote } from "./PAddNote";
 import { CClientNotes } from "./CClientNotes";
 
 export function PClient(props: { controller: CClientNotes; client: Person; }) {
+    let uqApp = useUqApp();
     let { controller, client } = props;
     let renderLog = (log: any, index: number) => {
         let { id } = log;
@@ -32,7 +33,7 @@ export function PClient(props: { controller: CClientNotes; client: Person; }) {
         let vLock: any;
         if (sensitive === 1) {
             vLock = <FA name="lock" className="text-danger me-3" />
-            if (app.isPersonMe(staff) === true) {
+            if (uqApp.isPersonMe(staff) === true) {
                 return <div className="text-muted small">{vLock} #sensitive</div>;
             }
         }

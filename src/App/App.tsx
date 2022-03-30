@@ -1,6 +1,7 @@
+import React, { useContext } from 'react';
 import { User } from 'tonwa-uq';
 import { AppBase, openPage, UqTagProps, UserApi } from "tonwa-controller";
-import { Nav } from "tonwa-page";
+import { AppNav, useAppNav } from "tonwa-page";
 import { UQs } from "uq-app";
 import { Role } from "uq-app/uqs/BzWorkshop";
 //import { Acts } from "./Acts";
@@ -8,16 +9,18 @@ import { Role } from "uq-app/uqs/BzWorkshop";
 //import { CMe } from "./CMe";
 //import { CTag } from "./CTag";
 import { AutoRun } from "./tool";
-import { routers } from "./CRouter";
 import { Db } from './db';
 import { PMain } from './PMain';
 import { tonwa } from 'tonwa-core';
+//import { AppRoutes } from './AppWithPageStack';
+import { AppRoutes } from './AppWithTabs';
+import { TonwaReact } from 'tonwa-react';
 
 type Roles = { [role in Role]: number };
 
 export class App extends AppBase {
     private autoRun: AutoRun;
-    private appNav: Nav;
+    private appNav: AppNav;
     db: Db;
     user: User;
     meAdmin: boolean;
@@ -32,15 +35,15 @@ export class App extends AppBase {
 
     userApi: UserApi;
 
-    protected get nav(): Nav {
+    protected get nav(): AppNav {
         return this.appNav;
     }
 
-    setNav(nav: Nav) {
+    setNav(nav: AppNav) {
         this.appNav = nav;
     }
 
-    init(uqs: UQs, nav: Nav) {
+    init(uqs: UQs, nav: AppNav) {
         this.db = new Db(uqs);
         this.appNav = nav;
         let poked = uqs.BzWorkshop.$poked.query(undefined, undefined, false);
@@ -148,7 +151,16 @@ export class App extends AppBase {
     }
 }
 
-export const app = new App();
-export function useApp() {
-    return app;
+const UqAppContext = React.createContext<App>(undefined);
+export function useUqApp() {
+    return useContext(UqAppContext);
+}
+
+export function AppRoot({ uqApp }: { uqApp: App }) {
+    let appNav = useAppNav();
+    (tonwa as TonwaReact).setPageNav(appNav);
+    uqApp.setNav(appNav);
+    return <UqAppContext.Provider value={uqApp}>
+        <AppRoutes />
+    </UqAppContext.Provider>;
 }

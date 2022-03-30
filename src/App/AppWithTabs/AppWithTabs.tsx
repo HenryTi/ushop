@@ -1,11 +1,10 @@
 import { useSnapshot } from "valtio";
-import { AppTabs, useNav, useAppNav, UPage, AppContainer, TabNav, useTabNav, TabNavContext } from 'tonwa-page';
+import { AppTabs, useNav, useAppNav, UPage, TabNav, useTabNav, AppTabsContainer } from 'tonwa-page';
 import { TrialPage1 } from './TrialPage1';
 import { AppLogin } from "./AppImage";
-import { useRef } from "react";
 
 const tabDraft = {
-    name: 'draft',
+    key: 'draft',
     title: "Draft",
     keep: true,
     page: <UPage contentClassName="bg-success">
@@ -17,7 +16,7 @@ const tabDraft = {
     </UPage>
 };
 const tabInProgress = {
-    name: "in_progress",
+    key: "in_progress",
     title: "In Progress",
     keep: true,
     page: <div className="container-fluid">
@@ -33,9 +32,9 @@ function TestNav() {
     let nav = useNav();
     function onClick() {
         let id = ++tabNo;
-        let name = 't' + id;
+        let key = 't' + id;
         let tabItem = {
-            name,
+            key,
             title: 'title ' + id,
             page: <div>content {id}</div>,
         }
@@ -52,7 +51,7 @@ function TestNav() {
 }
 
 const tabCompleted = {
-    name: "completed",
+    key: "completed",
     title: "Completed",
     page: <TestNav />,
 };
@@ -62,41 +61,41 @@ let tabNo = 0;
 
 function AppWithTabsContent() {
     let appNav = useAppNav();
-    //(tonwa as TonwaReact).setPageNav(nav);
-    //app.setNav(nav);
     let { user } = useSnapshot(appNav.response);
     if (!user) {
         return <AppLogin />;
     }
-    return <div className="d-flex flex-column">
+    return <>
         <TopBar />
         <div className="d-flex flex-grow-1 overflow-hidden">
             <SideBar />
             <AppTabs pages={tabsArr} active={tabDraft} />
         </div>
         <BottomBar />
-    </div>;
+    </>;
 }
 
 export function AppWithTabs() {
-    return <AppContainer>
-        <TabsContainer />
-    </AppContainer>;
-}
-
-function TabsContainer() {
     let appNav = useAppNav();
-    let { current: tabNav } = useRef(new TabNav(appNav));
-    return <TabNavContext.Provider value={tabNav}>
-        <AppWithTabsContent />
-    </TabNavContext.Provider>;
+    let { user } = useSnapshot(appNav.response);
+    if (!user) {
+        return <AppLogin />;
+    }
+    return <AppTabsContainer>
+        <TopBar />
+        <div className="d-flex flex-grow-1 overflow-hidden">
+            <SideBar />
+            <AppTabs pages={tabsArr} active={tabDraft} />
+        </div>
+        <BottomBar />
+    </AppTabsContainer>;
 }
 
 function onAddTab(tabNav: TabNav) {
     let id = ++tabNo;
-    let name = 't' + id;
+    let key = 't' + id;
     let tabItem = {
-        name,
+        key,
         title: 'title ' + id,
         page: <TrialPage1 id={id} />,
         onClose: undefined as any,

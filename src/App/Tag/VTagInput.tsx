@@ -1,11 +1,11 @@
 import { VTagGroupInput as VTagInputBase } from "tonwa-controller";
-import { useApp } from '../App';
+import { useUqApp } from '../App';
 
 interface Props {
     id: number;
 }
 
 export function VTagInput({ id }: Props) {
-    let app = useApp();
+    let app = useUqApp();
     return <VTagInputBase uqTagProps={app.uqTagProps} tagGroupName="workshop-tags" id={id} />;
 }

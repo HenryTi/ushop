@@ -1,11 +1,12 @@
 import { VAdmin } from "tonwa-controller";
 import { FA, LMR } from "tonwa-react";
 import { UQs } from "uq-app";
-import { app } from "../App";
+import { useUqApp } from "../App";
 import { t } from "./t";
 
 export function VMeAdmin() {
-    const uqs: UQs = app.uqs;
+    let uqApp = useUqApp();
+    const uqs: UQs = uqApp.uqs;
 
     let loadAdmins = async (): Promise<any[]> => {
         return await uqs.BzWorkshop.AdminGetList();
@@ -20,7 +21,7 @@ export function VMeAdmin() {
     }
 
     return <VAdmin Content={VMeAdminContent}
-        me={app.user?.id} loadAdmins={loadAdmins} setMeAdmin={setMeAdmin} setAdmin={setAdmin} />;
+        me={uqApp.user?.id} loadAdmins={loadAdmins} setMeAdmin={setMeAdmin} setAdmin={setAdmin} />;
 }
 
 function VMeAdminContent({ onClick }: { onClick: () => void }) {

@@ -1,6 +1,5 @@
 export * from './Page';
 export * from './AppTabs';
-export * from './AppPageStack';
 export * from './nav';
 export * from './AppNav';
 export * from './AppPageStackTemplate';

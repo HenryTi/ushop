@@ -1,10 +1,10 @@
 import { Route, Routes } from "react-router-dom";
-import { AppPageStackContainer, AuthProvider } from "tonwa-page";
+import { AppContainer, appPageStackTemplate } from "tonwa-page";
 import { AppLogin, AppRegister } from "./AppImage";
 import { AppWithPageStack } from './AppWithPageStack';
 
 export function AppRoutes() {
-    return <AppPageStackContainer>
+    return <AppContainer pageTemplate={appPageStackTemplate}>
         <Routes>
             <Route path="/login" element={<AppLogin />} />
             <Route path="/register" element={<AppRegister />} />
@@ -13,5 +13,5 @@ export function AppRoutes() {
                 <Route path=":active_page/:sub" element={<AppWithPageStack />} />
             </Route>
         </Routes>
-    </AppPageStackContainer>;
+    </AppContainer>;
 }

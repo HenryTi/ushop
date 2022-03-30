@@ -1,12 +1,13 @@
-import { app } from "../..";
 import { openPage } from "tonwa-controller";
 import { PIDList } from "tonwa-controller";
 import { Workshop } from "uq-app/uqs/BzWorkshop";
+import { useUqApp } from "../../App";
 import { IconCommand } from "../../tool";
 import { renderWorkshopItem } from "./renderItem";
 import { useUqWorkshop } from "./UqWorkshop";
 
 export function RefWorkshop() {
+    let app = useUqApp();
     let caption = 'Workshop';
     let icon = 'book';
     let iconClass: string = 'text-warning';

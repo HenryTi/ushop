@@ -1,4 +1,4 @@
-import { app } from "../App";
+import { useUqApp } from "../App";
 import { openPage, Page, VPage } from "tonwa-controller";
 import { FA, LMR } from "tonwa-react";
 import { CClientNotes } from "./ClientNotes";
@@ -14,6 +14,7 @@ interface DirItem {
 }
 
 export function PActs() {
+    let uqApp = useUqApp();
     useEffect(() => {
         let s = null;
     });
@@ -35,7 +36,7 @@ export function PActs() {
     return <Page header="Home">
         <div className="">
             {
-                arr.map((v, index) => app.renderAdminOrRole(<VDirItem key={index} {...v} />))
+                arr.map((v, index) => uqApp.renderAdminOrRole(<VDirItem key={index} {...v} />))
             }
         </div>
     </Page>;

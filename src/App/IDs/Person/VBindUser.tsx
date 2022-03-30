@@ -1,7 +1,7 @@
 import { closePage, openPage, Page, selectUser, UqID, User, VUser } from "tonwa-controller";
 import { FA, LMR } from "tonwa-react";
 import { UqExt } from "uq-app/uqs/BzWorkshop";
-import { app } from "../../App";
+import { useUqApp } from "../../App";
 import { UqPerson } from "./UqPerson";
 
 export interface VBindUserProps {
@@ -69,7 +69,7 @@ interface VBoundProps {
 function VBound(props: VBoundProps) {
     let { uqID, onChangeUser } = props;
     let onChange = async () => {
-        if (await app.confirm('Change user account bound is not recommented. Still want to do so?') === true) {
+        if (await window.confirm('Change user account bound is not recommented. Still want to do so?') === true) {
             await onChangeUser();
         }
     }

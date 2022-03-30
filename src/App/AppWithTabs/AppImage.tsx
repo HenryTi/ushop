@@ -1,17 +1,12 @@
 import { Login, Logout, Register } from "tonwa-auth";
 import { LoginTop, Privacy } from "tonwa-image";
-import { AppPageStackContainer, AuthProvider } from "tonwa-page";
 
 export function AppLogin() {
-    return <AppPageStackContainer>
-        <Login loginTop={<LoginTop />} privacy={<Privacy />} withBack={false} />
-    </AppPageStackContainer>;
+    return <Login loginTop={<LoginTop />} privacy={<Privacy />} withBack={false} />;
 }
 
 export function AppRegister() {
-    return <AppPageStackContainer>
-        <Register loginTop={<LoginTop />} privacy={<Privacy />} />
-    </AppPageStackContainer>;
+    return <Register loginTop={<LoginTop />} privacy={<Privacy />} />;
 }
 
 export function AppLogout() {
@@ -21,7 +16,5 @@ export function AppLogout() {
     let resetAll = () => {
         alert('reset all');
     }
-    return <AppPageStackContainer>
-        <Logout onLogout={onLogout} resetAll={resetAll} />
-    </AppPageStackContainer>;
+    return <Logout onLogout={onLogout} resetAll={resetAll} />;
 }

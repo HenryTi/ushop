@@ -1,4 +1,4 @@
-import { Nav } from "tonwa-page";
+import { AppNav } from "tonwa-page";
 import { UserApi } from "./UserApi";
 //import { Nav } from "./Nav";
 //import { setReact, shallowReact } from "./Reactive";
@@ -26,7 +26,7 @@ export abstract class AppBase {
 
     //abstract get cUser(): CUser;
     abstract get userApi(): UserApi;
-    protected abstract get nav(): Nav;
+    protected abstract get nav(): AppNav;
 
     open(page: JSX.Element, afterClose?: () => void): void {
         this.nav.open(page);

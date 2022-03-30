@@ -1,4 +1,5 @@
 import { useNav, Page, UPage } from "tonwa-page"
+import { AppLogout } from "./AppImage";
 
 export function TrialPage1({ id }: { id: number }) {
     let nav = useNav();
@@ -11,7 +12,7 @@ export function TrialPage1({ id }: { id: number }) {
             {Array(50).fill(0).map((v, index) => <br key={index} />)}
             <div>
                 <button onClick={onClick}>show page</button>
-                <button onClick={() => nav.close()}>close me</button>
+                <button onClick={() => nav.tabNav.closeTab()}>close me</button>
             </div>
         </div>
     </UPage>
@@ -36,7 +37,7 @@ function TrialPage3() {
             <button onClick={() => nav.close()}>back</button>
         </div>
         <div>
-            <button onClick={() => nav.navigate('logout')}>logout</button>
+            <button onClick={() => nav.appNav.open(<AppLogout />)}>logout</button>
         </div>
     </Page>;
 }
