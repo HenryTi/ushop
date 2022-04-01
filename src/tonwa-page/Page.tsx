@@ -1,4 +1,3 @@
-import { useContext } from "react";
 import { FA } from "tonwa-react";
 import { useSnapshot } from "valtio";
 import { useNav } from "./nav";

@@ -1,11 +1,11 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter } from 'react-router-dom';
-import { NavView, start, TonwaReact } from "tonwa";
+import { TonwaReact } from "tonwa";
 import { CApp } from './CApp';
 import { appConfig } from './appConfig';
 import { AuthProvider } from 'tonwa-auth';
-import { AuthProviderContext } from 'tonwa-page';
+import { AppContainer, AuthProviderContext } from 'tonwa-page';
 import { App, AppRoot } from '../App';
 
 export async function startApp() {
@@ -22,9 +22,11 @@ export async function startApp() {
     await cApp.start(undefined);
     let authProvider = new AuthProvider();
     authProvider.setAuthApi(tonwa.net.userApi);
+    authProvider.subscribeOnLoginChanged(tonwa.onChangeLogin as any);
+    authProvider.loginChanged(tonwa.user);
 
     let uqApp = new App()
-    uqApp.init(cApp.uqs, tonwa.pageNav);
+    uqApp.init(cApp.uqs, tonwa.appNav);
     //app.appNav = appNav;
     uqApp.user = tonwa.user;
     uqApp.userApi = tonwa.net.centerApi;
@@ -45,7 +47,9 @@ export async function startApp() {
         <React.StrictMode>
             <BrowserRouter>
                 <AuthProviderContext.Provider value={authProvider}>
-                    <AppRoot uqApp={uqApp} />
+                    <AppContainer>
+                        <AppRoot uqApp={uqApp} />
+                    </AppContainer>
                 </AuthProviderContext.Provider>
             </BrowserRouter>
         </React.StrictMode>,

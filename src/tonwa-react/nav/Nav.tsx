@@ -414,7 +414,7 @@ export class Nav {
 
     setGuest(guest: Guest) {
         this.local.guest.set(guest);
-        this.net.setNetToken(0, guest.token);
+        this.net.setCenterToken(0, guest.token);
     }
 
     saveLocalUser() {
@@ -440,7 +440,7 @@ export class Nav {
         this.net.logoutApis();
         this.user = user;
         this.saveLocalUser();
-        this.net.setNetToken(user.id, user.token);
+        this.net.setCenterToken(user.id, user.token);
         this.clear();
 
         await this.onChangeLogin?.(this.user);

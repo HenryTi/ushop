@@ -14,7 +14,6 @@ export class AuthProvider implements IAuthProvider {
         let p = this.onLoginChangeds.findIndex(v => v === onLoginChanged);
         if (p < 0) {
             this.onLoginChangeds.push(onLoginChanged);
-            onLoginChanged(this.user);
         }
     }
     unsubscribeOnLoginChanged(onLoginChanged: OnLoginChanged) {

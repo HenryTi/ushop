@@ -8,3 +8,4 @@ export * from './AppContainer';
 export * from './AuthProvider';
 export * from './PageTabs';
 export * from './StackContainer';
+export * from './PageTemplate';

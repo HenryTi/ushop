@@ -1,4 +1,4 @@
-import { HttpChannel, UqHttpChannel } from './httpChannel';
+import { HttpChannel } from './httpChannel';
 import { ApiBase } from './apiBase';
 import { LocalMap } from '../tool';
 import { Net, PromiseValue } from './Net';
@@ -51,12 +51,11 @@ export class UqApi extends ApiBase {
             }
             let { url, token } = uqToken;
             this.token = token;
-            channel = new UqHttpChannel(this.net, url, token);
+            channel = new HttpChannel(this.net, url, token);
             channels[this.uq] = channel;
             for (let pv of arr) {
                 pv.resolve(channel);
             }
-
         });
     }
 

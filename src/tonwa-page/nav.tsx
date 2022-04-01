@@ -1,7 +1,9 @@
 import React, { useContext } from "react";
 import { NavigateOptions, To } from "react-router-dom";
+import { FA } from "tonwa-react";
 import { proxy, ref } from "valtio";
 import { AppNav, TabNav } from "./AppNav";
+import { UPage } from "./Page";
 
 export interface StackItem {
     key: string;
@@ -33,7 +35,29 @@ export class StackNav<T extends StackItem> {
         });
     }
 
-    open(page: JSX.Element, onClose?: () => boolean): void {
+    open(page: JSX.Element | (() => Promise<JSX.Element>), onClose?: () => boolean): void {
+        if (typeof (page) === 'function') {
+            let promise: Promise<JSX.Element> = page();
+            let isWaiting = false;
+            setTimeout(() => {
+                if (isWaiting === undefined) return;
+                this.open(<Waiting />);
+                isWaiting = true;
+            }, 100);
+            promise.then((pg) => {
+                if (isWaiting === true) {
+                    this.close();
+                }
+                isWaiting = undefined;
+                this.open(pg, onClose);
+                return;
+            });
+            return;
+        }
+        this.internalOpen(page, onClose);
+    }
+
+    private internalOpen(page: JSX.Element, onClose?: () => boolean): void {
         let pageItem = {
             key: String(++this.pageKeyNO),
             page, onClose,
@@ -49,7 +73,7 @@ export class StackNav<T extends StackItem> {
         alert('nav clear');
     }
 
-    private innerClose() {
+    protected innerClose() {
         let { stack } = this.data;
         let len = stack.length;
         if (len === 0) {
@@ -60,6 +84,14 @@ export class StackNav<T extends StackItem> {
         if (onClose?.() === false) return;
         stack.pop();
     }
+}
+
+function Waiting() {
+    return <UPage header="..." back="none" headerClassName="bg-secondary">
+        <div className="p-5 text-center">
+            <FA name="spinner" size="lg" className="text-info" spin={true} />
+        </div>
+    </UPage>;
 }
 
 export class Nav extends StackNav<StackItem> {
@@ -80,6 +112,16 @@ export class Nav extends StackNav<StackItem> {
         this.tabNav.openTab(tabItem);
     }
 
+    protected innerClose() {
+        super.innerClose();
+        if (this.data.stack.length > 0) return;
+        if (this.tabNav) {
+            this.tabNav.closeTab();
+        }
+        else {
+            this.appNav.close();
+        }
+    }
 }
 
 export const AppNavContext = React.createContext<AppNav>(undefined);

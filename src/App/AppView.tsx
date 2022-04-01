@@ -1,6 +1,6 @@
 import React, { CSSProperties, useEffect } from "react";
 import { } from "react-router-dom";
-import { Link, Routes, Route } from "react-router-dom";
+import { Link } from "react-router-dom";
 //import { RoutedTabs, NavTab } from "react-router-tabs";
 import { proxy, useSnapshot } from "valtio";
 

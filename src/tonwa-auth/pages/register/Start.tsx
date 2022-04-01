@@ -1,6 +1,6 @@
-import { FunctionComponent, useContext, useRef } from 'react';
+import { FunctionComponent, useRef } from 'react';
 import { Schema, UiSchema, UiTextItem, UiButton, Form, Context, StringSchema } from 'tonwa-react';
-import { AuthProviderContext, UPage, useNav } from 'tonwa-page';
+import { UPage, useAuth, useNav } from 'tonwa-page';
 import { getSender } from '../tools';
 import { Verify } from './Verify';
 import { Pass } from './Pass';
@@ -22,7 +22,7 @@ interface Props extends StartProps {
 
 function Start({ header, accountLable, privacy, loginTop, Password, accountError, sendVerifyOem }: Props) {
     let nav = useNav();
-    let { userApi } = useContext(AuthProviderContext);
+    let { userApi } = useAuth();
     let { current: pass } = useRef({} as Pass);
     let schema: Schema = [
         { name: 'user', type: 'string', required: true, maxLength: 100 } as StringSchema,

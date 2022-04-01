@@ -17,7 +17,7 @@ export class AppNav extends StackNav<StackItem> {
         error: undefined,
     });
     navigateFunc: NavigateFunction;
-    onLoginChanged = (user: User) => {
+    onLoginChanged = async (user: User) => {
         if (user) {
             this.response.user = user;
         }

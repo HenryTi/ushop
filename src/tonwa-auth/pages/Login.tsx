@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import { AuthProviderContext, UPage, useNav, User } from 'tonwa-page';
+import { UPage, useAuth, useNav, User } from 'tonwa-page';
 import { Form, Schema, UiSchema, UiTextItem, UiPasswordItem, Context, UiButton, StringSchema } from "tonwa-react";
 import { Forget, Register } from './register/Start';
 import { getSender } from './tools';
@@ -19,8 +18,8 @@ interface Props {
 
 export function Login({ withBack, loginTop, privacy, callback }: Props) {
 	let nav = useNav();
-	let authProvider = useContext(AuthProviderContext);
-	let { userApi, guest } = authProvider;
+	let auth = useAuth();
+	let { userApi, guest } = auth;
 	let onLogin = async (un: string, pwd: string): Promise<boolean> => {
 		let user = await userApi.login({
 			user: un,
@@ -31,7 +30,7 @@ export function Login({ withBack, loginTop, privacy, callback }: Props) {
 		if (user === undefined) return false;
 		console.log("onLoginSubmit: user=%s pwd:%s", user.name, user.token);
 		nav.appNav.response.user = user;
-		authProvider.loginChanged(user);
+		auth.loginChanged(user);
 		await callback?.(user);
 		return true;
 	}

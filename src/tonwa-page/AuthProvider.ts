@@ -1,13 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 
 export interface User {
     id: number;
     name: string;
     nick?: string;
     icon?: string;
+    token?: string;
 }
 
-export type OnLoginChanged = (user: User) => void;
+export type OnLoginChanged = (user: User) => Promise<void>;
 
 export interface RegisterParameter {
     nick: string,
@@ -45,3 +46,7 @@ export interface AuthProvider {
 }
 
 export const AuthProviderContext = React.createContext<AuthProvider>(undefined);
+
+export function useAuth() {
+    return useContext(AuthProviderContext);
+}

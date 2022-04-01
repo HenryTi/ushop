@@ -161,7 +161,7 @@ export abstract class CAppBase<U> extends ControllerWithWeb {
 	}
 	protected async afterStart(): Promise<void> {
 		this.tonwa.resolveRoute();
-		this.tonwa.onChangeLogin = (user: User) => this.onChangeLogin(user);
+		//this.tonwa.onChangeLogin = (user: User) => this.onChangeLogin(user);
 		this.onChangeLogin(this.user);
 	}
 

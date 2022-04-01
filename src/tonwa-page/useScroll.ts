@@ -29,7 +29,7 @@ export function useScroll() {
             window.removeEventListener('resize', resize);
             window.removeEventListener('DOMSubtreeModified', resize);
         }
-    }, []);
+    }, [inScroll]);
     return divRef;
 }
 

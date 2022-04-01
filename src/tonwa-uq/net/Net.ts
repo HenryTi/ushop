@@ -3,12 +3,12 @@ import { UqTokens } from "./UqTokens";
 import { CenterApi } from "./centerApi";
 import { CallCenterApi, UqTokenApi } from "./uqApi";
 import { UserApi } from "./userApi";
-import { HttpChannel, CenterHttpChannel } from './httpChannel';
+import { HttpChannel } from './httpChannel';
 import { GuestApi } from "./guestApi";
 import { MessageHub } from "./messageHub";
 import { WsBridge, WSChannel } from "./wsChannel";
 import { Host, resUrlFromHost } from './host';
-import { LocalDb } from "tonwa-uq";
+import { LocalDb } from "../tool";
 
 export interface PromiseValue<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
@@ -19,9 +19,11 @@ export interface NetProps {
     unit: number;
     testing: boolean;
     buildingUq?: boolean;           // default false
+    localDb: LocalDb;
+    createObservableMap(): Map<number, any>;
 }
 
-export abstract class Net {
+export class Net {
     logout() {
         throw new Error('Method not implemented.');
     }
@@ -57,7 +59,8 @@ export abstract class Net {
     constructor(props: NetProps) {
         this.props = props;
         this.isDevelopment = process.env.NODE_ENV === 'development';
-        this.localDb = this.createLocalDb();
+        this.localDb = this.props.localDb;
+        this.createObservableMap = this.props.createObservableMap;
         this.centerApi = new CenterApi(this, 'tv/');
         this.uqTokens = new UqTokens(this);
         this.userApi = new UserApi(this, 'tv/');
@@ -69,8 +72,8 @@ export abstract class Net {
         this.host = Host.createHost(this.isDevelopment);
     }
 
-    abstract createLocalDb(): LocalDb;
-    abstract createObservableMap(): Map<number, any>;
+    //abstract createLocalDb(): LocalDb;
+    createObservableMap: () => Map<number, any>;
 
     logoutApis() {
         this.uqTokens.logoutUqTokens();
@@ -82,25 +85,28 @@ export abstract class Net {
         this.centerChannel = undefined;
     }
 
-    setCenterToken(userId: number, t?: string) {
+    setCenterToken(userId: number, token: string) {
         this.loginedUserId = userId;
-        this.centerToken = t;
+        this.centerToken = token;
         this.centerChannel = undefined;
+        WSChannel.setCenterToken(token);
     }
 
-    getCenterChannel(): HttpChannel {
-        if (this.centerChannel !== undefined) return this.centerChannel;
-        return this.centerChannel = new CenterHttpChannel(this, this.centerHost, this.centerToken);
-    }
-
+    /*
     setNetToken(userId: number, token: string) {
         this.setCenterToken(userId, token);
         WSChannel.setCenterToken(token);
     }
+    */
 
-    clearNetToken() {
+    clearCenterToken() {
         this.setCenterToken(0, undefined);
         WSChannel.setCenterToken(undefined);
+    }
+
+    getCenterChannel(): HttpChannel {
+        if (this.centerChannel !== undefined) return this.centerChannel;
+        return this.centerChannel = new HttpChannel(this, this.centerHost, this.centerToken);
     }
 
     resUrlFromHost(host: string): string {

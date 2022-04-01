@@ -1,5 +1,4 @@
-import { useContext } from 'react';
-import { AuthProviderContext, RegisterParameter, UPage, useNav } from 'tonwa-page';
+import { RegisterParameter, UPage, useAuth, useNav } from 'tonwa-page';
 import { Schema, UiSchema, UiPasswordItem, UiButton, Form, Context, StringSchema } from 'tonwa-react';
 import { Pass } from './Pass';
 import { ForgetSuccess, RegisterSuccess } from './Success';
@@ -66,7 +65,7 @@ function Password({ header, submitCaption, account, onPasswordSubmit }: Props) {
 
 export function RegisterPassword({ pass }: { pass: Pass; }) {
 	let nav = useNav();
-	let { userApi } = useContext(AuthProviderContext);
+	let { userApi } = useAuth();
 	let { type, account, verify } = pass;
 	let onPasswordSubmit = async (pwd: string): Promise<string> => {
 		pass.password = pwd;
@@ -117,7 +116,7 @@ export function RegisterPassword({ pass }: { pass: Pass; }) {
 
 export function ForgetPassword({ pass }: { pass: Pass; }) {
 	let nav = useNav();
-	let { userApi } = useContext(AuthProviderContext);
+	let { userApi } = useAuth();
 	let { account, password, verify, type } = pass;
 	let onPasswordSubmit = async (pwd: string): Promise<string> => {
 		pass.password = pwd;

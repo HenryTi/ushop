@@ -1,7 +1,5 @@
-import { FA } from "tonwa-react";
-import { useNav } from "./nav";
 import { Error } from "./Error";
-import { PageBackProps, PageFooterProps, PageProps, PageTemplateProps } from "./PageProps";
+import { PageFooterProps, PageProps, PageTemplateProps } from "./PageProps";
 import { usePageTemplate } from "./PageTemplate";
 import "./tonwa-page.css";
 import { Back } from "./BackTemplate";

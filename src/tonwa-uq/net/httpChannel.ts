@@ -19,16 +19,16 @@ export async function httpPost(url:string, params?:any):Promise<any> {
 
 const methodsWithBody = ['POST', 'PUT'];
 
-export abstract class HttpChannel {
+export class HttpChannel {
     private timeout: number;
     protected net: Net;
     protected hostUrl: string;
-    protected apiToken: string;
+    protected authToken: string;
 
-    constructor(net: Net, hostUrl: string, apiToken: string) {
+    constructor(net: Net, hostUrl: string, authToken: string) {
         this.net = net;
         this.hostUrl = hostUrl;
-        this.apiToken = apiToken;
+        this.authToken = authToken;
         this.timeout = net.isDevelopment === true ? 30000 : 50000;
     }
 
@@ -156,7 +156,13 @@ export abstract class HttpChannel {
         };
     }
 
-    protected abstract innerFetch(url: string, options: any): Promise<any>;
+    //protected abstract innerFetch(url: string, options: any): Promise<any>;
+    protected async innerFetch(url: string, options: any): Promise<any> {
+        let u = this.hostUrl + url;
+        return new Promise<any>(async (resolve, reject) => {
+            await this.fetch(u, options, resolve, reject);
+        });
+    }
 
     async callFetch(url: string, method: string, body: any): Promise<any> {
         let options = this.buildOptions();
@@ -204,14 +210,14 @@ export abstract class HttpChannel {
         if (culture) lang += '-' + culture;
         //headers.append('Accept-Language', lang);
         headers['Accept-Language'] = lang;
-        if (this.apiToken) {
+        if (this.authToken) {
             //headers.append('Authorization', this.apiToken); 
-            headers['Authorization'] = this.apiToken;
+            headers['Authorization'] = this.authToken;
         }
         return headers;
     }
 }
-
+/*
 export class CenterHttpChannel extends HttpChannel {
     protected async innerFetch(url: string, options: any): Promise<any> {
         let u = this.hostUrl + url;
@@ -229,3 +235,4 @@ export class UqHttpChannel extends HttpChannel {
         });
     }
 }
+*/

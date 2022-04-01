@@ -1,7 +1,7 @@
 import { makeObservable, observable, ObservableMap } from "mobx";
 import { LocalDb, Net, NetProps } from "tonwa-uq";
 import { env, Nav, Tonwa } from "tonwa-core";
-import { AppNav, Nav as PageNav } from "tonwa-page";
+import { AppNav } from "tonwa-page";
 import { Page } from './components';
 
 import 'font-awesome/css/font-awesome.min.css';
@@ -13,7 +13,7 @@ import { createLogin, showForget, showRegister } from './components/login';
 import { NavView } from './nav';
 
 export class TonwaReact extends Tonwa {
-    pageNav: AppNav;
+    appNav: AppNav;
     navView: NavView;
 
     constructor() {
@@ -25,15 +25,17 @@ export class TonwaReact extends Tonwa {
     }
 
     setPageNav(pageNav: AppNav) {
-        this.pageNav = pageNav;
+        this.appNav = pageNav;
     }
 
     createNet(): Net {
         let props: NetProps = {
             unit: env.unit,
             testing: env.testing,
+            localDb: new LocalStorageDb(),
+            createObservableMap: () => new ObservableMap(),
         }
-        return new NetInReact(props);
+        return new Net(props);
     }
 
     createObservableMap<K, V>(): Map<K, V> {
@@ -45,7 +47,10 @@ export class TonwaReact extends Tonwa {
         this.navView = navView;
     }
 
-    get nav(): Nav<JSX.Element> { return this.navView };
+    get nav(): Nav<JSX.Element> {
+        //return this.navView 
+        return this.appNav as any;
+    };
 
     renderNavView(onLogined: (isUserLogin?: boolean) => Promise<void>,
         notLogined?: () => Promise<void>,
@@ -182,7 +187,7 @@ class LocalStorageDb extends LocalDb {
         localStorage.removeItem(key);
     }
 }
-
+/*
 class NetInReact extends Net {
     createLocalDb(): LocalDb {
         return new LocalStorageDb();
@@ -191,3 +196,4 @@ class NetInReact extends Net {
         return new ObservableMap();
     }
 }
+*/

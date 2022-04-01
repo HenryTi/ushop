@@ -4,13 +4,13 @@ import { PageBackProps } from "./PageProps";
 
 export function Back(props: PageBackProps) {
     let { back } = props;
-    let pageNav = useNav();
+    let nav = useNav();
     function onClickBack() {
-        if (pageNav.data.stack.length === 1) {
-            pageNav.appNav.close(); //.navigate(-1 as any);
+        if (nav.data.stack.length === 1) {
+            nav.appNav.close(); //.navigate(-1 as any);
         }
         else {
-            pageNav.close();
+            nav.close();
         }
     }
     function renderBack(iconName: string) {
@@ -20,12 +20,13 @@ export function Back(props: PageBackProps) {
     }
     switch (back) {
         default:
-            if (pageNav.data.stack.length === 1) {
-                return <div className="pe-3" />;
-            }
-            return renderBack('angle-left');
-        case 'back': return renderBack('angle-left');
+        case 'back': break;
         case 'close': return renderBack('close');
         case 'none': return null;
     }
+    if (nav.data.stack.length > 1
+        || (!nav.tabNav && nav.appNav.data.stack.length > 1)) {
+        return renderBack('angle-left');
+    }
+    return <div className="pe-3" />;
 }

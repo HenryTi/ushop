@@ -4,14 +4,6 @@ import { MDraft } from "tonwa-uq";
 export class CTest {
     readonly mDraft: MDraft;
 
-    constructor() {
-        /*
-        let { BzWorkshop } = app.uqs;
-        let { Draft, IxDraft } = BzWorkshop;
-        this.mDraft = new MDraft(BzWorkshop, Draft, IxDraft);
-        */
-    }
-
     async load() {
         let ret = await this.mDraft.load(1176521146368);
         alert(JSON.stringify(ret));

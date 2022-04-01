@@ -11,7 +11,7 @@ export function AppRegister() {
 
 export function AppLogout() {
     let onLogout = async () => {
-        alert('logout');
+        //alert('logout');
     }
     let resetAll = () => {
         alert('reset all');

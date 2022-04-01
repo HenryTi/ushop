@@ -1,8 +1,4 @@
-import { useContext } from "react";
-import { AuthProviderContext, Page, useNav } from "tonwa-page";
-//import { CLogin } from "./CLogin";
-//import { VPage } from "../vm";
-//import { CenterAppApi } from "tonwa-uq";
+import { Page, useAuth, useNav } from "tonwa-page";
 
 const waitingTime = '一小时';
 
@@ -87,14 +83,14 @@ export function UserQuit() {
 
 function QuitConfirm() {
     let nav = useNav();
-    let authProvider = useContext(AuthProviderContext);
+    let auth = useAuth();
     let note = <>
         账号注销后，如果在{waitingTime}内容重新登录账号，账号自动恢复。
         {waitingTime}之后，账号绑定手机、邮件等相关信息将被释放。账号无法将登录。<br />
         请再次确认！
     </>;
     let onClickButton2 = async () => {
-        await authProvider.userApi.userQuit();
+        await auth.userApi.userQuit();
         //let centerAppApi = new CenterAppApi(this.controller.net, 'tv/');
         //await centerAppApi.userQuit();
         nav.open(<QuitDone />);
@@ -106,14 +102,14 @@ function QuitConfirm() {
 }
 
 function QuitDone() {
-    let authProvider = useContext(AuthProviderContext);
+    let auth = useAuth();
     let note = <>
         账号将在{waitingTime}后彻底注销。<br />
         如果在{waitingTime}内容重新登录账号，注销操作自动取消。
         {waitingTime}之后，账号绑定手机、邮件等相关信息将被释放。账号无法将登录。
     </>;
     let onClickButton1 = () => {
-        authProvider.loginChanged(undefined);
+        auth.loginChanged(undefined);
     }
     return <Quit header="注销已账号" note={note} back="none">
         <Button1 onClick={onClickButton1} caption="退出" />

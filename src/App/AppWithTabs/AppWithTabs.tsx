@@ -59,22 +59,6 @@ const tabCompleted = {
 const tabsArr = [tabDraft, tabInProgress, tabCompleted];
 let tabNo = 0;
 
-function AppWithTabsContent() {
-    let appNav = useAppNav();
-    let { user } = useSnapshot(appNav.response);
-    if (!user) {
-        return <AppLogin />;
-    }
-    return <>
-        <TopBar />
-        <div className="d-flex flex-grow-1 overflow-hidden">
-            <SideBar />
-            <AppTabs pages={tabsArr} active={tabDraft} />
-        </div>
-        <BottomBar />
-    </>;
-}
-
 export function AppWithTabs() {
     let appNav = useAppNav();
     let { user } = useSnapshot(appNav.response);

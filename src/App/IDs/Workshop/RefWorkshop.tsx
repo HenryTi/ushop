@@ -1,5 +1,5 @@
-import { openPage } from "tonwa-controller";
 import { PIDList } from "tonwa-controller";
+import { useNav } from "tonwa-page";
 import { Workshop } from "uq-app/uqs/BzWorkshop";
 import { useUqApp } from "../../App";
 import { IconCommand } from "../../tool";
@@ -8,6 +8,7 @@ import { useUqWorkshop } from "./UqWorkshop";
 
 export function RefWorkshop() {
     let app = useUqApp();
+    let nav = useNav();
     let caption = 'Workshop';
     let icon = 'book';
     let iconClass: string = 'text-warning';
@@ -17,12 +18,13 @@ export function RefWorkshop() {
         ID: BzWorkshop.Workshop,
     });
     let onClick = () => {
-        openPage(async () => {
+        nav.open(async () => {
             let list = await uqWorkshop.loadList();
             let onAdd = async () => {
+                alert('Ref Workshop on Add');
             };
             let onEditItem = (item: Workshop): void => {
-
+                alert('Ref Workshop on Edit');
             };
             let renderIDValue = (item: Workshop): JSX.Element => {    // renderItemInList
                 return renderWorkshopItem(item);

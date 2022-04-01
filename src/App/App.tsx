@@ -12,8 +12,8 @@ import { AutoRun } from "./tool";
 import { Db } from './db';
 import { PMain } from './PMain';
 import { tonwa } from 'tonwa-core';
-//import { AppRoutes } from './AppWithPageStack';
-import { AppRoutes } from './AppWithTabs';
+import { AppRoutes } from './AppWithPageStack';
+//import { AppRoutes } from './AppWithTabs';
 import { TonwaReact } from 'tonwa-react';
 
 type Roles = { [role in Role]: number };
@@ -158,7 +158,7 @@ export function useUqApp() {
 
 export function AppRoot({ uqApp }: { uqApp: App }) {
     let appNav = useAppNav();
-    (tonwa as TonwaReact).setPageNav(appNav);
+    //(tonwa as TonwaReact).setPageNav(appNav);
     uqApp.setNav(appNav);
     return <UqAppContext.Provider value={uqApp}>
         <AppRoutes />

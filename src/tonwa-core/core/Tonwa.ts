@@ -291,7 +291,7 @@ export abstract class Tonwa extends TonwaBase {
 
 	setGuest(guest: Guest) {
 		this.local.guest.set(guest);
-		this.net.setNetToken(0, guest.token);
+		this.net.setCenterToken(0, guest.token);
 	}
 
 	saveLocalUser() {
@@ -314,13 +314,13 @@ export abstract class Tonwa extends TonwaBase {
 	}
 
 	private async internalLogined(user: User, callback: (user: User) => Promise<void>, isUserLogin: boolean) {
+		if (!user) return;
 		this.net.logoutApis();
 		this.user = user;
 		this.saveLocalUser();
-		this.net.setNetToken(user.id, user.token);
+		this.net.setCenterToken(user.id, user.token);
 		this.nav?.clear();
 
-		await this.onChangeLogin?.(this.user);
 		if (callback !== undefined) {
 			await callback(user);
 		}
@@ -332,7 +332,14 @@ export abstract class Tonwa extends TonwaBase {
 		}
 	}
 
-	onChangeLogin: (user: User) => Promise<void>;
+	onChangeLogin = async (user: User): Promise<void> => {
+		if (user) {
+			await this.internalLogined(user, undefined, false);
+		}
+		else {
+			await this.logout();
+		}
+	}
 
 	// 缓冲登录
 	async logined(user: User, callback?: (user: User) => Promise<void>) {
@@ -355,12 +362,12 @@ export abstract class Tonwa extends TonwaBase {
 		this.net.logoutApis();
 		let guest = this.local.guest.get();
 		this.net.setCenterToken(0, guest && guest.token);
-		this.nav.clear();
+		this.nav?.clear();
 		if (callback === undefined)
 			await this.start();
 		else
 			await callback();
-		this.onChangeLogin?.(undefined);
+		//this.onChangeLogin?.(undefined);
 	}
 
 

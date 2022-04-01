@@ -5,7 +5,7 @@ import { start } from "tonwa";
 import { res } from "./res";
 import { setUI } from "uq-app/uqs";
 import { appConfig } from "./appConfig";
-import { CAppBase, TonwaReact } from "tonwa-react";
+import { CAppBase } from "tonwa-react";
 import { UQs } from './uqs';
 
 export class CApp extends CAppBase<UQs> {
@@ -24,7 +24,7 @@ export class CApp extends CAppBase<UQs> {
 		this.setRes(res);
 		setUI(this.uqs);
 
-		let tonwa = this.getTonwa();
+		//let tonwa = this.getTonwa();
 		//let appNav = new AppNav(tonwa);
 		//let app = new App(this.uqs);
 		// this.app = app;
