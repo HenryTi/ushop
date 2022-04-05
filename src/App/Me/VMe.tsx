@@ -5,7 +5,7 @@ import { tonwa } from "tonwa-core";
 import { PEditMe } from "./PEditMe";
 import { t } from "./t";
 import { VMeAdmin } from "./VMeAdmin";
-import { useNav } from "tonwa-page";
+import { useNav } from "tonwa-com";
 
 export function VMe() {
     let nav = useNav();

@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { setPageTemplate, appPageStackTemplate } from "tonwa-page";
+import { setPageTemplate, appPageStackTemplate } from "tonwa-com";
 import { AppLogin, AppRegister } from "./AppImage";
 import { AppWithPageStack } from './AppWithPageStack';
 

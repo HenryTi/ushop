@@ -1,4 +1,4 @@
-import { UPage, useNav } from "tonwa-page";
+import { UPage, useNav } from "tonwa-com";
 import { Form, ItemSchema, UiSchema, StringSchema, UiPasswordItem, Context, ButtonSchema, UiButton } from "tonwa-react";
 
 type OnChange = (orgPassword: string, newPassword: string) => Promise<boolean>;

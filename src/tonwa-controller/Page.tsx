@@ -1,7 +1,7 @@
 import { ReactNode } from "react";
 import { Scroller, TabsProps, LMR, FA } from "tonwa-react";
 import { useSnapshot } from "valtio";
-import { Page as PageBase } from "tonwa-page";
+import { Page as PageBase } from "tonwa-com";
 import { getAppBase } from "./AppBase";
 
 interface PageProps {

@@ -1,0 +1,103 @@
+import React, { useContext, useRef } from "react";
+import { FA } from "../coms";
+import { Form, SubmitButton } from "../form";
+import { Page, useNav } from "../page";
+import { Band, BandContainerContext, BandContainerProps, BandFieldErrors, BandMemos, BandTemplateProps, OnValuesChanged, useBandContainer, VBandContainerContext } from "../band";
+
+interface DetailProps extends BandContainerProps {
+    onValuesChanged?: OnValuesChanged;
+}
+
+class DetailContext extends BandContainerContext<DetailProps> {
+    get isDetail(): boolean {
+        return true;
+    }
+    protected async internalValuesChanged(values: { name: string; value: any; preValue: any; }[]) {
+        await this.props.onValuesChanged?.(values);
+    }
+}
+
+const DetailContextContainer = React.createContext<DetailContext>(undefined);
+export function useDetail() {
+    return useContext(DetailContextContainer);
+}
+
+export function Detail(props: DetailProps) {
+    let { className, children, BandTemplate } = props;
+    BandTemplate = BandTemplate ?? DefaultBandTemplate;
+    let { current: detailContext } = useRef(new DetailContext({ ...props, BandTemplate }));
+    return <DetailContextContainer.Provider value={detailContext}>
+        <VBandContainerContext.Provider value={detailContext}>
+            <div className={className}>
+                {children}
+            </div>
+        </VBandContainerContext.Provider>
+    </DetailContextContainer.Provider>;
+}
+
+function DefaultBandTemplate(props: BandTemplateProps) {
+    let nav = useNav();
+    let bandContainer = useBandContainer();
+    let { label, children, errors, memos, onEdit, content } = props;
+    let vLabel: any;
+    let cnContent = 'col-sm-10 d-flex pe-0';
+    if (label) {
+        vLabel = <label className="col-sm-2 col-form-label text-sm-end tonwa-bg-gray-1 border-end"><b>{label}</b></label>;
+    }
+    else {
+        cnContent += ' offset-sm-2';
+    }
+    onEdit = onEdit ?? async function () {
+        nav.open(<ValueEditPage label={label}
+            content={content}
+            values={{ ...bandContainer.valueResponse.values }}
+            onValuesChanged={bandContainer.onValuesChanged}
+        />);
+    }
+    return <div className="mb-3 row bg-white">
+        {vLabel}
+        <div className={cnContent}>
+            <div className="flex-grow-1">
+                {children}
+                <BandFieldErrors errors={errors} />
+                <BandMemos memos={memos} />
+            </div>
+            <div onClick={onEdit}
+                className="px-3 align-self-stretch d-flex align-items-center cursor-pointer"
+            >
+                <FA name="pencil-square-o" className="text-primary" />
+            </div>
+        </div>
+    </div>;
+}
+
+interface ValueEditPageProps {
+    label: string | JSX.Element;
+    content: React.ReactNode;
+    values: any;
+    onValuesChanged: (values: any) => Promise<void>;
+}
+function ValueEditPage({ content, label, values, onValuesChanged }: ValueEditPageProps) {
+    let nav = useNav();
+    async function onSubmit(data: any) {
+        await onValuesChanged(data);
+        nav.close();
+    }
+    return <Page header={label}>
+        <Form className="container px-3 py-3" values={values} BandTemplate={ValueEditBandTemplate}>
+            <Band>
+                {content}
+            </Band>
+            <SubmitButton onSubmit={onSubmit} className="btn btn-primary">保存</SubmitButton>
+        </Form>
+    </Page>;
+}
+
+function ValueEditBandTemplate(props: BandTemplateProps) {
+    let { label, children, errors, memos, onEdit, content } = props;
+    return <div className="bg-white mb-3">
+        {children}
+        <BandFieldErrors errors={errors} />
+        <BandMemos memos={memos} />
+    </div>;
+}

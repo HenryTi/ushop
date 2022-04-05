@@ -1,1 +1,1 @@
-export * from './RefWorkshop';
+export * from './WorkshopLink';

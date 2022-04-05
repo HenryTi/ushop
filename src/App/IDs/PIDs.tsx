@@ -2,13 +2,13 @@ import { openPage, Page, VPage } from "tonwa-controller";
 import { IconCommand } from "../tool";
 import { PTag } from "../Tag";
 import { RefClient, RefStaff } from "./Person";
-import { RefWorkshop } from "./Workshop";
+import { WorkshopLink } from "./Workshop";
 
 export function PIDs() {
     // let { cWorkshop } = this.controller;
     return <Page header="Items">
         <div>
-            <RefWorkshop />
+            <WorkshopLink />
             <RefClient />
             <RefStaff />
             <IconCommand caption="Tags admin" icon="tag" iconClass="text-danger"

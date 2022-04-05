@@ -1,4 +1,4 @@
-import { AuthApi, AuthProvider as IAuthProvider, OnLoginChanged, User } from "tonwa-page";
+import { AuthApi, AuthProvider as IAuthProvider, OnLoginChanged, User } from "tonwa-com";
 
 export class AuthProvider implements IAuthProvider {
     private readonly onLoginChangeds: OnLoginChanged[] = [];

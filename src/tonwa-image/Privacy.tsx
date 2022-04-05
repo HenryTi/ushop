@@ -1,5 +1,5 @@
 import { MouseEvent } from "react";
-import { UPage, useNav } from "tonwa-page";
+import { UPage, useNav } from "tonwa-com";
 
 export function Privacy() {
     let nav = useNav();

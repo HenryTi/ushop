@@ -1,6 +1,6 @@
 import { FunctionComponent, useRef } from 'react';
 import { Schema, UiSchema, UiTextItem, UiButton, Form, Context, StringSchema } from 'tonwa-react';
-import { UPage, useAuth, useNav } from 'tonwa-page';
+import { UPage, useAuth, useNav } from 'tonwa-com';
 import { getSender } from '../tools';
 import { Verify } from './Verify';
 import { Pass } from './Pass';

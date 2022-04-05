@@ -6,7 +6,7 @@ import { TabHome } from "./Home";
 import { PIDs } from "./IDs";
 //import { VMe } from "./Me/VMe";
 import { PActs } from "./Acts";
-import { Page, PageTabs, Tab, useNav } from "tonwa-page";
+import { Page, PageTabs, Tab, useNav } from "tonwa-com";
 import { FA } from "tonwa-react";
 
 /*

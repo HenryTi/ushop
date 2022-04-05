@@ -1,7 +1,7 @@
 import { makeObservable, observable, ObservableMap } from "mobx";
 import { LocalDb, Net, NetProps } from "tonwa-uq";
 import { env, Nav, Tonwa } from "tonwa-core";
-import { AppNav } from "tonwa-page";
+import { AppNav } from "tonwa-com";
 import { Page } from './components';
 
 import 'font-awesome/css/font-awesome.min.css';

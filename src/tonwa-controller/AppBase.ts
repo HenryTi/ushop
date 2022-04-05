@@ -1,4 +1,4 @@
-import { AppNav } from "tonwa-page";
+import { AppNav } from "tonwa-com";
 import { UserApi } from "./UserApi";
 //import { Nav } from "./Nav";
 //import { setReact, shallowReact } from "./Reactive";

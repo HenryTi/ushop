@@ -1,7 +1,7 @@
 import React, { useContext } from 'react';
 import { User } from 'tonwa-uq';
 import { AppBase, openPage, UqTagProps, UserApi } from "tonwa-controller";
-import { AppNav, useAppNav } from "tonwa-page";
+import { AppContainer, AppNav, useAppNav } from "tonwa-com";
 import { UQs } from "uq-app";
 import { Role } from "uq-app/uqs/BzWorkshop";
 //import { Acts } from "./Acts";
@@ -161,6 +161,8 @@ export function AppRoot({ uqApp }: { uqApp: App }) {
     //(tonwa as TonwaReact).setPageNav(appNav);
     uqApp.setNav(appNav);
     return <UqAppContext.Provider value={uqApp}>
-        <AppRoutes />
+        <AppContainer>
+            <AppRoutes />
+        </AppContainer>
     </UqAppContext.Provider>;
 }

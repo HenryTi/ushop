@@ -1,5 +1,5 @@
 import { useSnapshot } from "valtio";
-import { AppTabs, useNav, useAppNav, UPage, TabNav, useTabNav, AppTabsContainer } from 'tonwa-page';
+import { AppTabs, useNav, useAppNav, UPage, TabNav, useTabNav, AppTabsContainer } from 'tonwa-com';
 import { TrialPage1 } from './TrialPage1';
 import { AppLogin } from "./AppImage";
 

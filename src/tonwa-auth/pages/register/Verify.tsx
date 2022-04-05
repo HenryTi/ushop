@@ -1,5 +1,5 @@
 import { Schema, UiSchema, UiTextItem, UiButton, Form, Context, NumSchema } from 'tonwa-react';
-import { Page } from "tonwa-page";
+import { Page } from "tonwa-com";
 import { Pass } from './Pass';
 
 type OnVerify = (verify: string) => Promise<number>;

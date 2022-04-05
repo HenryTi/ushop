@@ -1,4 +1,4 @@
-import { Page, useAuth, useNav } from "tonwa-page";
+import { Page, useAuth, useNav } from "tonwa-com";
 
 export function Logout({ onLogout, resetAll }: { onLogout: () => Promise<void>; resetAll: () => void; }) {
 	let nav = useNav();

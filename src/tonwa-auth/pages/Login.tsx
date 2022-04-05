@@ -1,4 +1,4 @@
-import { UPage, useAuth, useNav, User } from 'tonwa-page';
+import { UPage, useAuth, useNav, User } from 'tonwa-com';
 import { Form, Schema, UiSchema, UiTextItem, UiPasswordItem, Context, UiButton, StringSchema } from "tonwa-react";
 import { Forget, Register } from './register/Start';
 import { getSender } from './tools';

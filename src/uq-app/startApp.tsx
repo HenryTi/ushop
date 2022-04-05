@@ -5,7 +5,7 @@ import { TonwaReact } from "tonwa";
 import { CApp } from './CApp';
 import { appConfig } from './appConfig';
 import { AuthProvider } from 'tonwa-auth';
-import { AppContainer, AuthProviderContext } from 'tonwa-page';
+import { AuthProviderContext } from 'tonwa-com';
 import { App, AppRoot } from '../App';
 
 export async function startApp() {
@@ -47,9 +47,7 @@ export async function startApp() {
         <React.StrictMode>
             <BrowserRouter>
                 <AuthProviderContext.Provider value={authProvider}>
-                    <AppContainer>
-                        <AppRoot uqApp={uqApp} />
-                    </AppContainer>
+                    <AppRoot uqApp={uqApp} />
                 </AuthProviderContext.Provider>
             </BrowserRouter>
         </React.StrictMode>,

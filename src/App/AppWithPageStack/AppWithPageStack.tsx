@@ -1,5 +1,5 @@
 import { PMain } from "../PMain";
-import { Page, useNav } from "tonwa-page";
+import { Page, useNav } from "tonwa-com";
 import { useSnapshot } from "valtio";
 import { tonwa } from "tonwa-core";
 import { TonwaReact } from "tonwa-react";

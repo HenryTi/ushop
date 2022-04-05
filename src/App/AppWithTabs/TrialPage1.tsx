@@ -1,4 +1,4 @@
-import { useNav, Page, UPage, useAuth } from "tonwa-page"
+import { useNav, Page, UPage, useAuth } from "tonwa-com"
 import { AppLogout } from "./AppImage";
 
 export function TrialPage1({ id }: { id: number }) {

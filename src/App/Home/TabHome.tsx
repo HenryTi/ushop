@@ -1,10 +1,9 @@
-import { FA } from "tonwa";
-import { Page, proxy } from "tonwa-controller";
-//import { Tick } from "./CHome";
 import logo from '../../logo.svg';
 import '../../App.css';
-import { VTest } from "./VTest";
+import { TestView } from "./TestView";
 import { useEffect } from "react";
+import { proxy } from 'valtio';
+import { FA, Page } from 'tonwa-com';
 
 /*
 interface Props {
@@ -65,7 +64,7 @@ export function TabHome() {
 					开心
 				</div>
 			</header>
-			<VTest tick={tick} />
+			<TestView tick={tick} />
 			<ul className="text-start my-3 me-3">
 				{items.map((v, index) => <li key={index} className="my-2">{v}</li>)}
 			</ul>

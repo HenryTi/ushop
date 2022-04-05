@@ -1,5 +1,5 @@
 import { Tonwa } from "tonwa-core";
-import { Nav } from "tonwa-page";
+import { Nav } from "tonwa-com";
 import { Nav as ControlNav } from "tonwa-controller";
 import { start } from "tonwa";
 import { res } from "./res";

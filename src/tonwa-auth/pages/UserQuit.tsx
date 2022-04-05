@@ -1,4 +1,4 @@
-import { Page, useAuth, useNav } from "tonwa-page";
+import { Page, useAuth, useNav } from "tonwa-com";
 
 const waitingTime = '一小时';
 

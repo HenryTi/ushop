@@ -1,5 +1,5 @@
 import { Route, Routes } from "react-router-dom";
-import { appTabsTemplate, setPageTemplate } from "tonwa-page";
+import { appTabsTemplate, setPageTemplate } from "tonwa-com";
 import { AppWithTabs } from './AppWithTabs';
 
 export function AppRoutes() {
