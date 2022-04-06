@@ -1,13 +1,14 @@
 import React, { ChangeEvent } from "react";
-import { Spinner } from "tonwa-com/coms";
+import { Sep, Spinner } from "../coms";
 
 interface ItemProps<T> {
-    item: T;
+    value: T;
 }
 
 interface Props<T> {
     items: readonly T[];
-    keyName: string;
+    className?: string;
+    itemKey?: string | ((item: T) => string | number);
     ItemView?: (props: ItemProps<T>) => JSX.Element;
     sep?: JSX.Element;
     none?: JSX.Element;
@@ -17,7 +18,8 @@ interface Props<T> {
 }
 
 export function List<T>(props: Props<T>) {
-    let { items, keyName, ItemView, onItemClick, onItemSelect, sep, none, loading } = props;
+    let { items, className, itemKey, ItemView, onItemClick, onItemSelect, sep, none, loading } = props;
+    className = className ?? '';
     if (!items) {
         if (loading) return loading;
         return <Spinner className="mx-3 my-2 text-primary" />;
@@ -42,7 +44,7 @@ export function List<T>(props: Props<T>) {
                             onChange={evt => onCheckChange(v, evt)} />
                     </label>
                     <div className="flex-grow-1 cursor-pointer" onClick={() => onItemClick(v)}>
-                        <ItemView item={v} />
+                        <ItemView value={v} />
                     </div>
                 </div>
             );
@@ -53,35 +55,52 @@ export function List<T>(props: Props<T>) {
                     <input type="checkbox" className="form-check-input mx-3 align-self-center"
                         onChange={evt => onCheckChange(v, evt)} />
                     <div className="flex-grow-1">
-                        <ItemView item={v} />
+                        <ItemView value={v} />
                     </div>
                 </label>
             );
         }
     }
     else {
-        renderItem = v => (
-            <div onClick={() => onItemClick(v)} className={onItemClick ? 'cursor-pointer' : ''}>
-                <ItemView item={v} />
+        if (onItemClick) {
+            className += ' tonwa-list-item'
+        }
+        renderItem = v => {
+            let funcClick: any, cn: string;
+            if (onItemClick) {
+                funcClick = () => onItemClick(v);
+                cn = 'tonwa-list-item cursor-pointer';
+            }
+            return <div onClick={funcClick} className={cn}>
+                <ItemView value={v} />
             </div>
-        );
+        };
     }
-    if (sep === undefined) {
-        sep = <div className="border-top border-1" />;
+
+    sep = <Sep sep={sep} />;
+    let funcKey: (item: T, index: number) => number | string;
+    switch (typeof itemKey) {
+        default:
+            funcKey = (item: T, index: number) => index;
+            break;
+        case 'string':
+            funcKey = (item: T) => (item as any)[itemKey as string];
+            break;
+        case 'function':
+            funcKey = itemKey;
+            break;
     }
-    else if (typeof sep === 'number') {
-        sep = <div className={'border-top border-' + sep} />;
-    }
-    return <ul className="m-0 p-0">{items.map((v, index) => (
-        <React.Fragment key={keyName ? (v as any)[keyName] : index}>
+    return <ul className={'m-0 p-0 ' + className}>{items.map((v, index) => {
+        let key = funcKey(v, index);
+        return <React.Fragment key={key}>
             {renderItem(v, index)}
             {index < len - 1 && sep}
-        </React.Fragment>
-    ))}</ul>;
+        </React.Fragment>;
+    })}</ul>;
 }
 
 function DefaultItemView<T>(itemProps: ItemProps<T>) {
-    let { item } = itemProps;
+    let { value: item } = itemProps;
     let cn = 'px-3 py-2';
     return <div className={cn}>{JSON.stringify(item)}</div>;
 }

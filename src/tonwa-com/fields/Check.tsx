@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Band, BandProps, useBand, BandChild } from '../band';
+import { Band, BandProps, useBand } from '../band';
 import { useForm } from "../form";
 import { FieldProps, FieldItem } from '../fields';
 
@@ -35,13 +35,14 @@ function CheckInput({ name, id, readOnly, indeterminate, checkedValue, unchecked
         if (indeterminate === true) {
             input.current.indeterminate = true;
         }
-        let { fields } = band;
-        fields[name] = true;
-        let { props, fields: formFields } = form;
+        if (band) {
+            let { fields } = band;
+            fields[name] = true;
+        }
+        let { props, fields } = form;
         let initChecked = props.values?.[name] === (checkedValue ?? true)
-        formFields[name] = new CheckFieldItem(name, input.current, indeterminate, initChecked);
+        fields[name] = new CheckFieldItem(name, input.current, indeterminate, initChecked);
     }, [band, form, name, indeterminate, checkedValue]);
-    if (!band) return <BandChild name={name} />;
     let { props } = form;
     function onChange(evt: ChangeEvent<HTMLInputElement>) {
         let val: any;

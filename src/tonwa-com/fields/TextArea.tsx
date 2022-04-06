@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import { useForm } from "../form/FormContext";
-import { useBand, Band, BandProps, checkRule, BandChild } from '../band';
+import { useBand, Band, BandProps, checkRule } from '../band';
 import { FieldItem, FieldProps } from '../fields';
 
 type TextProps = {
@@ -29,13 +29,10 @@ export function TextArea({ name, className, readOnly, placeholder, maxLength, ru
     let band = useBand();
     let form = useForm();
     useEffect(() => {
-        if (!band) return;
-        let { fields } = band;
-        fields[name] = true;
-        let { fields: formFields, props } = form;
-        formFields[name] = new TextFieldItem(name, input.current, props.values?.[name]);
+        if (band) band.fields[name] = true;
+        let { fields, props } = form;
+        fields[name] = new TextFieldItem(name, input.current, props.values?.[name]);
     }, [band, form, name]);
-    if (!band) return <BandChild name={name} />;
     let { props } = form;
     readOnly = readOnly ?? props.readOnly ?? false;
     let cn = className ?? props.stringClassName ?? form.defaultStringClassName;

@@ -2,7 +2,7 @@ import { Entity } from "./entity";
 import { Field, Uq } from "./uqMan";
 
 // eslint-disable-next-line @typescript-eslint/no-unused-vars
-export class UqID<M extends { id: number }> extends Entity {
+export class UqID<M extends { id?: number }> extends Entity {
 	get typeName() { return 'id' }
 	create: boolean;
 	update: boolean;
@@ -26,6 +26,13 @@ export class UqID<M extends { id: number }> extends Entity {
 		return ret;
 	}
 	cacheTuids(defer: number): void { }
+	async valueFromId(id: number): Promise<M> {
+		let ret = await (this.uq as unknown as Uq).QueryID<M>({
+			IDX: [this],
+			id: [id]
+		});
+		return ret[0];
+	}
 	async loadValuesFromIds(divName: string, ids: number[]): Promise<M[]> {
 		let ret = await (this.uq as unknown as Uq).QueryID<M>({
 			IDX: [this],

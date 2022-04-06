@@ -1,5 +1,5 @@
-import { ChangeEvent, useEffect, useRef } from "react";
-import { useBand, useBandContainer, checkRule, BandChild } from '../band';
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { useBand, useBandContainer, checkRule } from '../band';
 import { FieldProps, FieldItem } from '../fields';
 
 type CharInputBaseProps = {
@@ -24,16 +24,16 @@ class CharFieldItem implements FieldItem {
 }
 
 export function CharInput(props: CharInputBaseProps) {
-    let band = useBand();
     let bandContainer = useBandContainer();
     let { name } = props;
-    if (!band) return <BandChild name={name} />;
     let initValue = bandContainer?.props.values?.[name];
     return <CharInputBase {...props} initValue={initValue} />
 }
 
-export function CharInputBase({ name, className, readOnly, placeholder, maxLength, rule, isValidKey, initValue }: CharInputBaseProps & { initValue: any; }) {
+export function CharInputBase({ name, className, readOnly, placeholder, maxLength, rule, isValidKey, initValue }
+    : CharInputBaseProps & { initValue: any; }) {
     let input = useRef<HTMLInputElement>();
+    let [hasError, setHasError] = useState(false);
     let band = useBand();
     let bandContainer = useBandContainer();
     useEffect(() => {
@@ -43,10 +43,10 @@ export function CharInputBase({ name, className, readOnly, placeholder, maxLengt
         let { fields: formFields, props } = bandContainer;
         formFields[name] = new CharFieldItem(name, input.current, props.values?.[name]);
     }, [band, bandContainer, name]);
-    if (!band) return <BandChild name={name} />;
     let { props } = bandContainer;
     readOnly = readOnly ?? props.readOnly ?? false;
-    let cn = className ?? props.stringClassName ?? bandContainer.defaultStringClassName;
+    let cn = className ?? props.stringClassName ?? bandContainer.defaultStringClassName ?? '';
+    if (hasError === true) cn += ' is-invalid';
     if (readOnly === true) {
         return <div className={cn + ' bg-light text-muted'}>
             {initValue ?? bandContainer.defaultNone}
@@ -54,10 +54,13 @@ export function CharInputBase({ name, className, readOnly, placeholder, maxLengt
     }
     let onFocus = () => {
         bandContainer.clearError(name);
+        setHasError(false);
     }
     let onBlur = () => {
         let err = checkRule(input.current.value, rule);
         bandContainer.setError(name, err);
+        let has = !(err === undefined);
+        setHasError(has);
     }
     let onChange = (evt: ChangeEvent<HTMLInputElement>) => {
         bandContainer.setValue(name, evt.currentTarget.value);

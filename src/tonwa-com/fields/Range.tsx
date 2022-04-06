@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Band, BandProps, useBand, BandChild } from '../band';
+import { Band, BandProps, useBand } from '../band';
 import { useForm } from "../form";
 import { FieldProps, FieldItem } from '../fields';
 
@@ -35,16 +35,13 @@ export function Range(props: RangeProps) {
     let band = useBand();
     let form = useForm();
     useEffect(() => {
-        if (!band) return;
         let { name } = props;
         let fieldItem = new RangeFieldItem(name, input.current, form.props.values?.[name]);
-        band.fields[name] = true;
+        if (band) band.fields[name] = true;
         form.fields[name] = fieldItem;
     }, [band, form, input, props]);
-    if (!band) return <BandChild name={props.name} />;
     let { props: formProps } = form;
     let { name, className, readOnly, min, max, step } = props;
-    //let snapShot = useSnapshot(form.response.values);
     readOnly = readOnly ?? formProps.readOnly;
     let initValue = form.props.values?.[name];
     function onChange(evt: ChangeEvent<HTMLInputElement>) {

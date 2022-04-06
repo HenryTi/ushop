@@ -1,5 +1,5 @@
 import { useUqApp } from "App/App";
-import { Detail, Page, Band, String, OnValuesChanged, wait } from "tonwa-com";
+import { Page, OnValuesChanged } from "tonwa-com";
 import { FieldsDetail } from "tonwa-com-uq";
 import { Workshop } from "uq-app/uqs/BzWorkshop";
 
@@ -30,7 +30,7 @@ export function EditWorkshop({ item, onItemChanged }: Props) {
         await onItemChanged(newItem, item);
     }
     return <Page header="Detail">
-        <FieldsDetail className="pt-3 pb-1 tonwa-bg-gray-2 container"
+        <FieldsDetail className="mx-3 mt-3 mb-1 border-2 border-top border-bottom"
             values={item}
             fields={Workshop.fields}
             onValuesChanged={onValuesChanged}>

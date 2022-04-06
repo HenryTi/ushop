@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { EnumString, Band, BandProps, useBand, BandChild, strings } from '../band';
+import { EnumString, Band, BandProps, useBand, strings } from '../band';
 import { useForm } from "../form";
 import { FieldProps, FieldItem } from '../fields';
 
@@ -33,16 +33,14 @@ export function Select(props: SelectProps) {
     let band = useBand();
     let form = useForm();
     useEffect(() => {
-        if (!band) return;
         let { props: formProps } = form;
         let { name, options } = props;
         let initValue = formProps.values?.[name];
         let initIndex = initValue ? options.findIndex(v => v.value === initValue) : 0;
         let fieldItem = new SelectFieldItem(name, select.current, initIndex);
-        band.fields[name] = true;
+        if (band) band.fields[name] = true;
         form.fields[name] = fieldItem;
     }, [band, form, props]);
-    if (!band) return <BandChild name={props.name} />;
     let { props: formProps } = form;
     let { name, options, placeholder, className, readOnly } = props;
     readOnly = readOnly ?? formProps.readOnly;

@@ -5,6 +5,7 @@ import { WorkshopItem } from "./WorkshopItem";
 import { AddWorkshop } from "./AddWorkshop";
 import { useCallback, useEffect, useState } from "react";
 import { EditWorkshop } from "./EditWorkshop";
+import { TestPage } from "./TestPage";
 
 interface Props {
     caption: string;
@@ -17,7 +18,7 @@ export function WorkshopList(props: Props) {
     let { BzWorkshop } = app.uqs;
     let nav = useNav();
     let { caption, icon, iconClass } = props;
-    function ItemView({ item }: { item: Workshop }) {
+    function ItemView({ value: item }: { value: Workshop }) {
         return <LMR className="px-3 py-2 align-items-center">
             {icon &&
                 <FA name={icon} className={'me-4 ' + (iconClass ?? 'text-primary')} fixWidth={true} size="lg" />
@@ -65,6 +66,7 @@ export function WorkshopList(props: Props) {
     </button>;
 
     return <Page header={caption} right={right}>
-        <List items={list} keyName="id" ItemView={ItemView} onItemClick={onEditItem} />
+        <button className="btn btn-primary" onClick={() => nav.open(<TestPage />)}>test</button>
+        <List items={list} itemKey="id" ItemView={ItemView} onItemClick={onEditItem} />
     </Page>;
 }

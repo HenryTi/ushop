@@ -20,7 +20,7 @@ export function useScroll() {
                 };
             });
             if (h === 0) return;
-            (elContent as any).style.minHeight = h + 'px';
+            (elContent as any).style.minHeight = (h - 1) + 'px';
         }
         window.addEventListener('resize', resize);
         window.addEventListener('DOMSubtreeModified', resize);

@@ -4,7 +4,7 @@ import {
     , Band, BandString, String, SubmitButton, BandFormErrors, BandInt
     , BandCheck, Check, BandPick, BandSelect, BandDecimal
     , BandDatePicker, DatePicker, TimePicker, BandTextArea
-    , LMR, List, wait, useNav, Page, ButtonAsync
+    , LMR, List, wait, useNav, Page, ButtonAsync, PickPage
 } from "tonwa-com";
 import { BandRadio } from "tonwa-com";
 import { BandRange } from "tonwa-com";
@@ -47,6 +47,7 @@ function getId() {
 }
 
 export function TestPage({ tick }: PTestProps) {
+    let nav = useNav();
     function Tick() {
         let snap = useSnapshot(tick);
         function onClick() {
@@ -79,16 +80,19 @@ export function TestPage({ tick }: PTestProps) {
         ]
     }
     let initValues = {
+        a0: undefined as string, //'ttt0',
+        a1: 'ttt1',
         a: 'ttt',
         f: 2,
         d0: 2,
+        g: 2,
         h: 5,
     }
     let options = [
         { label: 'a', value: 1 },
         { label: 'b', value: 2 }
     ];
-    function OptionItemView({ item }: { item: any; }) {
+    function OptionItemView({ value: item }: { value: any; }) {
         let { label, value } = item;
         return <div className="d-flex px-2 py-2">
             <div className="bg-light me-5">{label}</div>
@@ -97,6 +101,9 @@ export function TestPage({ tick }: PTestProps) {
     }
     let { current: selectedItems } = useRef(proxy(ref([])));
     let selectedItemsSnapshot = useSnapshot(selectedItems);
+    function PickValue({ value }: { value: any }) {
+        return <>value {JSON.stringify(value)} value</>;
+    }
     return <Page header="Test page">
         <div className="m-3">
             <Tick />
@@ -107,7 +114,7 @@ export function TestPage({ tick }: PTestProps) {
             <div className="text-center">b</div>
             <label>bbb</label>
         </LMR>
-        <List items={options} keyName="value"
+        <List items={options} itemKey="value"
             ItemView={OptionItemView}
             onItemClick={async (item) => alert(JSON.stringify(item))}
             onItemSelect={(item, isSelected) => {
@@ -120,13 +127,15 @@ export function TestPage({ tick }: PTestProps) {
             }} />
         <div>
             <div>selectedItemsSnapshot</div>
-            <List items={selectedItemsSnapshot} keyName="value" />
+            <List items={selectedItemsSnapshot} itemKey="value" />
         </div>
         <Form className="m-3"
             rule={ruleForm}
             values={initValues}
         >
             <BandFormErrors />
+            <String name="a0" memo={'bbbbddd dddd d'} readOnly={true} className="form-control d-inline w-12c" />
+            <String name="a1" memo={'bbbbddd dddd d'} readOnly={false} className="form-control d-inline w-12c" />
             <Band label="a"><String name="a" memo={'bbbbddd dddd d'} readOnly={true} /></Band>
             <BandString label="b" name="b" maxLength={5} placeholder="请输入b" rule={ruleB} />
             <BandInt label="int" name="c" placeholder="请输入整数" max={5} />
@@ -140,7 +149,13 @@ export function TestPage({ tick }: PTestProps) {
             <BandDecimal label="decimal" name="e" placeholder="请输入数字" min={-30} />
             <BandRadio label="radios" name="f"
                 options={options} />
-            <BandPick label="点选ID" name="g" placeholder="点击选择ID" onPick={async () => { alert('a'); return 'id=3'; }} />
+            <BandPick label="点选ID" name="g" placeholder="点击选择ID"
+                Value={PickValue}
+                onPick={async (value) => await nav.call(
+                    <PickPage header="please click return"
+                        items={[{ id: 1, name: 'a' }, { id: 2, name: 'b' }]}
+                        ItemView={PickItemView} />
+                )} />
             <BandRange label="1-99" name="h" min={1} max={99} />
             <BandDatePicker label="日期" name="i" />
             <Band label="日期时间">
@@ -157,4 +172,11 @@ export function TestPage({ tick }: PTestProps) {
             </Band>
         </Form>
     </Page >;
+}
+
+function PickItemView({ value: item }: { value: any; }) {
+    let { id, name } = item;
+    return <div className="px-3 py-2">
+        {id} {name}
+    </div>;
 }

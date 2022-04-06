@@ -8,6 +8,7 @@ export interface BandProps {
     label?: string | JSX.Element;
     BandTemplate?: (props: BandTemplateProps) => JSX.Element;
     onEdit?: () => Promise<void>;
+    sep?: number | JSX.Element;
 }
 
 export interface BandTemplateProps {
@@ -17,6 +18,7 @@ export interface BandTemplateProps {
     children: React.ReactNode;
     content: React.ReactNode;
     onEdit?: () => Promise<void>;
+    sep?: number | JSX.Element;
 }
 
 export function BandFieldError({ error }: { error: string; }) {
@@ -108,7 +110,7 @@ function Value({ name }: { name: string; }) {
 }
 
 export function Band(props: BandProps & { children: React.ReactNode; }) {
-    let { label, children, BandTemplate } = props;
+    let { label, children, BandTemplate, sep } = props;
     let content = children;
     let bandContainer = useBandContainer();
     let memos: string[] = buildMemosFromChildren(children);
@@ -128,7 +130,7 @@ export function Band(props: BandProps & { children: React.ReactNode; }) {
         }
     }
     return <VBandContext.Provider value={band}>
-        <BandTemplate label={label} errors={errors} memos={band.memos} content={content}>
+        <BandTemplate label={label} errors={errors} memos={band.memos} content={content} sep={sep}>
             {children}
         </BandTemplate>
     </VBandContext.Provider>;

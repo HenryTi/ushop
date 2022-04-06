@@ -20,6 +20,7 @@ export class StackNav<T extends StackItem> {
     readonly data: {
         stack: T[];
     };
+    private callStack: ((value: any | PromiseLike<any>) => void)[] = [];
     private pageKeyNO: number;
     constructor(initPage: React.ReactNode) {
         this.pageKeyNO = 0;
@@ -67,6 +68,23 @@ export class StackNav<T extends StackItem> {
 
     close(level: number = 1) {
         for (let i = 0; i < level; i++) this.innerClose();
+    }
+
+    call<T>(page: JSX.Element | (() => Promise<JSX.Element>)): Promise<T> {
+        return new Promise<T>((resolve, reject) => {
+            this.callStack.push(resolve);
+            this.open(page);
+        });
+    }
+
+    returnCall<T>(returnValue: T) {
+        let resolve = this.callStack.pop();
+        if (resolve === undefined) {
+            console.error('nav.call and nav.returnCall not matched');
+            return;
+        }
+        this.close();
+        resolve(returnValue);
     }
 
     clear() {

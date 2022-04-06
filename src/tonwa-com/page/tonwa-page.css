@@ -6,6 +6,11 @@
   margin-left: auto;
 }
 
+div.tonwa-list-item:hover {
+  background-color: #f0f0f0;
+  opacity: 0.9;
+}
+
 .tonwa-bg-gray-1 {
   background-color: #f8f8f8;
 }

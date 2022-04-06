@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Band, BandProps, useBand, BandChild } from '../band';
+import { Band, BandProps, useBand } from '../band';
 import { FieldProps, FieldItem } from '../fields';
 import { useForm } from "../form";
 import { useSnapshot } from "valtio";
@@ -43,11 +43,9 @@ function RadioInput({ name, className, readOnly, item, itemIndex, defaultChecked
     let band = useBand();
     let form = useForm();
     useEffect(() => {
-        if (!band) return;
         let fieldItem = form.fields[name] as RadioFieldItem;
         fieldItem.addInput(input.current);
     }, [band, form, name]);
-    if (!band) return <BandChild name={name} />;
     let { props } = form;
     function onChange(evt: ChangeEvent<HTMLInputElement>) {
         let t = evt.currentTarget;
@@ -80,7 +78,7 @@ export function Radio(props: RadioProps) {
     let { name, options } = props;
     let val = values[name];
     let { current: fieldItem } = useRef(new RadioFieldItem(name, form.props.values?.[name]));
-    band.fields[name] = true;
+    if (band) band.fields[name] = true;
     form.fields[name] = fieldItem;
     return <>
         {options.map((v, index) => <RadioInput key={index} {...props} item={v}

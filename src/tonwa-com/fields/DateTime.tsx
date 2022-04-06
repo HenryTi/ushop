@@ -1,5 +1,5 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Band, BandProps, useBand, BandChild } from '../band';
+import { Band, BandProps, useBand } from '../band';
 import { useForm } from "../form";
 import { FieldProps, FieldItem } from '../fields';
 
@@ -31,15 +31,15 @@ function Picker(props: DtProps & { type: 'date' | 'time'; }) {
     let band = useBand();
     let form = useForm();
     useEffect(() => {
-        if (!band) return;
         let { fields } = form;
         let { name } = props;
         let fieldItem = new DTFieldItem(name, input.current, form.props.values?.[name]);
-        band.fields[name] = true;
+        if (band) {
+            band.fields[name] = true;
+        }
         fields[name] = fieldItem;
     }, [band, form, input, props]);
     let { name, className, readOnly, type } = props;
-    if (!band) return <BandChild name={name} />;
     let { props: formProps } = form;
     readOnly = readOnly ?? formProps.readOnly;
     let initValue = form.props.values?.[name];

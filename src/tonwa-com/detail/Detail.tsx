@@ -1,8 +1,8 @@
 import React, { useContext, useRef } from "react";
-import { FA } from "../coms";
+import { FA, Sep } from "../coms";
 import { Form, SubmitButton } from "../form";
 import { Page, useNav } from "../page";
-import { Band, BandContainerContext, BandContainerProps, BandFieldErrors, BandMemos, BandTemplateProps, OnValuesChanged, useBandContainer, VBandContainerContext } from "../band";
+import { Band, BandContainerContext, BandContainerProps, BandFieldErrors, BandMemos, BandTemplateProps, OnValuesChanged, useBand, useBandContainer, VBandContainerContext } from "../band";
 
 interface DetailProps extends BandContainerProps {
     onValuesChanged?: OnValuesChanged;
@@ -38,7 +38,8 @@ export function Detail(props: DetailProps) {
 function DefaultBandTemplate(props: BandTemplateProps) {
     let nav = useNav();
     let bandContainer = useBandContainer();
-    let { label, children, errors, memos, onEdit, content } = props;
+    let band = useBand();
+    let { label, children, errors, memos, onEdit, content, sep } = props;
     let vLabel: any;
     let cnContent = 'col-sm-10 d-flex pe-0';
     if (label) {
@@ -47,28 +48,38 @@ function DefaultBandTemplate(props: BandTemplateProps) {
     else {
         cnContent += ' offset-sm-2';
     }
-    onEdit = onEdit ?? async function () {
-        nav.open(<ValueEditPage label={label}
-            content={content}
-            values={{ ...bandContainer.valueResponse.values }}
-            onValuesChanged={bandContainer.onValuesChanged}
-        />);
+    let vEdit: any;
+    if (band.readOnly === true) {
+        vEdit = null;
     }
-    return <div className="mb-3 row bg-white">
-        {vLabel}
-        <div className={cnContent}>
-            <div className="flex-grow-1">
-                {children}
-                <BandFieldErrors errors={errors} />
-                <BandMemos memos={memos} />
-            </div>
-            <div onClick={onEdit}
-                className="px-3 align-self-stretch d-flex align-items-center cursor-pointer"
-            >
-                <FA name="pencil-square-o" className="text-primary" />
+    else {
+        onEdit = onEdit ?? async function () {
+            nav.open(<ValueEditPage label={label}
+                content={content}
+                values={{ ...bandContainer.valueResponse.values }}
+                onValuesChanged={bandContainer.onValuesChanged}
+            />);
+        }
+        vEdit = <div onClick={onEdit}
+            className="px-3 align-self-stretch d-flex align-items-center cursor-pointer"
+        >
+            <FA name="pencil-square-o" className="text-primary" />
+        </div>;
+    }
+    return <>
+        <Sep sep={sep} />
+        <div className="row bg-white mx-0">
+            {vLabel}
+            <div className={cnContent}>
+                <div className="flex-grow-1">
+                    {children}
+                    <BandFieldErrors errors={errors} />
+                    <BandMemos memos={memos} />
+                </div>
+                {vEdit}
             </div>
         </div>
-    </div>;
+    </>;
 }
 
 interface ValueEditPageProps {
