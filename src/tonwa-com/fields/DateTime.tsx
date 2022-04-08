@@ -1,7 +1,7 @@
-import { ChangeEvent, useEffect, useRef } from "react";
-import { Band, BandProps, useBand } from '../band';
-import { useForm } from "../form";
+import { ChangeEvent, useEffect, useRef, useState } from "react";
+import { Band, BandProps, useBand, useBandContainer } from '../band';
 import { FieldProps, FieldItem } from '../fields';
+import { checkRule } from "./Rule";
 
 class DTFieldItem implements FieldItem {
     readonly name: string;
@@ -29,32 +29,46 @@ interface DtProps extends FieldProps {
 function Picker(props: DtProps & { type: 'date' | 'time'; }) {
     let input = useRef<HTMLInputElement>();
     let band = useBand();
-    let form = useForm();
+    let bandContainer = useBandContainer();
+    let [hasError, setHasError] = useState(false);
     useEffect(() => {
-        let { fields } = form;
+        let { fields } = bandContainer;
         let { name } = props;
-        let fieldItem = new DTFieldItem(name, input.current, form.props.values?.[name]);
+        let fieldItem = new DTFieldItem(name, input.current, bandContainer.props.values?.[name]);
         if (band) {
             band.fields[name] = true;
         }
         fields[name] = fieldItem;
-    }, [band, form, input, props]);
-    let { name, className, readOnly, type } = props;
-    let { props: formProps } = form;
+    }, [band, bandContainer, input, props]);
+    let { name, className, readOnly, type, rule } = props;
+    let { props: formProps } = bandContainer;
     readOnly = readOnly ?? formProps.readOnly;
-    let initValue = form.props.values?.[name];
+    let initValue = bandContainer.props.values?.[name];
+    let cn = className ?? formProps.stringClassName ?? bandContainer.defaultStringClassName ?? '';
+    if (hasError === true) cn += ' is-invalid';
+    let onFocus = () => {
+        bandContainer.clearError(name);
+        setHasError(false);
+    }
+    let onBlur = () => {
+        let err = checkRule(input.current.value, rule);
+        bandContainer.setError(name, err);
+        let has = !(err === undefined);
+        setHasError(has);
+    }
     function onChange(evt: ChangeEvent<HTMLInputElement>) {
         let val = evt.currentTarget.value;
-        form.setValue(name, val);
+        bandContainer.setValue(name, val);
     }
     if (readOnly === true) {
-        return <div className={className ?? form.defaultStringClassName}>
-            {initValue ?? form.defaultNone}
+        return <div className={className ?? bandContainer.defaultStringClassName}>
+            {initValue ?? bandContainer.defaultNone}
         </div>;
     }
     return <input ref={input} type={type}
-        defaultValue={form.props.values?.[name]}
-        className={className ?? form.defaultStringClassName}
+        defaultValue={bandContainer.props.values?.[name]}
+        className={cn}
+        onBlur={onBlur} onFocus={onFocus}
         onChange={onChange}
     />;
 }

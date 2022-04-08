@@ -1,18 +1,18 @@
-import { openPage, Page, VPage } from "tonwa-controller";
 import { IconCommand } from "../tool";
-import { PTag } from "../Tag";
-import { RefClient, RefStaff } from "./Person";
+import { TagPage } from "../Tag";
+import { ClientLink, StaffLink } from "./Person";
 import { WorkshopLink } from "./Workshop";
+import { Page, useNav } from "tonwa-com";
 
 export function PIDs() {
-    // let { cWorkshop } = this.controller;
+    let nav = useNav();
     return <Page header="Items">
         <div>
             <WorkshopLink />
-            <RefClient />
-            <RefStaff />
+            <ClientLink />
+            <StaffLink />
             <IconCommand caption="Tags admin" icon="tag" iconClass="text-danger"
-                onClick={() => openPage(<PTag />)} />
+                onClick={() => nav.open(<TagPage />)} />
         </div>
     </Page>;
 }

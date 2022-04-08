@@ -1,16 +1,19 @@
 import React from 'react';
-import { ButtonAsync } from 'tonwa-com/coms';
+import { ButtonAsync, FA } from 'tonwa-com/coms';
+import { EnumRes, res } from 'tonwa-com/res';
 import { useSnapshot } from 'valtio';
-import { checkRule } from '../band';
+import { checkRule } from '../fields';
 import { useForm } from './FormContext';
 
 export interface ButtonProps {
     className?: string;
-    children: React.ReactNode;
+    children?: React.ReactNode;
 }
-export function SubmitButton({ className, children, onSubmit }: ButtonProps & { onSubmit: (data: any) => Promise<void>; }) {
+export function Submit({ className, children, onSubmit }: ButtonProps & { onSubmit: (data: any) => Promise<void>; }) {
     let form = useForm();
     let { hasError } = useSnapshot(form.errorResponse);
+    className = className ?? 'btn btn-primary';
+    children = children ?? <><FA name='share-square-o' /> {res[EnumRes.string_submit]}</>;
     async function onClick(evt: React.MouseEvent) {
         evt.preventDefault();
         let { props, valueResponse, errorResponse } = form;
@@ -29,7 +32,7 @@ export function SubmitButton({ className, children, onSubmit }: ButtonProps & { 
     </ButtonAsync>;
 }
 
-export function ClearButton({ className, children }: ButtonProps) {
+export function Clear({ className, children }: ButtonProps) {
     let form = useForm();
     function onClick(evt: React.MouseEvent) {
         evt.preventDefault();

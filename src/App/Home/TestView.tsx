@@ -1,7 +1,7 @@
 //import { openPage, Page, useSnapshot, ClickSuspense } from "tonwa-controller";
 import {
-    ClearErrorsButton, ClearButton, Form
-    , Band, BandString, String, SubmitButton, BandFormErrors, BandInt
+    ClearErrorsButton, Clear, Form
+    , Band, BandString, String, Submit, BandFormErrors, BandInt
     , BandCheck, Check, BandPick, BandSelect, BandDecimal
     , BandDatePicker, DatePicker, TimePicker, BandTextArea
     , LMR, List, wait, useNav, Page, ButtonAsync, PickPage
@@ -166,8 +166,8 @@ export function TestPage({ tick }: PTestProps) {
             </Band>
             <BandTextArea label="文本" name="l" maxLength={20} rows={6} placeholder="输入不超过20字" />
             <Band>
-                <SubmitButton className="btn btn-primary" onSubmit={async data => alert(JSON.stringify(data))}>Submit</SubmitButton>
-                <ClearButton className="ms-3 btn btn-outline-primary">Clear values</ClearButton>
+                <Submit onSubmit={async data => alert(JSON.stringify(data))} />
+                <Clear className="ms-3 btn btn-outline-primary">Clear values</Clear>
                 <ClearErrorsButton className="ms-3 btn btn-outline-primary">Clear errors</ClearErrorsButton>
             </Band>
         </Form>

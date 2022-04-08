@@ -1,6 +1,6 @@
 import React, { useContext, useRef } from "react";
 import { FA, Sep } from "../coms";
-import { Form, SubmitButton } from "../form";
+import { Form, Submit } from "../form";
 import { Page, useNav } from "../page";
 import { Band, BandContainerContext, BandContainerProps, BandFieldErrors, BandMemos, BandTemplateProps, OnValuesChanged, useBand, useBandContainer, VBandContainerContext } from "../band";
 
@@ -39,15 +39,12 @@ function DefaultBandTemplate(props: BandTemplateProps) {
     let nav = useNav();
     let bandContainer = useBandContainer();
     let band = useBand();
-    let { label, children, errors, memos, onEdit, content, sep } = props;
-    let vLabel: any;
+    let { label, children, errors, memos, onEdit, content, sep, isCheck } = props;
+    let labelContent = isCheck === true ? null : <b>{label}</b>;
+    let vLabel = <label className="col-sm-2 col-form-label text-sm-end tonwa-bg-gray-1 border-end">
+        {labelContent}
+    </label>;
     let cnContent = 'col-sm-10 d-flex pe-0';
-    if (label) {
-        vLabel = <label className="col-sm-2 col-form-label text-sm-end tonwa-bg-gray-1 border-end"><b>{label}</b></label>;
-    }
-    else {
-        cnContent += ' offset-sm-2';
-    }
     let vEdit: any;
     if (band.readOnly === true) {
         vEdit = null;
@@ -94,18 +91,18 @@ function ValueEditPage({ content, label, values, onValuesChanged }: ValueEditPag
         await onValuesChanged(data);
         nav.close();
     }
-    return <Page header={label}>
+    return <Page header={label} back="close">
         <Form className="container px-3 py-3" values={values} BandTemplate={ValueEditBandTemplate}>
             <Band>
                 {content}
             </Band>
-            <SubmitButton onSubmit={onSubmit} className="btn btn-primary">保存</SubmitButton>
+            <Submit onSubmit={onSubmit} />
         </Form>
     </Page>;
 }
 
 function ValueEditBandTemplate(props: BandTemplateProps) {
-    let { label, children, errors, memos, onEdit, content } = props;
+    let { children, errors, memos } = props;
     return <div className="bg-white mb-3">
         {children}
         <BandFieldErrors errors={errors} />

@@ -1,4 +1,4 @@
-export type Rule = (val: any) => (string | string[]);
+import { Rule } from './Rule';
 
 export interface FieldProps {
     name: string;

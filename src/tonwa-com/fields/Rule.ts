@@ -1,4 +1,6 @@
-import { Rule } from "../fields";
+import { EnumRes, res } from "../res";
+
+export type Rule = (val: any) => (string | string[]);
 
 export function checkRule(val: any, rule: Rule | Rule[]): string[] {
     if (!rule) return;
@@ -22,4 +24,11 @@ export function checkRule(val: any, rule: Rule | Rule[]): string[] {
     }
     if (ret.length > 0) return ret;
     return undefined;
+}
+
+export function ruleIsRequired(val: any) {
+    let s = (val as string).trim();
+    if (!s) {
+        return res[EnumRes.rule_required];
+    }
 }

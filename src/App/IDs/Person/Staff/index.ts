@@ -1,1 +1,1 @@
-export * from './RefStaff';
+export * from './StaffLink';

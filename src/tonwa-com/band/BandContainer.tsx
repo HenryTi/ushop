@@ -22,27 +22,6 @@ const defaultSelectClassName = 'form-select';
 const defaultPickClassName = 'form-control';
 const defaultRangeClassName = 'form-range';
 
-export enum EnumString {
-    rule_mustBeInteger,
-    rule_mustBeDecimal,
-    rule_belowMin,
-    rule_overMax,
-    placeholder_pick,
-    placeholder_select,
-}
-
-export const strings: {
-    [key in EnumString]: string
-} =
-{
-    [EnumString.rule_mustBeInteger]: '必须是整数',
-    [EnumString.rule_mustBeDecimal]: '必须是数字',
-    [EnumString.rule_belowMin]: '最小值',
-    [EnumString.rule_overMax]: '最大值',
-    [EnumString.placeholder_pick]: '请点击选择',
-    [EnumString.placeholder_select]: '请点击选择',
-};
-
 export abstract class BandContainerContext<P extends BandContainerProps> {
     readonly defaultStringClassName = defaultStringClassName;
     readonly defaultCheckClassName = defaultCheckClassName;

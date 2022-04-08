@@ -15,7 +15,7 @@ export function IDValue<T extends { id?: number; }>({ id, ID, Value }: Props<T>)
             setValue(ret);
         }
         getValue();
-    });
+    }, [id, ID]);
     if (value === null) return null;
     return <Value value={value ?? ({ id: undefined } as T)} />;
 }

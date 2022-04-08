@@ -87,6 +87,10 @@ export class StackNav<T extends StackItem> {
         resolve(returnValue);
     }
 
+    async confirm(msg: string): Promise<boolean> {
+        return window.confirm(msg);
+    }
+
     clear() {
         alert('nav clear');
     }

@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { EnumString, Band, BandProps, useBand, strings } from '../band';
-import { useForm } from "../form";
+import { Band, BandProps, useBand, useBandContainer } from '../band';
 import { FieldProps, FieldItem } from '../fields';
+import { EnumRes, res } from "../res";
 
 interface SelectItem {
     label: string;
@@ -31,7 +31,7 @@ interface SelectProps extends FieldProps {
 export function Select(props: SelectProps) {
     let select = useRef<HTMLSelectElement>();
     let band = useBand();
-    let form = useForm();
+    let form = useBandContainer();
     useEffect(() => {
         let { props: formProps } = form;
         let { name, options } = props;
@@ -59,7 +59,7 @@ export function Select(props: SelectProps) {
         onChange={onChange}
     >
         {!initValue &&
-            <option value={undefined}>{placeholder ?? strings[EnumString.placeholder_select]}</option>}
+            <option value={undefined}>{placeholder ?? res[EnumRes.placeholder_select]}</option>}
         {options.map((v, index) => <option key={index} value={v.value as any}>{v.label}</option>)}
     </select>;
 }

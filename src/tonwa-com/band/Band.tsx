@@ -9,16 +9,19 @@ export interface BandProps {
     BandTemplate?: (props: BandTemplateProps) => JSX.Element;
     onEdit?: () => Promise<void>;
     sep?: number | JSX.Element;
+    isCheck?: boolean;
+    // detailContent?: JSX.Element;
 }
 
 export interface BandTemplateProps {
     label: string | JSX.Element;
-    errors: readonly { readonly name: string; readonly error: string; }[];
+    errors: readonly { readonly name: string; readonly error: string }[];
     memos: string[];
     children: React.ReactNode;
     content: React.ReactNode;
     onEdit?: () => Promise<void>;
     sep?: number | JSX.Element;
+    isCheck?: boolean;
 }
 
 export function BandFieldError({ error }: { error: string; }) {
@@ -28,10 +31,17 @@ export function BandFieldError({ error }: { error: string; }) {
     </div>;
 }
 
-export function BandFieldErrors({ errors }: { errors: readonly { error: string }[] }) {
+export function BandFieldErrors({ errors }: { errors: readonly { readonly name: string; readonly error: string }[] }) {
     if (!errors) return null;
+    if (errors.length === 0) return null;
+    let arr: string[] = [];
+    for (let err of errors) {
+        let { error } = err;
+        let p = arr.findIndex(v => v === error);
+        if (p < 0) arr.push(error);
+    }
     return <>
-        {errors.map((v, index) => <BandFieldError key={index} error={v.error} />)}
+        {arr.map((v, index) => <BandFieldError key={index} error={v} />)}
     </>;
 }
 
@@ -110,7 +120,7 @@ function Value({ name }: { name: string; }) {
 }
 
 export function Band(props: BandProps & { children: React.ReactNode; }) {
-    let { label, children, BandTemplate, sep } = props;
+    let { label, children, BandTemplate, sep, isCheck } = props;
     let content = children;
     let bandContainer = useBandContainer();
     let memos: string[] = buildMemosFromChildren(children);
@@ -121,16 +131,22 @@ export function Band(props: BandProps & { children: React.ReactNode; }) {
     }
     BandTemplate = BandTemplate ?? bandContainer.BandTemplate;
     if (bandContainer.isDetail === true) {
-        let [newChildren, readOnly] = buildDetailChildren(children);
-        children = <>{newChildren}</>;
-        if (readOnly === true)
-            band.readOnly = true;
-        else if (bandContainer.readOnly === true) {
-            band.readOnly = true;
+        if (isCheck === true) {
+            children = <div className='py-2'>{children}</div>
+        }
+        else {
+            let [newChildren, readOnly] = buildDetailChildren(children);
+            children = <>{newChildren}</>;
+            if (readOnly === true)
+                band.readOnly = true;
+            else if (bandContainer.readOnly === true) {
+                band.readOnly = true;
+            }
         }
     }
     return <VBandContext.Provider value={band}>
-        <BandTemplate label={label} errors={errors} memos={band.memos} content={content} sep={sep}>
+        <BandTemplate label={label} errors={errors} memos={band.memos}
+            content={content} sep={sep} isCheck={isCheck}>
             {children}
         </BandTemplate>
     </VBandContext.Provider>;

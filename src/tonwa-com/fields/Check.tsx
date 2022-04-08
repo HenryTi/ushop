@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Band, BandProps, useBand } from '../band';
-import { useForm } from "../form";
+import { Band, BandProps, useBand, useBandContainer } from '../band';
 import { FieldProps, FieldItem } from '../fields';
+import { useSnapshot } from "valtio";
 
 type CheckInputProps = {
     indeterminate?: boolean;
@@ -30,7 +30,20 @@ class CheckFieldItem implements FieldItem {
 function CheckInput({ name, id, readOnly, indeterminate, checkedValue, uncheckedValue }: CheckInputProps & { id: string; }) {
     let input = useRef<HTMLInputElement>();
     let band = useBand();
-    let form = useForm();
+    let bandContainer = useBandContainer();
+    let { props, valueResponse } = bandContainer;
+    let snapShotValues = useSnapshot(valueResponse.values);
+    let initChecked = snapShotValues?.[name] === (checkedValue ?? true)
+    let onClick: (evt: React.MouseEvent<HTMLInputElement>) => void;
+    let checked: boolean;
+    if (bandContainer.isDetail === true) {
+        checked = initChecked;
+        initChecked = undefined;
+        onClick = (evt: React.MouseEvent<HTMLInputElement>) => {
+            evt.preventDefault();
+            return false;
+        }
+    }
     useEffect(() => {
         if (indeterminate === true) {
             input.current.indeterminate = true;
@@ -39,11 +52,10 @@ function CheckInput({ name, id, readOnly, indeterminate, checkedValue, unchecked
             let { fields } = band;
             fields[name] = true;
         }
-        let { props, fields } = form;
+        let { props, fields } = bandContainer;
         let initChecked = props.values?.[name] === (checkedValue ?? true)
         fields[name] = new CheckFieldItem(name, input.current, indeterminate, initChecked);
-    }, [band, form, name, indeterminate, checkedValue]);
-    let { props } = form;
+    }, [band, bandContainer, name, indeterminate, checkedValue]);
     function onChange(evt: ChangeEvent<HTMLInputElement>) {
         let val: any;
         let t = evt.currentTarget;
@@ -51,13 +63,14 @@ function CheckInput({ name, id, readOnly, indeterminate, checkedValue, unchecked
         else {
             val = t.checked ? (checkedValue ?? true) : (uncheckedValue ?? false);
         }
-        form.setValue(name, val);
+        bandContainer.setValue(name, val);
     }
-    let initChecked = props.values?.[name] === (checkedValue ?? true)
     return <input ref={input} name={name} type="checkbox" id={id}
-        className={props.checkClassName ?? form.defaultCheckClassName}
+        className={props.checkClassName ?? bandContainer.defaultCheckClassName}
         disabled={readOnly ?? props.readOnly ?? false}
         onChange={onChange}
+        onClick={onClick}
+        checked={checked}
         defaultChecked={initChecked} />;
 }
 
@@ -76,7 +89,7 @@ export function Check(props: CheckProps) {
 
 export function BandCheck(props: BandProps & CheckProps) {
     let { label } = props;
-    return <Band {...props} label={undefined} >
+    return <Band {...props} isCheck={true}>
         <Check {...props} label={label} />
     </Band>;
 }

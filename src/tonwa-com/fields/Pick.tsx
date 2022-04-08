@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { FA } from "../coms";
-import { useForm } from "../form";
-import { EnumString, Band, BandProps, useBand, strings } from '../band';
+import { Band, BandProps, useBand, useBandContainer } from '../band';
 import { FieldProps, FieldItem } from '../fields';
+import { EnumRes, res } from "../res";
 
 type PickProps = {
     className?: string;
@@ -22,7 +22,7 @@ class PickFieldItem implements FieldItem {
 
 export function Pick(props: PickProps) {
     let band = useBand();
-    let form = useForm();
+    let form = useBandContainer();
     let [value, setValue] = useState<any>();
     useEffect(() => {
         let { name } = props;
@@ -52,7 +52,7 @@ export function Pick(props: PickProps) {
             vValue = Value === undefined ? JSON.stringify(value) : <Value value={value} />;
         }
         else {
-            vValue = placeholder ?? strings[EnumString.placeholder_pick];
+            vValue = placeholder ?? res[EnumRes.placeholder_pick];
         }
     }
     else {

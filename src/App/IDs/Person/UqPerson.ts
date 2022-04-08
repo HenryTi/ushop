@@ -9,7 +9,7 @@ export interface MPerson extends Person {
 export abstract class UqPerson extends UqID {
     abstract isInRole(role: Role): boolean;
 
-    async loadList(personRole: Role): Promise<any[]> {
+    async loadList(personRole: Role): Promise<MPerson[]> {
         let result = await (this.uq as UqExt).GetPersonList.query({ role: personRole });
         let { ret, roles: retRoles } = result;
         let mPerson: MPerson;
@@ -25,7 +25,7 @@ export abstract class UqPerson extends UqID {
                 }
             }
         }
-        return ret;
+        return ret as MPerson[];
     }
 
     async removeBoundUser() {

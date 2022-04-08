@@ -1,5 +1,5 @@
 import { useUqApp } from "App/App";
-import { Form, Page, Pick, PickFromQuery, PickPage, useNav } from "tonwa-com";
+import { Form, Page, Pick, PickFromQuery, useNav } from "tonwa-com";
 import { IDValue } from "tonwa-com-uq";
 import { Person, Role } from "uq-app/uqs/BzWorkshop";
 

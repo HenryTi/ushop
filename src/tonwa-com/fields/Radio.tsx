@@ -1,7 +1,6 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Band, BandProps, useBand } from '../band';
+import { Band, BandProps, useBand, useBandContainer } from '../band';
 import { FieldProps, FieldItem } from '../fields';
-import { useForm } from "../form";
 import { useSnapshot } from "valtio";
 
 interface RadioItem {
@@ -41,7 +40,7 @@ function RadioInput({ name, className, readOnly, item, itemIndex, defaultChecked
     let { label, value } = item;
     let input = useRef<HTMLInputElement>();
     let band = useBand();
-    let form = useForm();
+    let form = useBandContainer();
     useEffect(() => {
         let fieldItem = form.fields[name] as RadioFieldItem;
         fieldItem.addInput(input.current);
@@ -73,7 +72,7 @@ interface RadioProps extends FieldProps {
 
 export function Radio(props: RadioProps) {
     let band = useBand();
-    let form = useForm();
+    let form = useBandContainer();
     let { values } = useSnapshot(form.valueResponse);
     let { name, options } = props;
     let val = values[name];

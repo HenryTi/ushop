@@ -1,6 +1,7 @@
 import { useCallback } from "react";
 import { ID } from "tonwa-uq";
-import { useBand, useForm, usePromise, Band, BandProps, CharInputBase } from "tonwa-com";
+import { useBand, useBandContainer, usePromise, Band, BandProps, CharInputBase } from "tonwa-com";
+import { } from "tonwa-com/band";
 
 interface Props {
     name: string;
@@ -10,16 +11,16 @@ interface Props {
 
 export function IDNOInput({ name, ID, editable }: Props) {
     let band = useBand();
-    let form = useForm();
+    let bandContainer = useBandContainer();
     let getNO = useCallback(async function () {
         if (!band) return;
-        if (!form) return;
-        let ret = (form?.props?.values?.[name]);
+        if (!bandContainer) return;
+        let ret = (bandContainer?.props?.values?.[name]);
         if (ret !== undefined) return ret;
         ret = await ID.NO();
-        form.setValue(name, ret);
+        bandContainer.setValue(name, ret);
         return ret;
-    }, [band, form, name, ID]);
+    }, [band, bandContainer, name, ID]);
     let no = usePromise(getNO);
     return <CharInputBase name={name} placeholder="" maxLength={20} readOnly={!editable === true} initValue={no} />;
 }

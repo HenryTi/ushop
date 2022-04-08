@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { useForm } from "../form/FormContext";
-import { useBand, Band, BandProps, checkRule } from '../band';
+import { useBand, Band, BandProps, useBandContainer } from '../band';
+import { checkRule } from './Rule';
 import { FieldItem, FieldProps } from '../fields';
 
 type TextProps = {
@@ -27,7 +27,7 @@ class TextFieldItem implements FieldItem {
 export function TextArea({ name, className, readOnly, placeholder, maxLength, rule, rows }: TextProps) {
     let input = useRef<HTMLTextAreaElement>();
     let band = useBand();
-    let form = useForm();
+    let form = useBandContainer();
     useEffect(() => {
         if (band) band.fields[name] = true;
         let { fields, props } = form;

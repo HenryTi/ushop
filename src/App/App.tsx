@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
 import { User } from 'tonwa-uq';
-import { AppBase, openPage, UqTagProps, UserApi } from "tonwa-controller";
+import { AppBase, openPage, UserApi } from "tonwa-controller";
 import { AppContainer, AppNav, useAppNav } from "tonwa-com";
 import { UQs } from "uq-app";
 import { Role } from "uq-app/uqs/BzWorkshop";
@@ -31,7 +31,6 @@ export class App extends AppBase {
     //cIds: CIds;
     //cMe: CMe;
     //cUser: CUser;
-    uqTagProps: UqTagProps;
 
     userApi: UserApi;
 
@@ -55,20 +54,6 @@ export class App extends AppBase {
         //this.cIds = new CIds(this);
         //this.cMe = new CMe(this);
         //this.cUser = new CUser(this);
-        let uq = this.uqs.BzWorkshop;
-        this.uqTagProps = {
-            uq,
-            TagGroup: uq.TagGroup,
-            Tag: uq.Tag,
-            TagItem: uq.TagItem,
-            IxTag: uq.IxTag,
-            IxIDTag: uq.IxGlobalIdTag,
-            groups: [
-                { name: 'workshop-tags', vice: 'Workshop tags' },
-                { name: 'client-tags', vice: 'Client tags' },
-                { name: 'staff-tags', vice: 'Staff tags' },
-            ],
-        }
     }
 
     openMain() {

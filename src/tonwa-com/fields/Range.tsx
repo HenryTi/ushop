@@ -1,6 +1,5 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { Band, BandProps, useBand } from '../band';
-import { useForm } from "../form";
+import { Band, BandProps, useBand, useBandContainer } from '../band';
 import { FieldProps, FieldItem } from '../fields';
 
 class RangeFieldItem implements FieldItem {
@@ -33,7 +32,7 @@ export function Range(props: RangeProps) {
     let input = useRef<HTMLInputElement>();
     let [value, setValue] = useState<number>();
     let band = useBand();
-    let form = useForm();
+    let form = useBandContainer();
     useEffect(() => {
         let { name } = props;
         let fieldItem = new RangeFieldItem(name, input.current, form.props.values?.[name]);

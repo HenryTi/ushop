@@ -1,5 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
-import { useBand, useBandContainer, checkRule } from '../band';
+import { useBand, useBandContainer } from '../band';
+import { checkRule } from './Rule';
 import { FieldProps, FieldItem } from '../fields';
 
 type CharInputBaseProps = {

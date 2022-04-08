@@ -1,4 +1,5 @@
-import { EnumString, strings, Band, BandProps } from '../band';
+import { Band, BandProps } from '../band';
+import { EnumRes, res } from '../res';
 import { CharInput } from "./CharInput";
 import { FieldProps, Rule } from '../fields';
 
@@ -58,17 +59,17 @@ function NumberInput(props: NumberProps & { chars: string; excludeChars: string;
     }
     function mustBeDecimal(val: any) {
         if (isValidNumber(val, excludeChars) === false) {
-            return strings[EnumString.rule_mustBeDecimal];
+            return res[EnumRes.rule_mustBeDecimal];
         }
     }
     function ruleMin(val: any) {
         if (belowMin(val, min) === true) {
-            return strings[EnumString.rule_belowMin] + min;
+            return res[EnumRes.rule_belowMin] + min;
         }
     }
     function ruleMax(val: any) {
         if (overMax(val, max) === true) {
-            return strings[EnumString.rule_overMax] + max;
+            return res[EnumRes.rule_overMax] + max;
         }
     }
     return <CharInput placeholder={placeholder} maxLength={maxLength}

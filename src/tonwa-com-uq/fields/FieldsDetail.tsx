@@ -6,11 +6,12 @@ interface Props extends FieldsBandsProps {
     values?: any;
     onValuesChanged?: OnValuesChanged;
     sep?: number | JSX.Element
+    children?: React.ReactNode;
 }
 export function FieldsDetail(props: Props) {
-    let { fields, replacer, className, values, onValuesChanged, children, sep } = props;
+    let { className, values, onValuesChanged, children, sep } = props;
     return <Detail className={className} values={values} onValuesChanged={onValuesChanged}>
-        {createBandsFromFields(fields, replacer, sep)}
+        {createBandsFromFields(props, sep)}
         {children}
     </Detail>;
 }

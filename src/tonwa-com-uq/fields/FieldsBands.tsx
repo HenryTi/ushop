@@ -1,22 +1,20 @@
 import React from "react";
 import { Pick, Int, Decimal, String, Band, TextArea } from "tonwa-com";
-import { Sep } from "tonwa-com";
 import { Field } from "tonwa-uq";
 
 export interface FieldsBandsProps {
     fields: Field[];
-    children?: React.ReactNode;
     replacer?: { [fieldName: string]: JSX.Element; }
 }
 export function createBandsFromFields(
-    fields: Field[],
-    replacer?: { [fieldName: string]: JSX.Element; },
+    props: FieldsBandsProps,
     sep?: number | JSX.Element
 ) {
     let count = 0;
+    let { fields, replacer } = props;
     return fields.map((v, index) => {
         let { name } = v;
-        if (name === 'id') return;
+        if (name === 'id') return null;
         ++count;
         let replace = replacer?.[name];
         if (replace) {

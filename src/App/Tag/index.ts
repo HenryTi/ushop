@@ -1,2 +1,2 @@
-export * from './PTag';
-export * from './VTagInput';
+export * from './TagPage';
+export * from './TagInput';

@@ -9,3 +9,4 @@ export * from './Radio';
 export * from './Range';
 export * from './CharInput';
 export * from './field';
+export * from './Rule';
