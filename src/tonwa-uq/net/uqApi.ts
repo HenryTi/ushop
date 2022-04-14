@@ -12,6 +12,8 @@ interface UqLocal {
 }
 
 export class UqApi extends ApiBase {
+    private inited = false;
+    private initingPromise: Promise<void>;
     uqOwner: string;
     uqName: string;
     uq: string;
@@ -25,19 +27,23 @@ export class UqApi extends ApiBase {
         }
     }
 
-    async init() {
-        await this.net.uqTokens.buildAppUq(this.uq, this.uqOwner, this.uqName);
+    private async init() {
+        if (this.inited === true) return;
+        if (!this.initingPromise) {
+            this.initingPromise = this.net.uqTokens.buildAppUq(this.uq, this.uqOwner, this.uqName);
+        }
+        await this.initingPromise;
+        this.inited = true;
     }
 
     protected async getHttpChannel(): Promise<HttpChannel> {
-        let channels: { [name: string]: HttpChannel | (PromiseValue<any>[]) };
-        channels = this.net.uqChannels;
-        let channel = channels[this.uq];
+        let { uqChannels } = this.net;
+        let channel = uqChannels[this.uq];
         if (channel !== undefined) {
             if (Array.isArray(channel) === false) return channel as HttpChannel;
         }
         else {
-            channel = channels[this.uq] = [];
+            channel = uqChannels[this.uq] = [];
         }
         let arr = channel as PromiseValue<any>[];
         return new Promise(async (resolve, reject) => {
@@ -52,7 +58,7 @@ export class UqApi extends ApiBase {
             let { url, token } = uqToken;
             this.token = token;
             channel = new HttpChannel(this.net, url, token);
-            channels[this.uq] = channel;
+            uqChannels[this.uq] = channel;
             for (let pv of arr) {
                 pv.resolve(channel);
             }

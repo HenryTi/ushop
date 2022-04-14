@@ -174,8 +174,8 @@ export function TestPage({ tick }: PTestProps) {
     </Page >;
 }
 
-function PickItemView({ value: item }: { value: any; }) {
-    let { id, name } = item;
+function PickItemView({ value }: { value: any; }) {
+    let { id, name } = value;
     return <div className="px-3 py-2">
         {id} {name}
     </div>;

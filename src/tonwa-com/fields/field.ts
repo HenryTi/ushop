@@ -4,12 +4,12 @@ export interface FieldProps {
     name: string;
     className?: string;
     readOnly?: boolean;
+    disabled?: boolean;
     rule?: Rule | Rule[];
     memo?: string | string[];
 }
 
 export interface FieldItem {
     name: string;
-    //input: HTMLInputElement;
     reset(): void;
 }

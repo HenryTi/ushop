@@ -15,12 +15,13 @@ export interface User extends Guest {
     id: number;
     name: string;
     nick?: string;
-	icon?: string;
-	roles?: {[uq:string]: string[]}
+    icon?: string;
+    roles?: { [uq: string]: string[] }
+    assigned?: string;
 }
 
 export function decodeUserToken(token: string): User {
-    let ret:any = jwtDecode(token);
+    let ret: any = jwtDecode(token);
     let user: User = {
         id: ret.id,
         name: ret.name,
@@ -31,7 +32,7 @@ export function decodeUserToken(token: string): User {
 }
 
 export function decodeGuestToken(token: string): Guest {
-    let ret:any = jwtDecode(token);
+    let ret: any = jwtDecode(token);
     let guest: Guest = {
         id: 0,
         guest: ret.guest,

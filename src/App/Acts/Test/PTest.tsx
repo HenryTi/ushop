@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ClickSuspense, Page } from "tonwa-controller";
+import { ButtonAsync, Page } from "tonwa-com";
 import { CTest } from "./CTest";
 
 export function PTest() {
@@ -17,18 +17,14 @@ export function PTest() {
             Test
             <div>
                 <button onClick={() => setCount(count + 1)}>test {count}</button>
-                <ClickSuspense promise={onTestSave}>
-                    <button className="btn btn-primary me-3"
-                        onClick={evt => { }}>
-                        save
-                    </button>
-                </ClickSuspense>
-                <ClickSuspense promise={onTestLoad}>
-                    <button className="btn btn-primary me-3"
-                        onClick={evt => { }}>
-                        load
-                    </button>
-                </ClickSuspense>
+                <ButtonAsync className="btn btn-primary me-3"
+                    onClick={onTestSave}>
+                    save
+                </ButtonAsync>
+                <ButtonAsync className="btn btn-primary me-3"
+                    onClick={onTestLoad}>
+                    load
+                </ButtonAsync>
             </div>
         </div>
     </Page>;

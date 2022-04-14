@@ -3,7 +3,7 @@ import { MutedSmall } from "tonwa-com";
 import { Form, Submit } from "tonwa-com";
 import { Band } from "tonwa-com";
 import { UqTag, Tag, TagWithItems } from "./UqTag";
-import { IDListEdit, useIdListEditContext } from "../ID";
+import { IDListEdit, useIdListEdit } from "../ID";
 
 interface Props {
     uqTag: UqTag;
@@ -14,7 +14,7 @@ interface Props {
 
 export function EditTagPage({ uqTag, tag, onRemoveTag, renderFields }: Props) {
     let nav = useNav();
-    let listEditContext = useIdListEditContext(tag.items);
+    let listEditContext = useIdListEdit(tag.items);
     let pageRight = <button className="btn btn-sm btn-outline-primary me-2" onClick={onRemoveTag}>
         <FA name="trash" /> Delete
     </button>;

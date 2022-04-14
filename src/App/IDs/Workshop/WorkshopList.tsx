@@ -1,10 +1,10 @@
 import { useEffect } from "react";
 import { Band, FA, LMR, Page, Submit, useNav } from "tonwa-com";
-import { FieldsDetail, FieldsForm, IDListEdit, RowIDNOInput, useIdListEditContext } from "tonwa-com-uq";
+import { FieldsDetail, FieldsForm, IDListEdit, BandIDNOInput, useIdListEdit } from "tonwa-com-uq";
 import { useUqApp } from "../../App";
 import { Workshop } from "uq-app/uqs/BzWorkshop";
 import { WorkshopItem } from "./WorkshopItem";
-import { TestPage } from "./TestPage";
+//import { TestPage } from "./TestPage";
 import { TagInput } from "App/Tag";
 import { SessionList } from "./SessionList";
 
@@ -25,7 +25,7 @@ export function WorkshopList(props: Props) {
             <FA name="angle-right" />
         </LMR>;
     }
-    let listEditContext = useIdListEditContext<Workshop>(undefined)
+    let listEditContext = useIdListEdit<Workshop>(undefined)
     useEffect(() => {
         async function loadList() {
             let { BzWorkshop } = app.uqs;
@@ -53,7 +53,7 @@ export function WorkshopList(props: Props) {
                 onSubmit: (data: Workshop) => Promise<void>;
             }) {
                 let replacer = {
-                    'no': <RowIDNOInput label="NO" name="no" ID={UqIDWorkshop} />,
+                    'no': <BandIDNOInput label="NO" name="no" ID={UqIDWorkshop} />,
                 }
                 return <FieldsForm className={className} fields={fields} replacer={replacer} values={values}>
                     <Band>
@@ -71,19 +71,17 @@ export function WorkshopList(props: Props) {
     let onEditItem = (item: Workshop): Promise<void> => {
         function EditPage() {
             let { id } = item;
-            async function onValuesChanged(values: { name: string; value: any; preValue: any; }[]) {
+            async function onValuesChanged(values: { name: string; value: any; preValue: any; }) {
                 let newItem = { ...item };
-                for (let v of values) {
-                    let { name, value } = v;
-                    (newItem as any)[name] = value;
-                    switch (name) {
-                        default:
-                            await BzWorkshop.ActIDProp(UqIDWorkshop, id, name, value);
-                            break;
-                        case 'staff':
-                            await BzWorkshop.SaveWorkshopStaff.submit({ id, staff: value });
-                            break;
-                    }
+                let { name, value } = values;
+                (newItem as any)[name] = value;
+                switch (name) {
+                    default:
+                        await BzWorkshop.ActIDProp(UqIDWorkshop, id, name, value);
+                        break;
+                    case 'staff':
+                        await BzWorkshop.SaveWorkshopStaff.submit({ id, staff: value });
+                        break;
                 }
                 listEditContext.onItemChanged(newItem);
             }
@@ -93,7 +91,8 @@ export function WorkshopList(props: Props) {
                     fields={fields}
                     onValuesChanged={onValuesChanged}>
                 </FieldsDetail>
-                <TagInput id={id} className="mx-3 my-3 border-2 border-top border-bottom" />
+                <TagInput id={id} className="mx-3 my-3 border-2 border-top border-bottom"
+                    tagGroupName="workshop-tags" />
                 <SessionList workshop={item} />
             </Page>;
         }
@@ -106,7 +105,6 @@ export function WorkshopList(props: Props) {
     </button>;
 
     return <Page header={caption} right={right}>
-        <button className="btn btn-primary" onClick={() => nav.open(<TestPage />)}>test</button>
         <IDListEdit context={listEditContext} itemKey="id" ItemView={ItemView} onItemClick={onEditItem} />
     </Page>;
 }

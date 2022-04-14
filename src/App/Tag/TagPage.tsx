@@ -1,9 +1,15 @@
 import { TagPageBase } from 'tonwa-com-uq';
 import { useUqTag } from './useUqTag';
 
-export function TagPage() {
+interface Props {
+    caption: string;
+    icon: string;
+    iconClass: string;
+}
+
+export function TagPage({ caption, icon, iconClass }: Props) {
     let uqTag = useUqTag();
     return <TagPageBase uqTagProps={uqTag}
-        caption="Tags admin"
-        icon="tag" iconClass="text-info" />;
+        caption={caption}
+        icon={icon} iconClass={iconClass} />;
 }

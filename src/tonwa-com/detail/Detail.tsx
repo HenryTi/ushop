@@ -2,18 +2,14 @@ import React, { useContext, useRef } from "react";
 import { FA, Sep } from "../coms";
 import { Form, Submit } from "../form";
 import { Page, useNav } from "../page";
-import { Band, BandContainerContext, BandContainerProps, BandFieldErrors, BandMemos, BandTemplateProps, OnValuesChanged, useBand, useBandContainer, VBandContainerContext } from "../band";
+import { Band, BandContainerContext, BandContainerProps, BandContentType, BandFieldErrors, BandMemos, BandTemplateProps, useBand, useBandContainer, VBandContainerContext } from "../band";
 
 interface DetailProps extends BandContainerProps {
-    onValuesChanged?: OnValuesChanged;
 }
 
 class DetailContext extends BandContainerContext<DetailProps> {
     get isDetail(): boolean {
         return true;
-    }
-    protected async internalValuesChanged(values: { name: string; value: any; preValue: any; }[]) {
-        await this.props.onValuesChanged?.(values);
     }
 }
 
@@ -39,15 +35,27 @@ function DefaultBandTemplate(props: BandTemplateProps) {
     let nav = useNav();
     let bandContainer = useBandContainer();
     let band = useBand();
-    let { label, children, errors, memos, onEdit, content, sep, isCheck } = props;
-    let labelContent = isCheck === true ? null : <b>{label}</b>;
-    let vLabel = <label className="col-sm-2 col-form-label text-sm-end tonwa-bg-gray-1 border-end">
+    let { label, children, errors, memos, onEdit, content, sep, contentType, rightIcon } = props;
+    let labelContent = contentType === BandContentType.check ? null : <b>{label}</b>;
+    let vLabel = <label className="col-sm-2 col-form-label text-sm-end tonwa-bg-gray-1 border-end align-self-center">
         {labelContent}
     </label>;
     let cnContent = 'col-sm-10 d-flex pe-0';
-    let vEdit: any;
+    function RightIcon({ icon, onEdit }: { icon: JSX.Element; onEdit: () => Promise<void>; }) {
+        return <div onClick={onEdit}
+            className="px-3 align-self-stretch d-flex align-items-center cursor-pointer"
+        >
+            {icon ?? <FA name="pencil" className="text-info" />}
+        </div>;
+    }
+
     if (band.readOnly === true) {
-        vEdit = null;
+        rightIcon = null;
+    }
+    else if (contentType === BandContentType.com) {
+        if (onEdit) {
+            rightIcon = <RightIcon onEdit={onEdit} icon={rightIcon} />;
+        }
     }
     else {
         onEdit = onEdit ?? async function () {
@@ -57,11 +65,7 @@ function DefaultBandTemplate(props: BandTemplateProps) {
                 onValuesChanged={bandContainer.onValuesChanged}
             />);
         }
-        vEdit = <div onClick={onEdit}
-            className="px-3 align-self-stretch d-flex align-items-center cursor-pointer"
-        >
-            <FA name="pencil-square-o" className="text-primary" />
-        </div>;
+        rightIcon = <RightIcon onEdit={onEdit} icon={rightIcon} />;
     }
     return <>
         <Sep sep={sep} />
@@ -73,7 +77,7 @@ function DefaultBandTemplate(props: BandTemplateProps) {
                     <BandFieldErrors errors={errors} />
                     <BandMemos memos={memos} />
                 </div>
-                {vEdit}
+                {rightIcon}
             </div>
         </div>
     </>;

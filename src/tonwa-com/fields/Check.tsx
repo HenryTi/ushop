@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef } from "react";
-import { Band, BandProps, useBand, useBandContainer } from '../band';
-import { FieldProps, FieldItem } from '../fields';
+import { Band, BandContentType, BandProps, useBand, useBandContainer } from '../band';
+import { FieldProps, FieldItem } from './field';
 import { useSnapshot } from "valtio";
 
 type CheckInputProps = {
@@ -49,8 +49,8 @@ function CheckInput({ name, id, readOnly, indeterminate, checkedValue, unchecked
             input.current.indeterminate = true;
         }
         if (band) {
-            let { fields } = band;
-            fields[name] = true;
+            let { fields: bandFields } = band;
+            bandFields[name] = true;
         }
         let { props, fields } = bandContainer;
         let initChecked = props.values?.[name] === (checkedValue ?? true)
@@ -89,7 +89,7 @@ export function Check(props: CheckProps) {
 
 export function BandCheck(props: BandProps & CheckProps) {
     let { label } = props;
-    return <Band {...props} isCheck={true}>
+    return <Band {...props} contentType={BandContentType.check}>
         <Check {...props} label={label} />
     </Band>;
 }

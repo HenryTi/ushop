@@ -58,7 +58,7 @@ export class UQsMan {
 	}
 
 	async init(uqsData: UqData[]): Promise<void> {
-		let promiseInits: PromiseLike<void>[] = [];
+		//let promiseInits: PromiseLike<void>[] = [];
 		for (let uqData of uqsData) {
 			let { uqOwner, ownerAlias, uqName, uqAlias } = uqData;
 
@@ -72,7 +72,7 @@ export class UQsMan {
 			else {
 				uq = new UqMan(this.net, uqData/*, undefined, this.tvs[uqFullName] || this.tvs[uqName]*/);
 				this.collection[uqFullName] = uq;
-				promiseInits.push(uq.init());
+				//promiseInits.push(uq.init());
 			}
 			this.uqMans.push(uq);
 			let lower = uqFullName.toLowerCase();
@@ -85,7 +85,7 @@ export class UQsMan {
 			lower = uqFullName.toLowerCase();
 			this.collection[lower] = uq;
 		}
-		await Promise.all(promiseInits);
+		//await Promise.all(promiseInits);
 	}
 
 	async load(): Promise<string[]> {

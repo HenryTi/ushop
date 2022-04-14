@@ -6,6 +6,10 @@
   margin-left: auto;
 }
 
+.fs-big {
+  font-size: 1.25em;
+}
+
 div.tonwa-list-item:hover {
   background-color: #f0f0f0;
   opacity: 0.9;

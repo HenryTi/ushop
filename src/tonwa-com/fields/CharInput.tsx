@@ -1,12 +1,14 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { useBand, useBandContainer } from '../band';
 import { checkRule } from './Rule';
-import { FieldProps, FieldItem } from '../fields';
+import { FieldProps, FieldItem } from './field';
+import { useSnapshot } from "valtio";
 
 type CharInputBaseProps = {
     placeholder: string;
     maxLength: number;
     isValidKey?: (key: string) => boolean;
+    type?: string;
 } & FieldProps;
 
 class CharFieldItem implements FieldItem {
@@ -31,21 +33,23 @@ export function CharInput(props: CharInputBaseProps) {
     return <CharInputBase {...props} initValue={initValue} />
 }
 
-export function CharInputBase({ name, className, readOnly, placeholder, maxLength, rule, isValidKey, initValue }
+export function CharInputBase({ name, className, readOnly, placeholder, maxLength, rule, isValidKey, initValue, type, disabled }
     : CharInputBaseProps & { initValue: any; }) {
     let input = useRef<HTMLInputElement>();
     let [hasError, setHasError] = useState(false);
     let band = useBand();
     let bandContainer = useBandContainer();
+    let { props, fields, fieldStates } = bandContainer;
+    let fieldState = useSnapshot(fieldStates[name]);
+    readOnly = (fieldState?.readOnly) ?? readOnly ?? props.readOnly ?? false;
     useEffect(() => {
         if (!band) return;
-        let { fields } = band;
-        fields[name] = true;
-        let { fields: formFields, props } = bandContainer;
-        formFields[name] = new CharFieldItem(name, input.current, props.values?.[name]);
-    }, [band, bandContainer, name]);
-    let { props } = bandContainer;
-    readOnly = readOnly ?? props.readOnly ?? false;
+        let { fields: bandFields } = band;
+        bandFields[name] = true;
+        let { props, fieldStates } = bandContainer;
+        fields[name] = new CharFieldItem(name, input.current, props.values?.[name]);
+        Object.assign(fieldStates[name], { readOnly, disabled });
+    }, [band, bandContainer, name, fields, disabled, readOnly]);
     let cn = className ?? props.stringClassName ?? bandContainer.defaultStringClassName ?? '';
     if (hasError === true) cn += ' is-invalid';
     if (readOnly === true) {
@@ -73,8 +77,9 @@ export function CharInputBase({ name, className, readOnly, placeholder, maxLengt
             return false;
         }
     }
-    return <input ref={input} name={name} type="text"
+    return <input ref={input} name={name} type={type ?? 'text'}
         className={cn}
+        disabled={fieldState?.disabled}
         readOnly={readOnly}
         onFocus={onFocus} onBlur={onBlur} onBeforeInput={onBeforeInput}
         onChange={onChange}

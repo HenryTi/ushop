@@ -22,17 +22,10 @@ export class StackNav<T extends StackItem> {
     };
     private callStack: ((value: any | PromiseLike<any>) => void)[] = [];
     private pageKeyNO: number;
-    constructor(initPage: React.ReactNode) {
+    constructor() {
         this.pageKeyNO = 0;
-        let stack = [];
-        if (initPage) {
-            stack.push(ref({
-                key: String(++this.pageKeyNO),
-                page: <>{initPage}</>,
-            } as T));
-        }
         this.data = proxy({
-            stack,
+            stack: [],
         });
     }
 
@@ -44,7 +37,7 @@ export class StackNav<T extends StackItem> {
                 if (isWaiting === undefined) return;
                 this.open(<Waiting />);
                 isWaiting = true;
-            }, 100);
+            }, 200);
             promise.then(async (pg) => {
                 if (isWaiting === true) {
                     this.close();
@@ -58,7 +51,7 @@ export class StackNav<T extends StackItem> {
         this.internalOpen(page, onClose);
     }
 
-    private internalOpen(page: JSX.Element, onClose?: () => boolean): void {
+    protected internalOpen(page: JSX.Element, onClose?: () => boolean): void {
         let pageItem = {
             key: String(++this.pageKeyNO),
             page, onClose,
@@ -121,9 +114,10 @@ export class Nav extends StackNav<StackItem> {
     readonly tabNav: TabNav;
 
     constructor(appNav: AppNav, tabNav: TabNav, initPage: React.ReactNode) {
-        super(initPage);
+        super();
         this.appNav = appNav;
         this.tabNav = tabNav;
+        this.internalOpen(initPage as JSX.Element);
     }
 
     navigate(to: To, options?: NavigateOptions) {

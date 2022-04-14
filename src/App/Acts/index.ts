@@ -1,1 +1,1 @@
-export * from './PActs';
+export * from './ActsPage';

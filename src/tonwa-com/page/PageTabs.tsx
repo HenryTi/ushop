@@ -6,6 +6,7 @@ interface TabObject {
     name: string;
     tag: string | JSX.Element;
     content: JSX.Element;
+    mountable: boolean;         // 只有在点击tab之后，才初始化
 }
 
 interface TabProps {
@@ -18,7 +19,7 @@ export function Tab(props: TabProps): JSX.Element {
     return null;
 }
 
-function createTabsFromChildren(children: React.ReactNode) {
+function createTabsFromChildren(children: React.ReactNode, active: number) {
     let tabs: TabObject[] = [];
     React.Children.forEach(children, (element) => {
         if (React.isValidElement(element) === false) return;
@@ -34,9 +35,14 @@ function createTabsFromChildren(children: React.ReactNode) {
             name: props.name,
             tag: props.tag,
             content: <>{props.children}</>,
+            mountable: false,
         };
         tabs.push(tab);
     });
+    let tabActive = tabs[active];
+    if (tabActive) {
+        tabActive.mountable = true;
+    }
     return tabs;
 }
 
@@ -46,21 +52,27 @@ interface PageTabsProps {
 
 export function PageTabs(props: PageTabsProps) {
     let divRef = useScroll();
-    let { current: tabs } = useRef(createTabsFromChildren(props.children));
     let tabProxy = useRef(proxy({ active: 0 }));
     let { active } = useSnapshot(tabProxy.current);
+    let { current: tabs } = useRef(createTabsFromChildren(props.children, active));
+    function onTabClick(tabIndex: number) {
+        tabProxy.current.active = tabIndex;
+        let tab = tabs[tabIndex];
+        if (!tab) return;
+        tab.mountable = true;
+    }
     return <InScrollContext.Provider value={true}>
         <div className="flex-grow-1 d-flex flex-column" style={{ overflowY: 'scroll' }}>
             <div ref={divRef} className="tonwa-page-content tab-content flex-grow-1">
                 {tabs.map((v, index) => <div key={v.name}
                     className={'tab-pane ' + (active === index ? 'active' : '')}>
-                    {v.content}
+                    {v.mountable === true && v.content}
                 </div>)}
             </div>
             <ul className="nav nav-tabs position-sticky tonwa-page-container justify-content-evenly bg-light" style={{ bottom: '0' }}>
                 {tabs.map((v, index) => <li key={v.name} className="nav-item flex-fill align-self-stretch">
                     <div
-                        onClick={() => tabProxy.current.active = index}
+                        onClick={() => onTabClick(index)}
                         className={'nav-link h-100 p-0 ' + (index === active ? 'active' : 'cursor-pointer')}>
                         {v.tag}
                     </div>

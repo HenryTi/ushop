@@ -6,13 +6,15 @@ import { UqTagProps, useUqTag, Tag, TagGroup, TagWithItems, UqTag } from "./UqTa
 interface Props {
     uqTagProps: UqTagProps;
     id: number;                 // ID id, id 对应的 tags
-    tagGroupName: string;
     className?: string;
+    tagGroupName: string;
     BandTemplate?: (props: BandTemplateProps) => JSX.Element;
+    top?: JSX.Element;
+    bottom?: JSX.Element;
 }
 
 export function TagInputBase(props: Props) {
-    let { uqTagProps, id, tagGroupName, className, BandTemplate } = props;
+    let { uqTagProps, id, tagGroupName, className, BandTemplate, top, bottom } = props;
     let uqTag = useUqTag(uqTagProps);
     let [tg, setTg] = useState<[TagGroup, { [id: number]: boolean }]>(null);
     useEffect(() => {
@@ -30,12 +32,16 @@ export function TagInputBase(props: Props) {
     let { tags } = tagGroup;
     if (tags.length === 0) return null;
     BandTemplate = BandTemplate ?? DefaultBandTemplate;
-    return <div className={className}>
-        {tags.map((v, index) => <TagItemInput key={index} sep={index === 0 ? null : undefined}
-            uqTag={uqTag} tag={v} id={id}
-            idTagValues={idTagValues}
-            BandTemplate={BandTemplate} />)}
-    </div>;
+    return <>
+        {top}
+        <div className={className}>
+            {tags.map((v, index) => <TagItemInput key={index} sep={index === 0 ? null : undefined}
+                uqTag={uqTag} tag={v} id={id}
+                idTagValues={idTagValues}
+                BandTemplate={BandTemplate} />)}
+        </div>
+        {bottom}
+    </>;
 }
 
 interface TagItemInputProps {
@@ -97,7 +103,7 @@ function TagItemInput({ uqTag, tag, id, idTagValues, BandTemplate, sep }: TagIte
         }
     }
 
-    let renderTagItem = (tag: TagWithItems, item: Tag, index: number): JSX.Element => {
+    function TagItem({ tag, item, index }: { tag: TagWithItems; item: Tag; index: number; }): JSX.Element {
         let { id, single, name } = tag;
         let type: string;
         let radioName: string;
@@ -109,7 +115,7 @@ function TagItemInput({ uqTag, tag, id, idTagValues, BandTemplate, sep }: TagIte
             type = 'checkbox';
         }
         let checked = tagArr[index];
-        return <label key={id} className="w-min-8c me-3 my-2 form-check-label">
+        return <label className="w-min-8c me-3 my-2 form-check-label">
             <input className="form-check-input me-2"
                 type={type}
                 name={radioName}
@@ -120,16 +126,8 @@ function TagItemInput({ uqTag, tag, id, idTagValues, BandTemplate, sep }: TagIte
         </label>;
     }
     return <BandTemplate label={name} errors={undefined} memos={undefined} content={undefined} sep={sep} >
-        {items.map((item: Tag, index: number) => renderTagItem(tag, item, index))}
+        {items.map((item: Tag, index: number) => <TagItem tag={tag} item={item} index={index} />)}
     </BandTemplate>;
-    /*
-    <div className="row mb-1 py-2 bg-white">
-        <div className="col-2 ps-3 pt-1">{name}</div>
-        <div className="col-10">
-            {items.map((item: Tag, index: number) => renderTagItem(tag, item, index))}
-        </div>
-    </div>
-    */
 }
 
 function DefaultBandTemplate(props: BandTemplateProps) {

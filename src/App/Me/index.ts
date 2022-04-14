@@ -1,1 +1,1 @@
-export { VMe } from './VMe';
+export { MeLink } from './MeLink';

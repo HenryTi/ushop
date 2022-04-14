@@ -1,21 +1,11 @@
-import { User, VUser } from "tonwa-controller";
+import { UserView } from "tonwa-com-uq";
 import { LMR } from "tonwa-react";
 import { MPerson } from "./UqPerson";
 
-export function PersonView({ value: item }: { value: MPerson; }) {
-    let { no, name, firstName, lastName, middleName, user } = item;
-    let vUser: any;
-    if (user) {
-        let renderUser = (user: User) => {
-            let { name } = user;
-            return <span className="ms-4">
-                user:  {name}
-            </span>;
-        };
-        vUser = <VUser id={user} render={renderUser} />;
-    }
+export function PersonView({ value }: { value: MPerson; }) {
+    let { no, name, firstName, lastName, middleName, user } = value;
     return <>
-        <div className="small text-muted me-3">{no} {vUser}</div>
+        <div className="small text-muted me-3">{no} <UserView id={user} /></div>
         <div>
             {name ?? <>{lastName} {middleName} {firstName}</>}
         </div>

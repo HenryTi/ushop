@@ -1,74 +1,24 @@
-import React, { useContext } from 'react';
-import { User } from 'tonwa-uq';
-import { AppBase, openPage, UserApi } from "tonwa-controller";
-import { AppContainer, AppNav, useAppNav } from "tonwa-com";
+import { useContext } from 'react';
+import { AppContainer } from "tonwa-com";
+import { AppConfig, AutoRefresh, UqAppBase, UqAppContext } from 'tonwa-com-uq';
 import { UQs } from "uq-app";
 import { Role } from "uq-app/uqs/BzWorkshop";
-//import { Acts } from "./Acts";
-//import { CIds } from "./IDs";
-//import { CMe } from "./CMe";
-//import { CTag } from "./CTag";
-import { AutoRun } from "./tool";
-import { Db } from './db';
-import { PMain } from './PMain';
-import { tonwa } from 'tonwa-core';
 import { AppRoutes } from './AppWithPageStack';
 //import { AppRoutes } from './AppWithTabs';
-import { TonwaReact } from 'tonwa-react';
 
 type Roles = { [role in Role]: number };
 
-export class App extends AppBase {
-    private autoRun: AutoRun;
-    private appNav: AppNav;
-    db: Db;
-    user: User;
+export class App extends UqAppBase<UQs> {
+    private autoRefresh: AutoRefresh;
     meAdmin: boolean;
     meRoles: Roles;
-    uqs: UQs;
-    //cTag: CTag;
-    //cActs: CActs;
-    //cIds: CIds;
-    //cMe: CMe;
-    //cUser: CUser;
 
-    userApi: UserApi;
-
-    protected get nav(): AppNav {
-        return this.appNav;
-    }
-
-    setNav(nav: AppNav) {
-        this.appNav = nav;
-    }
-
-    init(uqs: UQs, nav: AppNav) {
-        this.db = new Db(uqs);
-        this.appNav = nav;
-        let poked = uqs.BzWorkshop.$poked.query(undefined, undefined, false);
-        let autoLoader: Promise<any> = undefined; // new Promise<any>((resolve, reject) => { });
-        this.autoRun = new AutoRun(poked, autoLoader);
-        this.uqs = uqs;
-        //this.cTag = new CTag(this);
-        //this.cActs = new CActs(this);
-        //this.cIds = new CIds(this);
-        //this.cMe = new CMe(this);
-        //this.cUser = new CUser(this);
-    }
-
-    openMain() {
-        this.autoRun.start();
-        /*
-        let ret = routers(this);
-        if (ret === true) return;
-        if (!this.user) {
-            this.nav?.openLogin();
-            return;
-        }
-        */
-        //let cMain = new CMain(this);
-        //cMain.openMain();
-        openPage(<PMain />);
+    async init(appConfig: AppConfig): Promise<any> {
+        await super.init(appConfig);
+        let poked = () => this.uqs.BzWorkshop.$poked.query(undefined, undefined, false);
+        let autoLoader: Promise<any> = undefined;
+        this.autoRefresh = new AutoRefresh(poked, autoLoader);
+        this.autoRefresh.start();
     }
 
     isRole(...roles: Role[]): boolean {
@@ -81,6 +31,7 @@ export class App extends AppBase {
 
     isAdminOrRole(...roles: Role[]): boolean {
         if (this.meAdmin === true) return true;
+        if (!roles) return false;
         return this.isRole(...roles);
     }
 
@@ -91,7 +42,7 @@ export class App extends AppBase {
         return false;
     }
 
-    async loadBaseData() {
+    protected async loadBaseData() {
         let { BzWorkshop } = this.uqs;
         let ret = await Promise.all([
             //this.cIds.load(),
@@ -136,15 +87,11 @@ export class App extends AppBase {
     }
 }
 
-const UqAppContext = React.createContext<App>(undefined);
 export function useUqApp() {
-    return useContext(UqAppContext);
+    return useContext<App>(UqAppContext);
 }
 
 export function AppRoot({ uqApp }: { uqApp: App }) {
-    let appNav = useAppNav();
-    //(tonwa as TonwaReact).setPageNav(appNav);
-    uqApp.setNav(appNav);
     return <UqAppContext.Provider value={uqApp}>
         <AppContainer>
             <AppRoutes />

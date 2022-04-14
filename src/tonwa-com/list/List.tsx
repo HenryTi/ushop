@@ -1,4 +1,4 @@
-import React, { ChangeEvent } from "react";
+import React, { ChangeEvent, useEffect, useState } from "react";
 import { Sep, Spinner } from "../coms";
 
 interface ItemProps<T> {
@@ -21,9 +21,16 @@ export interface ListProps<T> extends ListPropsWithoutItems<T> {
 }
 
 export function List<T>(props: ListProps<T>) {
+    let [showLoading, setShowLoding] = useState(false);
     let { items, className, itemKey, ItemView, onItemClick, onItemSelect, sep, none, loading } = props;
     className = className ?? '';
+    useEffect(() => {
+        setTimeout(() => {
+            setShowLoding(true);
+        }, 200);
+    }, []);
     if (!items) {
+        if (showLoading === false) return null;
         if (loading) return loading;
         return <Spinner className="mx-3 my-2 text-primary" />;
     }
@@ -103,7 +110,7 @@ export function List<T>(props: ListProps<T>) {
 }
 
 function DefaultItemView<T>(itemProps: ItemProps<T>) {
-    let { value: item } = itemProps;
+    let { value } = itemProps;
     let cn = 'px-3 py-2';
-    return <div className={cn}>{JSON.stringify(item)}</div>;
+    return <div className={cn}>{JSON.stringify(value)}</div>;
 }

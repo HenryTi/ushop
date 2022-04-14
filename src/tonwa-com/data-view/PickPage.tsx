@@ -1,10 +1,7 @@
 import { useNav, Page } from "../page";
 import { List } from '../list';
-import { useEffect, useState } from "react";
 
-export type ItemsQuery<T> = (pageStart?: any, pageSize?: number) => Promise<T[]>;
-
-interface PickProps<T> {
+export interface PickPagePropsBase<T> {
     header: string | JSX.Element;
     className?: string;
     ItemView: (props: { value: T; }) => JSX.Element;
@@ -12,7 +9,7 @@ interface PickProps<T> {
     bottom?: JSX.Element;
 }
 
-interface PickPageProps<T> extends PickProps<T> {
+interface PickPageProps<T> extends PickPagePropsBase<T> {
     items: T[];
 }
 
@@ -30,29 +27,4 @@ export function PickPage<T>({ header, className, ItemView, items, top, bottom }:
             onItemClick={onItemClick} />
         {bottom}
     </Page>
-}
-
-interface PickFromQueryProps<T> extends PickProps<T> {
-    query: ItemsQuery<T>;
-}
-
-export function PickFromQuery<T>(props: PickFromQueryProps<T>) {
-    let { query } = props;
-    let [items, setItems] = useState<T[]>(undefined);
-    useEffect(() => {
-        async function load() {
-            let ret = await query();
-            setItems(ret);
-        }
-        load();
-    }, [query]);
-    return <PickPage {...props} items={items} />;
-}
-
-export function PickInfiniteScroll<T>(props: PickFromQueryProps<T>) {
-
-}
-
-export function PickPrevNext<T>(props: PickFromQueryProps<T>) {
-
 }

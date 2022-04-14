@@ -61,8 +61,8 @@ let tabNo = 0;
 
 export function AppWithTabs() {
     let appNav = useAppNav();
-    let { user } = useSnapshot(appNav.response);
-    if (!user) {
+    let { isLogined } = useSnapshot(appNav.response);
+    if (isLogined !== true) {
         return <AppLogin />;
     }
     return <AppTabsContainer>

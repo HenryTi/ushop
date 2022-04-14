@@ -1,1 +1,1 @@
-export * from './CClientNotes';
+export * from './ClientNotesLink';

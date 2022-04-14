@@ -1,5 +1,5 @@
 import { CenterApiBase } from "./uqApi";
-import { decodeUserToken, decodeGuestToken } from '../tool';
+import { decodeUserToken, decodeGuestToken, User } from '../tool';
 
 export interface RegisterParameter {
     nick: string,
@@ -29,6 +29,10 @@ export class UserApi extends CenterApiBase {
     }
     async register(params: RegisterParameter): Promise<any> {
         return await this.post('user/register', params);
+    }
+
+    async changePassword(param: { orgPassword: string, newPassword: string }) {
+        return await this.post('tie/change-password', param);
     }
 
     async sendVerify(account: string, type: 'mobile' | 'email', oem: string) {
@@ -77,5 +81,23 @@ export class UserApi extends CenterApiBase {
 
     async userQuit(): Promise<void> {
         await this.get('tie/user-ask-quit', {});
+    }
+    async userAppUnits(app: number): Promise<any[]> {
+        return await this.get('tie/user-app-units', { app: app });
+    }
+    async userFromKey(userName: string): Promise<User> {
+        return await this.get('tie/user-from-key', { key: userName });
+    }
+    async userFromId(userId: number): Promise<any> {
+        return await this.get('user/user-name-nick-icon-from-id', { userId: userId });
+    }
+    async userFromName(userName: string): Promise<User> {
+        return await this.get('tie/user-from-key', { key: userName });
+    }
+    async usersFromEmail(email: string): Promise<any> {
+        return await this.get('tie/users-from-email', { email });
+    }
+    async userFromMobile(mobile: string): Promise<User> {
+        return await this.get('tie/users-from-mobile', { mobile });
     }
 }

@@ -77,7 +77,7 @@ export interface ParamActIX<T> {
 	IX: IX;
 	ID?: ID;
 	IXs?: { IX: IX, ix: number }[];				// 一次写入多个IX
-	values: { ix: number, xi: number | T }[];
+	values: { ix: number | T, xi: number | T }[];
 }
 
 export interface ParamActIXSort {
@@ -296,9 +296,6 @@ export class UqMan {
 	private readonly pendings: { [name: string]: Pending } = {};
 	private readonly tuidsCache: TuidsCache;
 	private readonly localEntities: LocalCache;
-	idCache: IDCache;
-	proxy: any;
-	$proxy: any;
 	readonly localMap: LocalMap;
 	readonly localModifyMax: LocalCache;
 	readonly tuids: { [name: string]: Tuid } = {};
@@ -306,9 +303,12 @@ export class UqMan {
 	readonly uqOwner: string;
 	readonly uqName: string;
 	readonly name: string;
-	readonly uqApi: UqApi;
 	readonly id: number;
 	readonly net: Net;
+	readonly uqApi: UqApi;
+	idCache: IDCache;
+	proxy: any;
+	$proxy: any;
 
 	uqVersion: number;
 	config: UqConfig;
@@ -325,10 +325,9 @@ export class UqMan {
 		this.localMap = net.localDb.createLocalMap(this.name);
 		this.localModifyMax = this.localMap.child('$modifyMax');
 		this.localEntities = this.localMap.child('$access');
-		let baseUrl = 'tv/';
-
-		this.uqApi = new UqApi(this.net, baseUrl, uqOwner, uqName);
 		this.tuidsCache = new TuidsCache(this);
+		let baseUrl = 'tv/';
+		this.uqApi = new UqApi(this.net, baseUrl, this.uqOwner, this.uqName);
 	}
 
 	getID(name: string): ID { return this.ids[name.toLowerCase()]; };
@@ -382,11 +381,13 @@ export class UqMan {
 	readonly mapArr: Map[] = [];
 	readonly historyArr: History[] = [];
 	readonly pendingArr: Pending[] = [];
-
-	async init() {
-		await this.uqApi.init();
-	}
-
+	/*
+		private async initUqApi() {
+			if (!this.uqApi) {
+				await this.uqApi.init();
+			}
+		}
+	*/
 	async loadEntities(): Promise<string> {
 		try {
 			let entities = this.localEntities.get();

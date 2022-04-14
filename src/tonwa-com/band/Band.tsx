@@ -4,24 +4,29 @@ import { BandContext, VBandContext } from './BandContext';
 import { FA } from '../coms';
 import { useBandContainer } from './BandContainer';
 
-export interface BandProps {
+export enum BandContentType {
+    check,      // checkbox
+    com,        // component
+};
+
+interface BandBaseProps {
     label?: string | JSX.Element;
-    BandTemplate?: (props: BandTemplateProps) => JSX.Element;
     onEdit?: () => Promise<void>;
     sep?: number | JSX.Element;
-    isCheck?: boolean;
-    // detailContent?: JSX.Element;
+    contentType?: BandContentType;
+    rightIcon?: JSX.Element;
+    contentContainerClassName?: string;
 }
 
-export interface BandTemplateProps {
-    label: string | JSX.Element;
+export interface BandProps extends BandBaseProps {
+    BandTemplate?: (props: BandTemplateProps) => JSX.Element;
+}
+
+export interface BandTemplateProps extends BandBaseProps {
     errors: readonly { readonly name: string; readonly error: string }[];
     memos: string[];
     children: React.ReactNode;
     content: React.ReactNode;
-    onEdit?: () => Promise<void>;
-    sep?: number | JSX.Element;
-    isCheck?: boolean;
 }
 
 export function BandFieldError({ error }: { error: string; }) {
@@ -120,7 +125,7 @@ function Value({ name }: { name: string; }) {
 }
 
 export function Band(props: BandProps & { children: React.ReactNode; }) {
-    let { label, children, BandTemplate, sep, isCheck } = props;
+    let { label, children, BandTemplate, sep, contentType, onEdit, rightIcon, contentContainerClassName } = props;
     let content = children;
     let bandContainer = useBandContainer();
     let memos: string[] = buildMemosFromChildren(children);
@@ -130,24 +135,40 @@ export function Band(props: BandProps & { children: React.ReactNode; }) {
         return <div>Error: {'<Band /> can only be in <Form />'}</div>;
     }
     BandTemplate = BandTemplate ?? bandContainer.BandTemplate;
-    if (bandContainer.isDetail === true) {
-        if (isCheck === true) {
-            children = <div className='py-2'>{children}</div>
-        }
-        else {
-            let [newChildren, readOnly] = buildDetailChildren(children);
-            children = <>{newChildren}</>;
-            if (readOnly === true)
-                band.readOnly = true;
-            else if (bandContainer.readOnly === true) {
-                band.readOnly = true;
+    switch (contentType) {
+        case BandContentType.com:
+            break;
+        default:
+            if (bandContainer.isDetail === true) {
+                switch (contentType) {
+                    case BandContentType.check:
+                        children = <div className='py-2'>{children}</div>
+                        break;
+                    default:
+                        let [newChildren, readOnly] = buildDetailChildren(children);
+                        children = <>{newChildren}</>;
+                        if (readOnly === true)
+                            band.readOnly = true;
+                        else if (bandContainer.readOnly === true) {
+                            band.readOnly = true;
+                        }
+                        break;
+                }
             }
-        }
+            break;
     }
     return <VBandContext.Provider value={band}>
         <BandTemplate label={label} errors={errors} memos={band.memos}
-            content={content} sep={sep} isCheck={isCheck}>
+            content={content} sep={sep} contentType={contentType}
+            onEdit={onEdit} rightIcon={rightIcon}
+            contentContainerClassName={contentContainerClassName}>
             {children}
         </BandTemplate>
     </VBandContext.Provider>;
+}
+
+export function BandCom(props: BandProps & { children: React.ReactNode; }) {
+    return <Band {...props} contentType={BandContentType.com}>
+        {props.children}
+    </Band>;
 }

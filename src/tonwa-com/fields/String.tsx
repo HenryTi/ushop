@@ -1,5 +1,5 @@
 import { Band, BandProps } from '../band';
-import { FieldProps } from '../fields';
+import { FieldProps } from './field';
 import { CharInput } from "./CharInput";
 
 interface StringProps extends FieldProps {

@@ -1,4 +1,4 @@
-import { Login, Logout, Register } from "tonwa-auth";
+import { Login, Logout, Register } from "tonwa-com-uq";
 import { LoginTop, Privacy } from "tonwa-image";
 
 export function AppLogin() {

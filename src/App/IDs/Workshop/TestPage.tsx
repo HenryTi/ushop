@@ -1,5 +1,5 @@
 import { useUqApp } from "App/App";
-import { Form, Page, Pick, PickFromQuery, useNav } from "tonwa-com";
+import { Form, Page, Pick, PickQueryPage, useNav } from "tonwa-com";
 import { IDValue } from "tonwa-com-uq";
 import { Person, Role } from "uq-app/uqs/BzWorkshop";
 
@@ -12,14 +12,14 @@ export function TestPage() {
             return result.ret;
         }
         return await nav.call(
-            <PickFromQuery header="please click return"
+            <PickQueryPage header="please click return"
                 //items={[{ id: 1, name: 'a' }, { id: 2, name: 'b' }]}
                 query={query}
                 ItemView={PersonView} />
         );
     }
     return <Page header="Test page">
-        <IDValue ID={app.uqs.BzWorkshop.Person} id={78905349} Value={PersonView} />
+        <IDValue ID={app.uqs.BzWorkshop.Person} id={78905349} Template={PersonView} />
         <Form className="m-3">
             <Pick name="a" onPick={onPick} />
         </Form>

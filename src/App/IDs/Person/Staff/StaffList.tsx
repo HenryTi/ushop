@@ -1,54 +1,30 @@
-import { FA, Page } from "tonwa-com";
-import { IDListEdit, useIdListEditContext } from "tonwa-com-uq";
-import { User, VUser } from "tonwa-controller";
+import { FA, Page, Sep, useNav } from "tonwa-com";
+import { IDListEdit, useIdListEdit } from "tonwa-com-uq";
 import { Role } from "uq-app/uqs/BzWorkshop";
+import { AddPerson } from "../AddPerson";
 import { MPerson } from "../UqPerson";
+import { StaffEdit } from "./StaffEdit";
+import { StaffView } from "./StaffView";
+import { caption } from "./UqStaff";
 
-const roleCaption: { [role in Role]?: string } = {
-    [Role.counselor]: 'Counselor',
-    [Role.volunteer]: 'Volunteer',
-};
-
-export function StaffList({ items, caption, icon, iconClass }: {
+export function StaffList({ items }: {
     items: MPerson[];
-    caption: string;
-    icon: string;
-    iconClass: string;
 }) {
-    let listEditContext = useIdListEditContext(items);
-    let onAdd = async () => {
-    };
-    let onEditItem = (item: MPerson): void => {
-
-    };
-    function StaffView({ value: item }: { value: MPerson; }) {
-        let { no, name, firstName, lastName, middleName, user, role } = item;
-        let vUser: any;
-        if (user) {
-            let renderUser = (user: User) => {
-                let { name } = user;
-                return <span className="ms-4">
-                    user:  {name}
-                </span>;
-            };
-            vUser = <VUser id={user} render={renderUser} />;
-        }
-        let vRole: any;
-        if (role) {
-            vRole = <span className="ms-3"><FA name='dot' /> {roleCaption[role]}</span>;
-        }
-        return <div className="d-flex py-3">
-            <div className="mx-4"><FA name={icon} className={iconClass} size="lg" /></div>
-            <div className="">
-                <div className="small text-muted me-3">{no} {vUser}</div>
-                <div>
-                    {name ?? <>{lastName} {middleName} {firstName}</>}
-                    {vRole}
-                </div>
-            </div>
-        </div>;
+    let nav = useNav();
+    let listEditContext = useIdListEdit(items);
+    function onPersonAdded(person: MPerson) {
+        listEditContext.onItemChanged(person);
     }
-    return <Page header={caption}>
-        <IDListEdit context={listEditContext} ItemView={StaffView} />
+    let onAdd = async () => {
+        nav.open(<AddPerson role={Role.staff} header="Add staff"
+            onPersonAdded={onPersonAdded} />)
+    }
+    let right = <button className="btn btn-sm btn-primary me-2" onClick={onAdd}><FA name="plus" /></button>
+    function onItemClick(item: MPerson) {
+        nav.open(<StaffEdit item={item} listEditContext={listEditContext} />);
+    }
+    return <Page header={caption} right={right}>
+        <IDListEdit context={listEditContext} ItemView={StaffView} onItemClick={onItemClick} />
+        <Sep />
     </Page>;
 }

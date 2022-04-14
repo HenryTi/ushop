@@ -28,7 +28,7 @@ export class UqID<M extends { id?: number }> extends Entity {
 	cacheTuids(defer: number): void { }
 	async valueFromId(id: number): Promise<M> {
 		let ret = await (this.uq as unknown as Uq).QueryID<M>({
-			IDX: [this],
+			ID: this,
 			id: [id]
 		});
 		return ret[0];

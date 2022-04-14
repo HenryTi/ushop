@@ -2,5 +2,4 @@
 //export { CUqApp, CUqBase, CUqSub } from './CBase';
 //export { CApp } from './CApp';
 export * from './uqs';
-export * from './App';
 export * from './startApp';

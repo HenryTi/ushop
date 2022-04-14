@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import { useBand, Band, BandProps, useBandContainer } from '../band';
 import { checkRule } from './Rule';
-import { FieldItem, FieldProps } from '../fields';
+import { FieldItem, FieldProps } from './field';
 
 type TextProps = {
     placeholder?: string;
@@ -27,30 +27,30 @@ class TextFieldItem implements FieldItem {
 export function TextArea({ name, className, readOnly, placeholder, maxLength, rule, rows }: TextProps) {
     let input = useRef<HTMLTextAreaElement>();
     let band = useBand();
-    let form = useBandContainer();
+    let bandContainer = useBandContainer();
     useEffect(() => {
         if (band) band.fields[name] = true;
-        let { fields, props } = form;
+        let { fields, props } = bandContainer;
         fields[name] = new TextFieldItem(name, input.current, props.values?.[name]);
-    }, [band, form, name]);
-    let { props } = form;
+    }, [band, bandContainer, name]);
+    let { props } = bandContainer;
     readOnly = readOnly ?? props.readOnly ?? false;
-    let cn = className ?? props.stringClassName ?? form.defaultStringClassName;
+    let cn = className ?? props.stringClassName ?? bandContainer.defaultStringClassName;
     let initValue = props.values?.[name];
     if (readOnly === true) {
         return <div className={cn}>
-            {initValue ?? form.defaultNone}
+            {initValue ?? bandContainer.defaultNone}
         </div>;
     }
     let onFocus = () => {
-        form.clearError(name);
+        bandContainer.clearError(name);
     }
     let onBlur = () => {
         let err = checkRule(input.current.value, rule);
-        form.setError(name, err);
+        bandContainer.setError(name, err);
     }
     let onChange = (evt: ChangeEvent<HTMLTextAreaElement>) => {
-        form.setValue(name, evt.currentTarget.value);
+        bandContainer.setValue(name, evt.currentTarget.value);
     }
     return <textarea ref={input} name={name}
         className={cn}

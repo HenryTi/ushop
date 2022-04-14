@@ -1,8 +1,8 @@
 import { useEffect, useState } from "react";
 import { FA } from "../coms";
 import { Band, BandProps, useBand, useBandContainer } from '../band';
-import { FieldProps, FieldItem } from '../fields';
-import { EnumRes, res } from "../res";
+import { FieldProps, FieldItem } from './field';
+import { EnumString, resStrings } from "../res";
 
 type PickProps = {
     className?: string;
@@ -22,17 +22,17 @@ class PickFieldItem implements FieldItem {
 
 export function Pick(props: PickProps) {
     let band = useBand();
-    let form = useBandContainer();
+    let bandContainer = useBandContainer();
     let [value, setValue] = useState<any>();
     useEffect(() => {
         let { name } = props;
         if (band) band.fields[name] = true;
-        form.fields[name] = new PickFieldItem(name/*, val*/);
-    }, [band, form, props]);
-    let { props: formProps, valueResponse } = form;
+        bandContainer.fields[name] = new PickFieldItem(name/*, val*/);
+    }, [band, bandContainer, props]);
+    let { props: formProps, valueResponse } = bandContainer;
     let { name, className, onPick, placeholder, readOnly, Value } = props;
     readOnly = readOnly ?? formProps.readOnly;
-    value = value ?? form.props.values?.[name];
+    value = value ?? bandContainer.props.values?.[name];
     let cn = 'd-flex ';
     let vRight: any;
     let onClick: () => void;
@@ -52,13 +52,13 @@ export function Pick(props: PickProps) {
             vValue = Value === undefined ? JSON.stringify(value) : <Value value={value} />;
         }
         else {
-            vValue = placeholder ?? res[EnumRes.placeholder_pick];
+            vValue = placeholder ?? resStrings[EnumString.placeholder_pick];
         }
     }
     else {
-        vValue = value ?? form.defaultNone;
+        vValue = value ?? bandContainer.defaultNone;
     }
-    cn += (className ?? formProps.pickClassName ?? form.defaultPickClassName);
+    cn += (className ?? formProps.pickClassName ?? bandContainer.defaultPickClassName);
     return <div className={cn}
         onClick={onClick}>
         <div className="flex-grow-1">

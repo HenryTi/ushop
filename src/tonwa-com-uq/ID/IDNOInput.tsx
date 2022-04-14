@@ -1,7 +1,6 @@
 import { useCallback } from "react";
 import { ID } from "tonwa-uq";
 import { useBand, useBandContainer, usePromise, Band, BandProps, CharInputBase } from "tonwa-com";
-import { } from "tonwa-com/band";
 
 interface Props {
     name: string;
@@ -25,7 +24,7 @@ export function IDNOInput({ name, ID, editable }: Props) {
     return <CharInputBase name={name} placeholder="" maxLength={20} readOnly={!editable === true} initValue={no} />;
 }
 
-export function RowIDNOInput(props: BandProps & Props) {
+export function BandIDNOInput(props: BandProps & Props) {
     return <Band {...props}>
         <IDNOInput {...props} />
     </Band>;

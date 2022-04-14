@@ -1,6 +1,6 @@
+import React from "react";
 import { NavigateFunction, NavigateOptions, To } from "react-router-dom";
 import { proxy, ref } from "valtio";
-import { User } from "./AuthProvider";
 import { StackItem, StackNav, TabItem } from "./nav";
 
 interface ErrorInPage {
@@ -10,27 +10,33 @@ interface ErrorInPage {
 
 export class AppNav extends StackNav<StackItem> {
     readonly response: {
-        user: User;
+        isLogined: boolean;
         error: ErrorInPage;
     } = proxy({
-        user: undefined,
+        isLogined: undefined,
         error: undefined,
     });
     navigateFunc: NavigateFunction;
-    onLoginChanged = async (user: User) => {
-        if (user) {
-            this.response.user = user;
+
+    init(initPage: React.ReactNode, navigateFunc: NavigateFunction) {
+        this.navigate = navigateFunc;
+        if (initPage) {
+            this.data.stack.splice(0);
+            this.internalOpen(<>{initPage}</>);
+        }
+    }
+
+    onLoginChanged = (isLogined: boolean) => {
+        if (isLogined === true) {
+            this.response.isLogined = isLogined;
         }
         else {
-            this.response.user = undefined;
-            this.response.error = undefined;
+            this.response.isLogined = false;
         }
+        this.response.error = undefined;
     }
     setError(err: string, message: string) { this.response.error = ref({ err, message }) }
     clearError() { this.response.error = undefined; }
-    setNavigate(navigateFunc: NavigateFunction) {
-        this.navigateFunc = navigateFunc;
-    }
 
     navigate(to: To, options?: NavigateOptions) {
         this.navigateFunc(to, options);
@@ -46,7 +52,7 @@ export class TabNav extends StackNav<TabItem> {
     defaultActive: TabItem;
 
     constructor(appNav: AppNav) {
-        super(undefined);
+        super();
         this.appNav = appNav;
         this.itemsArr = [];
         this.response = proxy({

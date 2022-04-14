@@ -1,12 +1,17 @@
+import { BandTemplateProps } from "tonwa-com";
 import { TagInputBase } from "tonwa-com-uq";
 import { useUqTag } from "./useUqTag";
 
 interface Props {
     id: number;
     className?: string;
+    tagGroupName: string;
+    BandTemplate?: (props: BandTemplateProps) => JSX.Element;
+    top?: JSX.Element;
+    bottom?: JSX.Element;
 }
 
-export function TagInput({ id, className }: Props) {
+export function TagInput(props: Props) {
     let uqTag = useUqTag();
-    return <TagInputBase uqTagProps={uqTag} tagGroupName="workshop-tags" id={id} className={className} />;
+    return <TagInputBase {...props} uqTagProps={uqTag} />;
 }

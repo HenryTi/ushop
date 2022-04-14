@@ -1,7 +1,7 @@
 import { ChangeEvent, useEffect, useRef } from "react";
 import { Band, BandProps, useBand, useBandContainer } from '../band';
-import { FieldProps, FieldItem } from '../fields';
-import { EnumRes, res } from "../res";
+import { FieldProps, FieldItem } from './field';
+import { EnumString, resStrings } from "../res";
 
 interface SelectItem {
     label: string;
@@ -31,35 +31,35 @@ interface SelectProps extends FieldProps {
 export function Select(props: SelectProps) {
     let select = useRef<HTMLSelectElement>();
     let band = useBand();
-    let form = useBandContainer();
+    let bandContainer = useBandContainer();
     useEffect(() => {
-        let { props: formProps } = form;
+        let { props: formProps } = bandContainer;
         let { name, options } = props;
         let initValue = formProps.values?.[name];
         let initIndex = initValue ? options.findIndex(v => v.value === initValue) : 0;
         let fieldItem = new SelectFieldItem(name, select.current, initIndex);
         if (band) band.fields[name] = true;
-        form.fields[name] = fieldItem;
-    }, [band, form, props]);
-    let { props: formProps } = form;
+        bandContainer.fields[name] = fieldItem;
+    }, [band, bandContainer, props]);
+    let { props: formProps } = bandContainer;
     let { name, options, placeholder, className, readOnly } = props;
     readOnly = readOnly ?? formProps.readOnly;
-    let initValue = form.props.values?.[name];
+    let initValue = bandContainer.props.values?.[name];
     function onChange(evt: ChangeEvent<HTMLSelectElement>) {
-        form.setValue(name, evt.currentTarget.value);
+        bandContainer.setValue(name, evt.currentTarget.value);
     }
     if (readOnly === true) {
-        return <div className={className ?? form.defaultStringClassName}>
-            {initValue ?? form.defaultNone}
+        return <div className={className ?? bandContainer.defaultStringClassName}>
+            {initValue ?? bandContainer.defaultNone}
         </div>;
     }
     return <select ref={select}
-        defaultValue={form.props.values?.[name]}
-        className={className ?? form.defaultSelectClassName}
+        defaultValue={bandContainer.props.values?.[name]}
+        className={className ?? bandContainer.defaultSelectClassName}
         onChange={onChange}
     >
         {!initValue &&
-            <option value={undefined}>{placeholder ?? res[EnumRes.placeholder_select]}</option>}
+            <option value={undefined}>{placeholder ?? resStrings[EnumString.placeholder_select]}</option>}
         {options.map((v, index) => <option key={index} value={v.value as any}>{v.label}</option>)}
     </select>;
 }

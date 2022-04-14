@@ -1,11 +1,12 @@
-import { UqIDProps } from "tonwa-controller";
+import { useRef } from "react";
 import { Role } from "uq-app/uqs/BzWorkshop";
-import { UqPerson } from "../UqPerson";
+import { UqIDProps, UqPerson } from "../UqPerson";
 
 export class UqClient extends UqPerson {
     isInRole(role: Role): boolean { return undefined; }
 }
 
 export function useUqClient(uqIDProps: UqIDProps) {
-    return new UqClient(uqIDProps);
+    let ret = useRef(new UqClient(uqIDProps));
+    return ret.current;
 };

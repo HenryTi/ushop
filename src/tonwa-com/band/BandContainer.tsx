@@ -4,7 +4,7 @@ import { BandTemplateProps } from "./Band";
 import { BandContext } from "./BandContext";
 import { FieldItem } from "../fields";
 
-export type OnValuesChanged = (values: { name: string; value: any; preValue: any; }[]) => Promise<void>;
+export type OnValuesChanged = (values: { name: string; value: any; preValue: any; }, context: BandContainerContext<any>) => Promise<void>;
 export interface BandContainerProps {
     className?: string;
     children: React.ReactNode;
@@ -14,6 +14,7 @@ export interface BandContainerProps {
     values?: { [name: string]: any };
     BandTemplate?: (props: BandTemplateProps) => JSX.Element;
     readOnly?: boolean;
+    onValuesChanged?: OnValuesChanged;
 }
 
 const defaultStringClassName = 'form-control';
@@ -30,6 +31,7 @@ export abstract class BandContainerContext<P extends BandContainerProps> {
     readonly defaultRangeClassName = defaultRangeClassName;
     readonly defaultNone = '-';
     readonly fields: { [name: string]: FieldItem };
+    readonly fieldStates: { [name: string]: { readOnly: boolean; disabled: boolean; } };
     readonly bands: BandContext[];
     readonly BandTemplate?: (props: BandTemplateProps) => JSX.Element;
     readonly props: P;
@@ -40,7 +42,6 @@ export abstract class BandContainerContext<P extends BandContainerProps> {
 
     constructor(props: P) {
         let { values, BandTemplate, readOnly } = props;
-        this.fields = {};
         this.bands = [];
         this.BandTemplate = BandTemplate;
         this.props = props;
@@ -48,29 +49,41 @@ export abstract class BandContainerContext<P extends BandContainerProps> {
         this.valueResponse = proxy({
             values: values ?? {},
         });
+        this.fields = {};
+        this.fieldStates = {};
+        let each = (cs: React.ReactNode) => {
+            React.Children.forEach(cs, c => {
+                if (!c) return;
+                if (React.isValidElement(c) === false) return;
+                let e = c as JSX.Element;
+                let { props: cProps } = e;
+                if (cProps) {
+                    let { name } = cProps;
+                    if (name) this.fieldStates[name] = proxy({ readOnly: false, disabled: false });
+                    each(cProps.children);
+                }
+            })
+        }
+        each(props.children);
     }
 
     abstract get isDetail(): boolean;
-    protected internalValuesChanged(values: { name: string; value: any; preValue: any; }[]): Promise<void> {
-        return;
-    }
     onValuesChanged = async (values: any) => {
-        let changedValues: { name: string; value: any; preValue: any; }[] = [];
         let oldValues = this.valueResponse.values;
         for (let i in values) {
             let vNew = values[i];
             let vOld = oldValues[i];
             if (vNew !== vOld) {
-                changedValues.push({ name: i, value: vNew, preValue: vOld });
+                await this.props.onValuesChanged?.({ name: i, value: vNew, preValue: vOld }, this);
                 oldValues[i] = vNew;
             }
-        }
-        if (changedValues.length > 0) {
-            await this.internalValuesChanged(changedValues)
         }
     }
 
     setValue(name: string, value: any) {
+        let values: { [name: string]: any } = {};
+        values[name] = value;
+        this.onValuesChanged(values);
         this.valueResponse.values[name] = value;
     }
 
@@ -100,6 +113,16 @@ export abstract class BandContainerContext<P extends BandContainerProps> {
         for (let band of this.bands) {
             band.clearAllErrors();
         }
+    }
+
+    setReadonly(name: string, readOnly: boolean) {
+        let fieldState = this.fieldStates[name];
+        if (fieldState) fieldState.readOnly = readOnly;
+    }
+
+    setDisabled(name: string, disabled: boolean) {
+        let fieldState = this.fieldStates[name];
+        if (fieldState) fieldState.disabled = disabled;
     }
 }
 

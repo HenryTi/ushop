@@ -1,14 +1,14 @@
 import { useUqApp } from "App/App";
 import { useEffect } from "react";
 import { Band, BandInt, BandString, DatePicker, FA, Form, LMR, Page, ruleIsRequired, Sep, Submit, TimePicker, useNav } from "tonwa-com";
-import { IDListEdit, useIdListEditContext } from "tonwa-com-uq";
+import { IDListEdit, useIdListEdit } from "tonwa-com-uq";
 import { Session, Workshop } from "uq-app/uqs/BzWorkshop";
 import { renderDate } from "../../tool";
 
 export function SessionList({ workshop }: { workshop: Workshop }) {
     let nav = useNav();
     let app = useUqApp();
-    let listEditContext = useIdListEditContext<Session>(undefined);
+    let listEditContext = useIdListEdit<Session>(undefined);
     useEffect(() => {
         async function loadSessionList(): Promise<void> {
             let { BzWorkshop } = app.uqs;

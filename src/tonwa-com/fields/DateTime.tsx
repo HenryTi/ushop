@@ -1,6 +1,6 @@
 import { ChangeEvent, useEffect, useRef, useState } from "react";
 import { Band, BandProps, useBand, useBandContainer } from '../band';
-import { FieldProps, FieldItem } from '../fields';
+import { FieldProps, FieldItem } from './field';
 import { checkRule } from "./Rule";
 
 class DTFieldItem implements FieldItem {

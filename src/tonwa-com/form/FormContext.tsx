@@ -21,9 +21,17 @@ export class FormContext extends BandContainerContext<FormProps> {
         return false;
     }
 
-    setError(name: string, err: string[]): boolean {
+    setError(name: string, err: string | string[]): boolean {
         if (!err) return;
-        let hasError = super.setError(name, err);
+        if (Array.isArray(err) === false) err = [err as string];
+        if (!name) {
+            if (err && err.length > 0) {
+                this.errorResponse.errors = [...(err as string[])];
+                this.errorResponse.hasError = true;
+            }
+            return;
+        }
+        let hasError = super.setError(name, err as string[]);
         if (hasError === true) {
             this.errorResponse.hasError = hasError;
         }

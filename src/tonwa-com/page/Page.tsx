@@ -1,6 +1,6 @@
-import { FA } from "tonwa-react";
+import { FA } from "tonwa-com";
 import { useSnapshot } from "valtio";
-import { useNav } from "./nav";
+import { useAppNav, useNav } from "./nav";
 import { PageProps } from "./PageProps";
 import { usePageTemplate } from "./PageTemplate";
 import { useScroll } from "./useScroll";
@@ -31,7 +31,7 @@ export function UPage(props: PageProps) {
         let { Content: TemplateContent } = template;
         Content = TemplateContent;
     }
-    header = header && <div className="position-sticky" style={{ top: '0' }}>{header}</div>;
+    header = header && <div className="position-sticky" style={{ top: 0, zIndex: 9999 }}>{header}</div>;
     let { errorPosition, Error } = template;
     switch (errorPosition) {
         case 'above-header':
@@ -53,10 +53,9 @@ export function UPage(props: PageProps) {
 }
 
 export function Page(props: PageProps) {
-    let nav = useNav();
-    let { user } = useSnapshot(nav.appNav.response);
-    if (!user) {
-        //return <Navigate to="/login" replace={true} />;
+    let appNav = useAppNav();
+    let { isLogined } = useSnapshot(appNav.response);
+    if (isLogined !== true) {
         return <Unanthorized />;
     }
     return <UPage {...props} />;

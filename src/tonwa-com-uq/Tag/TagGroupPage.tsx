@@ -4,7 +4,7 @@ import { Page, useNav } from "tonwa-com";
 import { BandCheck, BandString, ruleIsRequired } from "tonwa-com";
 import { Form, Submit } from "tonwa-com";
 import { Band } from "tonwa-com";
-import { IDListEdit, useIdListEditContext } from "../ID";
+import { IDListEdit, useIdListEdit } from "../ID";
 import { UqTag, TagWithItems, TagGroup } from "./UqTag";
 import { EditTagPage } from "./EditTagPage";
 
@@ -17,7 +17,7 @@ interface Props {
 export function TagGroupPage(props: Props) {
     let { uqTag, icon, group } = props;
     let nav = useNav();
-    let listEditContext = useIdListEditContext(group.tags);
+    let listEditContext = useIdListEdit(group.tags);
 
     useEffect(() => {
         async function loadGroup() {

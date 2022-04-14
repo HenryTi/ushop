@@ -242,7 +242,7 @@
 }
 
 .w-30c {
-  width: 20rem !important;
+  width: 30rem !important;
 }
 
 .w-max-30c {
@@ -251,6 +251,18 @@
 
 .w-min-30c {
   min-width: 30rem !important;
+}
+
+.w-40c {
+  width: 40rem !important;
+}
+
+.w-max-40c {
+  max-width: 40rem !important;
+}
+
+.w-min-40c {
+  min-width: 40rem !important;
 }
 
 .h-1c {
@@ -419,6 +431,18 @@
 
 .h-min-30c {
   min-height: 30rem !important;
+}
+
+.h-40c {
+  height: 40rem !important;
+}
+
+.h-max-40c {
+  max-height: 40rem !important;
+}
+
+.h-min-40c {
+  min-height: 40rem !important;
 }
 
 .form-inline label.form-check-inline {

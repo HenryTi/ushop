@@ -1,13 +1,16 @@
-import { useNav, Page, UPage, useAuth } from "tonwa-com"
+import { useUqApp } from "App/App";
+import { useNav, Page, UPage } from "tonwa-com"
+import { useSnapshot } from "valtio";
 import { AppLogout } from "./AppImage";
 
 export function TrialPage1({ id }: { id: number }) {
     let nav = useNav();
-    let auth = useAuth();
+    let uqApp = useUqApp();
+    let { user } = useSnapshot(uqApp.responsive);
     function onClick() {
         nav.open(<TrialPage2 />);
     }
-    let { id: userId, name, nick, icon, token } = auth.user;
+    let { id: userId, name, nick, icon, token } = user;
     return <UPage header="aaa" footer={<div>footer</div>}>
         <div>
             userId:{userId}, name:{name}, nick:{nick}, icon:{icon}, token:{token}

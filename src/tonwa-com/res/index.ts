@@ -1,21 +1,23 @@
+import { env } from '../tools';
+import { EnumString, LangFunc, StringsAndFuncs } from './defs';
 import { en } from './en';
-import { EnumRes } from './Enum';
 import { zh } from './zh';
-export * from './Enum';
 
-const resLang: { [lang: string]: { [key in EnumRes]: string } } = {
+const resLang: { [lang: string]: StringsAndFuncs } = {
     en,
     zh
 }
 
-export const res: {
-    [key in EnumRes]: string
-} = { ...en };
+export let resStrings: { [key in EnumString]: string } = en.strings;
+export let resFuncs: LangFunc = en.funcs;
+export * from './useT';
+export * from './defs';
+export * from './buildTFunc';
 
-export function setLangRes(lang: string, resParam: { [key in EnumRes]: string }) {
-    if (!resParam) {
-        resParam = resLang[lang];
+(function setLanguage() {
+    let res = resLang[env.lang];
+    if (res) {
+        resStrings = res.strings;
+        resFuncs = res.funcs;
     }
-    if (!res) return;
-    Object.assign(res, resParam);
-}
+})();

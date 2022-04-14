@@ -8,7 +8,7 @@ import { GuestApi } from "./guestApi";
 import { MessageHub } from "./messageHub";
 import { WsBridge, WSChannel } from "./wsChannel";
 import { Host, resUrlFromHost } from './host';
-import { LocalDb } from "../tool";
+import { LocalDb } from "tonwa-uq/tool";
 
 export interface PromiseValue<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
@@ -55,7 +55,6 @@ export class Net {
     user: any;
     // -- end -------------------
 
-
     constructor(props: NetProps) {
         this.props = props;
         this.isDevelopment = process.env.NODE_ENV === 'development';
@@ -72,11 +71,20 @@ export class Net {
         this.host = Host.createHost(this.isDevelopment);
     }
 
+    async init(testing: boolean) {
+        await this.host.start(testing)
+        let { url, ws, resHost } = this.host;
+        //this.resUrl = this.resUrlFromHost(resHost);
+        //this.wsHost = ws;
+        this.setCenterUrl(url);
+    }
+
     //abstract createLocalDb(): LocalDb;
     createObservableMap: () => Map<number, any>;
 
     logoutApis() {
         this.uqTokens.logoutUqTokens();
+        for (let i in this.uqChannels) this.uqChannels[i] = undefined;
     }
 
     setCenterUrl(url: string) {
@@ -92,13 +100,6 @@ export class Net {
         WSChannel.setCenterToken(token);
     }
 
-    /*
-    setNetToken(userId: number, token: string) {
-        this.setCenterToken(userId, token);
-        WSChannel.setCenterToken(token);
-    }
-    */
-
     clearCenterToken() {
         this.setCenterToken(0, undefined);
         WSChannel.setCenterToken(undefined);
@@ -106,7 +107,8 @@ export class Net {
 
     getCenterChannel(): HttpChannel {
         if (this.centerChannel !== undefined) return this.centerChannel;
-        return this.centerChannel = new HttpChannel(this, this.centerHost, this.centerToken);
+        let centerHost = this.host.url;
+        return this.centerChannel = new HttpChannel(this, centerHost, this.centerToken);
     }
 
     resUrlFromHost(host: string): string {

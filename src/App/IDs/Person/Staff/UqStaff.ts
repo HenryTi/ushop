@@ -1,6 +1,10 @@
-import { UqIDProps } from "tonwa-controller";
+import { useRef } from "react";
 import { Role } from "uq-app/uqs/BzWorkshop";
-import { UqPerson } from "../UqPerson";
+import { UqIDProps, UqPerson } from "../UqPerson";
+
+export const caption = 'Staff';
+export const icon = 'user';
+export const iconClass: string = 'text-primary';
 
 export const staffRoles = [Role.counselor, Role.volunteer];
 export const staffRoleCaptions: { [role in Role]?: string } = {
@@ -20,5 +24,6 @@ export class UqStaff extends UqPerson {
 }
 
 export function useUqStaff(uqIDProps: UqIDProps) {
-    return new UqStaff(uqIDProps);
+    let ret = useRef(new UqStaff(uqIDProps));
+    return ret.current;
 };
