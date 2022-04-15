@@ -1,6 +1,6 @@
 import { useEffect, useRef } from 'react';
 import { useParams } from 'react-router-dom';
-import { FA } from 'tonwa-react';
+import { FA } from 'tonwa-com';
 import { useSnapshot } from 'valtio';
 import { TabNav } from './AppNav';
 import { TabItem, TabNavContext, useAppNav, useTabNav } from './nav';

@@ -1,6 +1,6 @@
 import { FA, Page, Sep, useNav } from "tonwa-com";
 import { IDListEdit, useIdListEdit } from "tonwa-com-uq";
-import { Role } from "uq-app/uqs/BzWorkshop";
+import { Role } from "uqs/BzWorkshop";
 import { AddPerson } from "../AddPerson";
 import { MPerson } from "../UqPerson";
 import { StaffEdit } from "./StaffEdit";

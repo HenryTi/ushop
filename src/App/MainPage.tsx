@@ -5,7 +5,7 @@ import { TabHome } from "./Home";
 import { IDsPage } from "./IDs";
 //import { VMe } from "./Me/VMe";
 import { ActsPage } from "./Acts";
-import { Page, PageTabs, Tab, useNav, FA, useT } from "tonwa-com";
+import { Page, PageTabs, Tab, FA, useT } from "tonwa-com";
 import { appT } from "./res";
 import { MeLink } from "./Me";
 
@@ -33,36 +33,10 @@ export function MainPage() {
         <Tab name="ids" tag={<TabTag caption={t('ids')} icon="file-text-o" />}>
             <IDsPage />
         </Tab >
-        <Tab name="t1" tag={<TabTag caption="t1" icon="circle-o" />}>
-            <P />
-        </Tab>
         <Tab name="t2" tag={<TabTag caption={t('me')} icon="circle-o" />}>
             <Page header={t('me')}>
                 <MeLink />
             </Page>
         </Tab>
     </PageTabs>;
-}
-
-function P() {
-    let nav = useNav();
-    return <Page header="TT1" footer={<div>footer</div>}>
-        <div>
-            t1
-            <button onClick={() => nav.appNav.setError('a', 'bbb')}>error</button>
-            <button onClick={() => nav.appNav.clearError()}>clear error</button>
-        </div>
-        <div>
-            <button onClick={() => nav.open(<Page1 />)}>open page</button>
-        </div>
-        {Array(20).fill(2).map((v, index) => <div key={index}>{v}</div>)}
-    </Page>;
-}
-
-function Page1() {
-    return <Page header="page 1" contentClassName="p-5 bg-success">
-        <div>page 1</div>
-        {Array(50).fill(2).map((v, index) => <div key={index}>{v}</div>)}
-        <div>page 1</div>
-    </Page>
 }

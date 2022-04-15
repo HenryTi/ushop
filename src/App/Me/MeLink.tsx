@@ -5,7 +5,7 @@ import { MeAdminLink } from "./MeAdminLink";
 import { useNav, useT } from "tonwa-com";
 import { appT } from '../res';
 import { meT } from "./meRes";
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { Image } from "tonwa-com-uq";
 import { useSnapshot } from "valtio";
 

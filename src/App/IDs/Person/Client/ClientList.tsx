@@ -1,8 +1,8 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { TagInput } from "App/Tag";
 import { FA, Page, useNav } from "tonwa-com";
 import { IDListEdit, useIdListEdit } from "tonwa-com-uq";
-import { Role } from "uq-app/uqs/BzWorkshop";
+import { Role } from "uqs/BzWorkshop";
 import { AddPerson } from "../AddPerson";
 import { PersonDetail } from "../PersonEdit";
 import { MPerson } from "../UqPerson";

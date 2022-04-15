@@ -1,4 +1,4 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { SelectUser, UserView } from "tonwa-com-uq";
 import { LMR, Page, useNav } from "tonwa-com";
 import { User } from "tonwa-uq";

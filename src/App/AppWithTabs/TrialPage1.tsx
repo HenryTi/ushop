@@ -1,4 +1,4 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { useNav, Page, UPage } from "tonwa-com"
 import { useSnapshot } from "valtio";
 import { AppLogout } from "./AppImage";

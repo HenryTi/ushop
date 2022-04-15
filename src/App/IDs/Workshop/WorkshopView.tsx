@@ -1,4 +1,4 @@
-import { Workshop } from "uq-app/uqs/BzWorkshop";
+import { Workshop } from "uqs/BzWorkshop";
 
 export function WorkshopView({ value }: { value: Workshop; }) {
     let { no, name } = value;

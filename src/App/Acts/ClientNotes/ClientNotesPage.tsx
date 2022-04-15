@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { FA, LMR, Page, Sep, useNav } from "tonwa-com";
 import { IDListEdit, useIdListEdit } from "tonwa-com-uq";
-import { Person } from "uq-app/uqs/BzWorkshop";
-import { useUqApp } from "App/App";
+import { Person } from "uqs/BzWorkshop";
+import { useUqApp } from "App/UqApp";
 import { ClientView, PickClient, MPerson } from "../../IDs";
 import { ClientPage } from "./ClientPage";
 

@@ -1,11 +1,10 @@
-import { FA, List, Page, useNav } from "tonwa-com";
-import { renderDate, renderHourMinute } from "../../tool";
 import { useEffect, useState } from "react";
-import { useUqApp } from "App/App";
+import { FA, List, Page, useNav, renderDate, renderHourMinute } from "tonwa-com";
+import { IDValue } from "tonwa-com-uq";
+import { useUqApp } from "App/UqApp";
 import { SessionPage } from "./SessionPage";
 import { consts, MSession, WorkshopItem } from "./consts";
 import { WorkshopView } from "App/IDs";
-import { IDValue } from "tonwa-com-uq";
 
 export function WorkshopActs() {
     let { uqs } = useUqApp();

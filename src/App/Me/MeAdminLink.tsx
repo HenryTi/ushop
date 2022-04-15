@@ -1,6 +1,6 @@
 import { AdminLink } from "tonwa-com-uq";
 import { FA, LMR, useT } from "tonwa-com";
-import { useUqApp } from "../App";
+import { useUqApp } from "../UqApp";
 import { appT } from '../res';
 import { meT } from "./meRes";
 import { useSnapshot } from "valtio";

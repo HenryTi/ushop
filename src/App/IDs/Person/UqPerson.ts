@@ -1,19 +1,16 @@
-import { ID, Uq } from "tonwa-uq";
 import { proxy } from "valtio";
-import { Role, Person, UqExt } from "uq-app/uqs/BzWorkshop";
+import { ID } from "tonwa-uq";
+import { Role, Person } from "uqs/BzWorkshop";
+import { BzWorkshop } from "uqs";
+import { UqApp } from "App/UqApp";
 
 export interface MPerson extends Person {
     user: number;
     role: Role;
 }
 
-export interface UqIDProps {
-    uq: Uq;
-    ID: ID;
-}
-
-abstract class UqID {
-    readonly uq: Uq;
+export abstract class UqPerson {
+    readonly uq: BzWorkshop.UqExt;
     readonly ID: ID;
     initNO: string;
 
@@ -22,10 +19,9 @@ abstract class UqID {
         items: any[];
     };
 
-    constructor(uqIDProps: UqIDProps) {
-        let { uq, ID } = uqIDProps;
-        this.uq = uq;
-        this.ID = ID;
+    constructor(uqApp: UqApp) {
+        this.uq = uqApp.uqs.BzWorkshop;
+        this.ID = uqApp.uqs.BzWorkshop.Person;
 
         this.state = proxy({
             currentItem: undefined,
@@ -42,13 +38,11 @@ abstract class UqID {
     async newIDNO() {
         this.initNO = await this.uq.IDNO({ ID: this.ID });
     }
-}
 
-export abstract class UqPerson extends UqID {
     abstract isInRole(role: Role): boolean;
 
     async loadList(personRole: Role): Promise<MPerson[]> {
-        let result = await (this.uq as UqExt).GetPersonList.query({ role: personRole });
+        let result = await this.uq.GetPersonList.query({ role: personRole });
         let { ret, roles: retRoles } = result;
         let mPerson: MPerson;
         for (let row of ret) {
@@ -68,9 +62,8 @@ export abstract class UqPerson extends UqID {
 
     async removeBoundUser() {
         let { currentItem } = this.state;
-        let BzWorkshop = this.uq as UqExt;
-        await BzWorkshop.ActIX({
-            IX: BzWorkshop.IxUserPerson,
+        await this.uq.ActIX({
+            IX: this.uq.IxUserPerson,
             values: [
                 { ix: currentItem.user, xi: -currentItem.id }
             ]

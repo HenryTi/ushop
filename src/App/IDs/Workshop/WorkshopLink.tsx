@@ -1,5 +1,5 @@
 import { useNav } from "tonwa-com";
-import { IconCommand } from "../../tool";
+import { IconCommand } from "../../IconCommand";
 import { WorkshopList } from "./WorkshopList";
 
 export function WorkshopLink() {

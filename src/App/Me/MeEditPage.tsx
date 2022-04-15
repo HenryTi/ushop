@@ -1,4 +1,4 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { AppLogout } from "App/AppWithTabs/AppImage";
 import { Page, useT, FA, Detail, BandString, Sep, BandCom, useNav } from "tonwa-com";
 import { ChangePassword, UserQuit } from "tonwa-com-uq";

@@ -1,5 +1,5 @@
 import { useNav } from "tonwa-com";
-import { IconCommand } from "../../tool";
+import { IconCommand } from "../../IconCommand";
 import { consts } from "./consts";
 import { WorkshopActs } from "./WorkshopActs";
 

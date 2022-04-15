@@ -126,7 +126,7 @@ function TagItemInput({ uqTag, tag, id, idTagValues, BandTemplate, sep }: TagIte
         </label>;
     }
     return <BandTemplate label={name} errors={undefined} memos={undefined} content={undefined} sep={sep} >
-        {items.map((item: Tag, index: number) => <TagItem tag={tag} item={item} index={index} />)}
+        {items.map((item: Tag, index: number) => <TagItem key={item.id} tag={tag} item={item} index={index} />)}
     </BandTemplate>;
 }
 

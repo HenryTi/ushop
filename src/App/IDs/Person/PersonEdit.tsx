@@ -1,4 +1,4 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { FieldsDetail } from "tonwa-com-uq";
 import { Field } from "tonwa-uq";
 import { MPerson } from "./UqPerson";

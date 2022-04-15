@@ -1,7 +1,7 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { Form, Page, Pick, PickQueryPage, useNav } from "tonwa-com";
 import { IDValue } from "tonwa-com-uq";
-import { Person, Role } from "uq-app/uqs/BzWorkshop";
+import { Person, Role } from "uqs/BzWorkshop";
 
 export function TestPage() {
     let app = useUqApp();

@@ -1,4 +1,17 @@
-import { Scroller } from "tonwa-react";
+const scrollAfter = 20; // 20ms之后，scroll执行
+export class Scroller {
+    private el: HTMLBaseElement;
+    constructor(el: HTMLBaseElement) {
+        this.el = el;
+    }
+
+    scrollToTop(): void {
+        setTimeout(() => this.el.scrollTo(0, 0), scrollAfter);
+    }
+    scrollToBottom(): void {
+        setTimeout(() => this.el.scrollTo(0, this.el.scrollTop + this.el.offsetHeight), scrollAfter);
+    }
+}
 
 export interface PageBackProps {
     back?: 'close' | 'back' | 'none';

@@ -1,15 +1,15 @@
 import { useNavigate } from "react-router-dom";
 import { useSnapshot } from "valtio";
+import { useUqAppBase } from "tonwa-com-uq";
 import { AppNavContext } from "./nav";
 import { StackContainer } from "./StackContainer";
-import { useUqApp } from "App";
 
 interface Props {
     children: React.ReactNode;
 }
 
 export function AppContainer({ children }: Props) {
-    let uqApp = useUqApp();
+    let uqApp = useUqAppBase();
     let navigate = useNavigate();
     uqApp.initAppNav(children, navigate);
     let { appNav } = uqApp;

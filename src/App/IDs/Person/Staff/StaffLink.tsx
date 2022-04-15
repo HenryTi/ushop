@@ -1,18 +1,12 @@
-import { useUqApp } from "../../../App";
-import { Role } from "uq-app/uqs/BzWorkshop";
-import { IconCommand } from "../../../tool";
+import { Role } from "uqs/BzWorkshop";
+import { IconCommand } from "../../../IconCommand";
 import { caption, icon, iconClass, useUqStaff } from "./UqStaff";
 import { useNav } from "tonwa-com";
 import { StaffList } from "./StaffList";
 
 export function StaffLink() {
-    let uqApp = useUqApp();
     let nav = useNav();
-    let { BzWorkshop } = uqApp.uqs;
-    let uqStaff = useUqStaff({
-        uq: BzWorkshop,
-        ID: BzWorkshop.Person,
-    });
+    let uqStaff = useUqStaff();
     let onClick = () => {
         nav.open(async () => {
             let items = await uqStaff.loadList(Role.staff);

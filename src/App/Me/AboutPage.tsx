@@ -1,4 +1,4 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { MutedSmall, Page } from "tonwa-com";
 
 export function AboutPage() {

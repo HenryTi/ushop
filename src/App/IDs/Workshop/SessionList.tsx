@@ -1,9 +1,12 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { useEffect } from "react";
-import { Band, BandInt, BandString, DatePicker, FA, Form, LMR, Page, ruleIsRequired, Sep, Submit, TimePicker, useNav } from "tonwa-com";
+import {
+    Band, BandInt, BandString, DatePicker, FA, Form, LMR
+    , Page, ruleIsRequired, Sep, Submit, TimePicker
+    , useNav, renderDate
+} from "tonwa-com";
 import { IDListEdit, useIdListEdit } from "tonwa-com-uq";
-import { Session, Workshop } from "uq-app/uqs/BzWorkshop";
-import { renderDate } from "../../tool";
+import { Session, Workshop } from "uqs/BzWorkshop";
 
 export function SessionList({ workshop }: { workshop: Workshop }) {
     let nav = useNav();
@@ -104,7 +107,7 @@ export function SessionList({ workshop }: { workshop: Workshop }) {
     let right = <button className="btn btn-sm btn-outline-primary" onClick={onAdd}>
         <FA name="plus" fixWidth={true} /> Add
     </button>;
-    return <div className="mt-3 px-3">
+    return <div className="my-3">
         <LMR className="px-3 py-1 bg-light align-items-end">
             <b>Sessions</b>
             {right}

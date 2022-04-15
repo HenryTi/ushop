@@ -1,4 +1,4 @@
-import { FA } from "tonwa-react";
+import { FA } from "tonwa-com";
 import { useNav } from "./nav";
 import { PageBackProps } from "./PageProps";
 

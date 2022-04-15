@@ -1,5 +1,5 @@
 import { UserView } from "tonwa-com-uq";
-import { LMR } from "tonwa-react";
+import { LMR } from "tonwa-com";
 import { MPerson } from "./UqPerson";
 
 export function PersonView({ value }: { value: MPerson; }) {
@@ -14,8 +14,8 @@ export function PersonView({ value }: { value: MPerson; }) {
 
 export function renderSelectPerson(item: any) {
     let { no, name, firstName, lastName, middleName } = item;
-    let right = <span className="small text-muted">{no}</span>;
-    return <LMR className="w-100" right={right}>
+    return <LMR className="w-100">
         {name ?? <>{lastName} {middleName} {firstName}</>}
+        <span className="small text-muted">{no}</span>
     </LMR>;
 }

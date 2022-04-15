@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { Band, FA, LMR, Page, Submit, useNav } from "tonwa-com";
 import { FieldsDetail, FieldsForm, IDListEdit, BandIDNOInput, useIdListEdit } from "tonwa-com-uq";
-import { useUqApp } from "../../App";
-import { Workshop } from "uq-app/uqs/BzWorkshop";
+import { useUqApp } from "../../UqApp";
+import { Workshop } from "uqs/BzWorkshop";
 import { WorkshopItem } from "./WorkshopItem";
 //import { TestPage } from "./TestPage";
 import { TagInput } from "App/Tag";
@@ -86,12 +86,12 @@ export function WorkshopList(props: Props) {
                 listEditContext.onItemChanged(newItem);
             }
             return <Page header="Detail">
-                <FieldsDetail className="mx-3 my-3 border-2 border-top border-bottom"
+                <FieldsDetail className="my-3 border-2 border-top border-bottom"
                     values={item}
                     fields={fields}
                     onValuesChanged={onValuesChanged}>
                 </FieldsDetail>
-                <TagInput id={id} className="mx-3 my-3 border-2 border-top border-bottom"
+                <TagInput id={id} className="my-3 border-2 border-top border-bottom"
                     tagGroupName="workshop-tags" />
                 <SessionList workshop={item} />
             </Page>;

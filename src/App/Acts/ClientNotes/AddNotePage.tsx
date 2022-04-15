@@ -1,5 +1,5 @@
 import { Band, BandCheck, BandTextArea, Form, Page, Submit, useNav } from "tonwa-com";
-import { Note, Person } from "uq-app/uqs/BzWorkshop";
+import { Note, Person } from "uqs/BzWorkshop";
 
 export function AddNotePage({ client }: { client: Person; }) {
     let nav = useNav();

@@ -1,2 +1,1 @@
-export * from './App';
-export * from './AppView';
+export * from './UqApp';

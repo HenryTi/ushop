@@ -1,8 +1,8 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { useLocation } from "react-router-dom";
 import { Band, BandString, ButtonAsync, Form, Submit, useNav } from "tonwa-com";
 import { BandIDNOInput } from "tonwa-com-uq";
-import { Person } from "uq-app/uqs/BzWorkshop";
+import { Person } from "uqs/BzWorkshop";
 
 export function ClientSurveyPage() {
     let nav = useNav();

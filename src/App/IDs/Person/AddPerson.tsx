@@ -1,8 +1,8 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { Band, BandRadio, Page, Submit, useNav } from "tonwa-com";
 import { BandIDNOInput, FieldsForm } from "tonwa-com-uq";
-import { Gender, Role } from "uq-app/uqs/BzWorkshop";
-import { BzWorkshop } from "uq-app";
+import { Gender, Role } from "uqs/BzWorkshop";
+import { BzWorkshop } from "uqs";
 import { MPerson } from "./UqPerson";
 
 interface Props {

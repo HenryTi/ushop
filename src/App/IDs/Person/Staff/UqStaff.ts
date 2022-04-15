@@ -1,6 +1,7 @@
+import { useUqApp } from "App/UqApp";
 import { useRef } from "react";
-import { Role } from "uq-app/uqs/BzWorkshop";
-import { UqIDProps, UqPerson } from "../UqPerson";
+import { Role } from "uqs/BzWorkshop";
+import { UqPerson } from "../UqPerson";
 
 export const caption = 'Staff';
 export const icon = 'user';
@@ -23,7 +24,8 @@ export class UqStaff extends UqPerson {
     }
 }
 
-export function useUqStaff(uqIDProps: UqIDProps) {
-    let ret = useRef(new UqStaff(uqIDProps));
+export function useUqStaff() {
+    let app = useUqApp();
+    let ret = useRef(new UqStaff(app));
     return ret.current;
 };

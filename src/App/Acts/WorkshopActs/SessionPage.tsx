@@ -1,9 +1,8 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { ClientView, PickClient, WorkshopView } from "App/IDs";
 import { useEffect } from "react";
-import { EasyTime, FA, LMR, MutedSmall, Page, Sep, useNav } from "tonwa-com";
+import { EasyTime, FA, LMR, MutedSmall, Page, Sep, useNav, renderDate, renderHourMinute } from "tonwa-com";
 import { IDValue, ListEdit, useListEdit } from "tonwa-com-uq";
-import { renderDate, renderHourMinute } from "../../tool";
 import { AttendeePage } from "./AttendeePage";
 import { consts, MSession } from "./consts";
 

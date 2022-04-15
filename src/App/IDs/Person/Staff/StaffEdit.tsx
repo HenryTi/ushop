@@ -1,11 +1,11 @@
-import { useUqApp } from "App/App";
+import { useUqApp } from "App/UqApp";
 import { TagInput } from "App/Tag";
-import { ForAdmin } from "App/tool";
 import { useState } from "react";
 import { BandCom, Detail, FA, MutedSmall, Page, Radio, Sep, useNav } from "tonwa-com";
 import { SelectUser, UserView, IDListEditContext } from "tonwa-com-uq";
 import { User } from "tonwa-uq";
-import { Role } from "uq-app/uqs/BzWorkshop";
+import { Role } from "uqs/BzWorkshop";
+import { ForAdmin } from "../../../ForRole";
 import { PersonDetail } from "../PersonEdit";
 import { MPerson } from "../UqPerson";
 import { BoundUserPage } from "./BoundUserPage";

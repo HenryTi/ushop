@@ -1,4 +1,4 @@
-import { Session } from "uq-app/uqs/BzWorkshop";
+import { Session } from "uqs/BzWorkshop";
 
 export const consts = {
     caption: 'Workshops',

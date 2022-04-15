@@ -1,10 +1,9 @@
-import { EasyTime, FA, Page, useNav } from "tonwa-com";
-import { dateFromMinuteId } from "tonwa-core";
-import { Note, Person, SessionPerson } from "uq-app/uqs/BzWorkshop";
-import { useUqApp } from "../../App";
-import { AddNotePage } from "./AddNotePage";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { IDListEdit, useIdListEdit } from "tonwa-com-uq";
+import { EasyTime, FA, Page, useNav, dateFromMinuteId } from "tonwa-com";
+import { Note, Person, SessionPerson } from "uqs/BzWorkshop";
+import { useUqApp } from "../../UqApp";
+import { AddNotePage } from "./AddNotePage";
 
 export function ClientPage(props: { client: Person; }) {
     let uqApp = useUqApp();
@@ -64,10 +63,18 @@ export function ClientPage(props: { client: Person; }) {
 
     function LogView({ value }: { value: Note }) {
         let { note: noteContent, staff, sensitive } = value;
+        let [isPersonMe, setIsPersonMe] = useState<boolean>(undefined);
+        useEffect(() => {
+            async function loadIsPersonMe() {
+                let ret = await uqApp.getIsPersonMe(staff);
+                setIsPersonMe(ret);
+            };
+            loadIsPersonMe();
+        }, [uqApp]);
         let vLock: any;
         if (sensitive === 1) {
             vLock = <FA name="lock" className="text-danger me-3" />
-            if (uqApp.isPersonMe(staff) === true) {
+            if (isPersonMe === true) {
                 return <div className="text-muted small">{vLock} #sensitive</div>;
             }
         }

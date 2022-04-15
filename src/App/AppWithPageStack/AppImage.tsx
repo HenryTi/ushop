@@ -1,10 +1,10 @@
 import { Login, Register } from "tonwa-com-uq";
-import { LoginTop, Privacy } from "tonwa-image";
+import { LoginTop, PrivacyLink } from "../brand";
 
 export function AppLogin() {
-    return <Login loginTop={<LoginTop />} privacy={<Privacy />} withBack={false} />;
+    return <Login loginTop={<LoginTop />} privacy={<PrivacyLink />} withBack={false} />;
 }
 
 export function AppRegister() {
-    return <Register loginTop={<LoginTop />} privacy={<Privacy />} />;
+    return <Register loginTop={<LoginTop />} privacy={<PrivacyLink />} />;
 }
