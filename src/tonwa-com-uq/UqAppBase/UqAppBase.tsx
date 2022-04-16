@@ -1,10 +1,10 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
-import { NavigateFunction } from 'react-router-dom';
+import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AppNav } from 'tonwa-com';
-import { Guest, LocalDb, NetProps, User, UserApi } from 'tonwa-uq';
+import { Guest, LocalDb, NetProps, UqConfig, User, UserApi } from 'tonwa-uq';
 //import { AuthProvider } from './AuthProvider';
 
-import { UQsLoader, Net, UqsConfig } from "tonwa-uq";
+import { UQsLoader, Net } from "tonwa-uq";
 import { uqsProxy } from '../uq';
 import { env, LocalData } from 'tonwa-com';
 import { ObservableMap } from 'mobx';
@@ -14,7 +14,7 @@ import { AppContainer } from 'tonwa-com';
 //import { VErrorsPage, VStartError } from "./vMain";
 //import { uqsProxy } from "../uq";
 
-export interface AppConfig extends UqsConfig {
+export interface AppConfig { //extends UqsConfig {
     /*
     app?: {
         name: string;
@@ -33,23 +33,29 @@ export interface AppConfig extends UqsConfig {
     htmlTitle?: string;
 }
 
+let uqAppId = 1;
 export abstract class UqAppBase<U = any> {
     private readonly appConfig: AppConfig;
+    private readonly uqConfigs: UqConfig[];
     private localData: LocalData;
+    readonly uqAppBaseId: number;
     readonly net: Net;
     //readonly auth: AuthProvider;
     readonly appNav: AppNav;
-    guest: number;
-    //user: User;
-    userApi: UserApi;
-    uqs: U;
-    version: string;    // version in appConfig;
-    responsive: {
+    readonly userApi: UserApi;
+    readonly version: string;    // version in appConfig;
+    readonly responsive: {
         user: User;
     }
+    guest: number;
+    //user: User;
+    uqs: U;
 
-    constructor(appConfig: AppConfig) {
+    constructor(appConfig: AppConfig, uqConfigs: UqConfig[]) {
+        this.uqAppBaseId = uqAppId++;
         this.appConfig = appConfig;
+        this.uqConfigs = uqConfigs;
+        this.version = appConfig.version;
         this.responsive = proxy({
             user: undefined,
         });
@@ -67,8 +73,8 @@ export abstract class UqAppBase<U = any> {
         this.userApi = this.net.userApi;
     }
 
-    initAppNav(initPage: React.ReactNode, navigate: NavigateFunction) {
-        this.appNav.init(initPage, navigate);
+    initAppNav(initPage: React.ReactNode, navigateFunc: NavigateFunction) {
+        this.appNav.init(initPage, navigateFunc);
     }
 
     logined(user: User) {
@@ -89,16 +95,6 @@ export abstract class UqAppBase<U = any> {
         await this.userApi.userSetProp(propName, value);
         let { user } = this.responsive;
         (user as any)[propName] = value;
-        /*
-        switch (propName) {
-            case 'nick':
-                this.responsive.user.nick = value;
-                break;
-            case 'icon':
-                this.responsive.user.icon = value;
-                break;
-        }
-        */
         this.localData.user.set(user);
     }
 
@@ -108,8 +104,7 @@ export abstract class UqAppBase<U = any> {
 
     private uqsUserId: number = -1;
     async init(): Promise<any> {
-        let { version, uqs } = this.appConfig;
-        this.version = version;
+        let { version } = this.appConfig;
         if (this.responsive.user?.id === this.uqsUserId) return;
 
         await this.net.init(env.testing);
@@ -133,7 +128,7 @@ export abstract class UqAppBase<U = any> {
 
         this.uqsUserId = this.responsive.user?.id;
         //this.net.logoutApis();
-        let uqsLoader = new UQsLoader(this.net, version, uqs);
+        let uqsLoader = new UQsLoader(this.net, version, this.uqConfigs);
 
         let retErrors = await uqsLoader.build();
         //this.uqsMan = uqsLoader.uqsMan;
@@ -162,21 +157,21 @@ export function useUqAppBase<U, T extends UqAppBase<U> = UqAppBase<U>>() {
     return useContext<T>(UqAppContext);
 }
 
-export function UqAppRoot<T extends UqAppBase>({ uqApp, children }: { uqApp: T; children: ReactNode; }) {
+export function UqAppBaseView<T extends UqAppBase>({ uqApp, children }: { uqApp: T; children: ReactNode; }) {
     let [appInited, setAppInited] = useState<boolean>(false);
+    let navigateFunc = useNavigate();
     useEffect(() => {
         async function appInit() {
             await uqApp.init();
+            uqApp.initAppNav(children, navigateFunc);
             setAppInited(true);
         }
         appInit();
-    }, [uqApp]);
+    }, [uqApp, children, navigateFunc]);
     if (appInited === false) return <div className="p-5 text-center">
         <Spinner className="text-info" />
     </div>
     return <UqAppContext.Provider value={uqApp}>
-        <AppContainer>
-            {children}
-        </AppContainer>
+        <AppContainer />
     </UqAppContext.Provider>;
 }

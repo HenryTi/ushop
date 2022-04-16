@@ -1,8 +1,7 @@
-import { useEffect, useRef } from 'react';
+import { useEffect } from 'react';
 import { useParams } from 'react-router-dom';
 import { FA } from 'tonwa-com';
 import { useSnapshot } from 'valtio';
-import { TabNav } from './AppNav';
 import { TabItem, TabNavContext, useAppNav, useTabNav } from './nav';
 import { StackContainer } from './StackContainer';
 import { InScrollContext } from './useScroll';
@@ -16,6 +15,9 @@ interface AppTabsProps {
     TabClose?: () => JSX.Element;
 }
 export function AppTabs(props: AppTabsProps) {
+    const { active_page } = useParams();
+    let tabNav = useTabNav();
+
     let { Tab, TabKept, TabClose } = props;
     if (!Tab) Tab = ({ title }) => {
         return <div className="ps-3 pe-2 py-2">
@@ -34,9 +36,6 @@ export function AppTabs(props: AppTabsProps) {
         </div>;
     }
 
-    const { active_page } = useParams();
-    let tabNav = useTabNav();
-
     useEffect(() => {
         let { pages, active } = props;
         let { defaultActive, data, appNav } = tabNav;
@@ -50,7 +49,8 @@ export function AppTabs(props: AppTabsProps) {
         if (ap) {
             appNav.navigate(`${ap}`);
         }
-    }, [props, tabNav, active_page]);
+    }, [props, tabNav]); // eslint-disable-line react-hooks/exhaustive-deps
+    // 注意：上面这里的相关数组，不能包含active_page。否则，每次更新url，都会重载AppTabs
 
     let { defaultActive, data, response } = tabNav;
     let { stack } = data;
@@ -79,8 +79,8 @@ export function AppTabs(props: AppTabsProps) {
             {vTab}
         </li>
     }
-    return <InScrollContext.Provider value={true}>
-        <div className="d-flex flex-column flex-grow-1 overflow-hidden">
+    return <InScrollContext.Provider value={undefined}>
+        <div className="d-flex flex-column flex-fill overflow-hidden">
             <ul className="nav nav-tabs">{tabs.map(tab => TabContainer(tab))}</ul>
             <StackContainer active={activePage} stackItems={tabs} />
         </div>
@@ -89,8 +89,7 @@ export function AppTabs(props: AppTabsProps) {
 
 export function AppTabsContainer({ children }: { children: React.ReactNode; }) {
     let appNav = useAppNav();
-    let { current: tabNav } = useRef(new TabNav(appNav));
-    return <TabNavContext.Provider value={tabNav}>
+    return <TabNavContext.Provider value={appNav.tabNav}>
         {children}
     </TabNavContext.Provider>;
 }

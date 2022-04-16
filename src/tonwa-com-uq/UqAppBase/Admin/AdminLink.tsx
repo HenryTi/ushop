@@ -32,22 +32,30 @@ interface Props extends FuncProps {
     LinkContent: (props: { onClick: () => void }) => JSX.Element;
 }
 
+interface AdminState {
+    meAdmin: Admin;
+    sysAdmins: Admin[];
+    admins: Admin[];
+}
+
 export function AdminLink({ LinkContent, me, loadAdmins, setAdmin, setMeAdmin }: Props) {
     let nav = useNav();
-    const [meAdminState, setMeAdminState] = useState<Admin>(null);
-    let sysAdmins: Admin[] = [];
-    let admins: Admin[] = [];
+    const [adminState, setAdminState] = useState<AdminState>(null);
 
     useEffect(() => {
         async function load(): Promise<void> {
             let retAdmins = await loadAdmins();
             if (!retAdmins) return;
             //await this.loadUserNames(retAdmins);
-            let meAdmin: Admin;
+            let state: AdminState = {
+                meAdmin: undefined,
+                sysAdmins: [],
+                admins: [],
+            };
             for (let admin of retAdmins) {
                 let { id } = admin;
                 if (id === me) {
-                    meAdmin = admin;
+                    state.meAdmin = admin;
                     continue;
                 }
                 let { role } = admin;
@@ -55,26 +63,27 @@ export function AdminLink({ LinkContent, me, loadAdmins, setAdmin, setMeAdmin }:
                     case -1:
                         break;
                     case 1:
-                        sysAdmins.push(admin);
+                        state.sysAdmins.push(admin);
                         break;
                     case 2:
-                        admins.push(admin);
+                        state.admins.push(admin);
                         break;
                 }
             }
-            setMeAdminState(meAdmin);
+            setAdminState(state);
         }
         load();
     }, [loadAdmins, me]);
 
-    if (meAdminState === null) {
+    if (adminState === null) {
         return <Spinner />;
     }
-    if (meAdminState === undefined) return null;
+    let { meAdmin, sysAdmins, admins } = adminState;
+    if (meAdmin === undefined) return null;
 
     let onClick = () => {
         nav.open(
-            <AdminPage meAdmin={meAdminState} sysAdmins={sysAdmins} admins={admins}
+            <AdminPage meAdmin={meAdmin} sysAdmins={sysAdmins} admins={admins}
                 me={me}
                 setAdmin={setAdmin} setMeAdmin={setMeAdmin} />
         )

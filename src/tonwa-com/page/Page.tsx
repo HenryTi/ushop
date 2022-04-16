@@ -32,7 +32,7 @@ export function UPage(props: PageProps) {
         let { Content: TemplateContent } = template;
         Content = TemplateContent;
     }
-    header = header && <div className="position-sticky" style={{ top: 0, zIndex: 9999 }}>{header}</div>;
+    header = header && <div className="position-sticky tonwa-page-header" style={{ top: 0, zIndex: 9999 }}>{header}</div>;
     let { errorPosition, Error } = template;
     switch (errorPosition) {
         case 'above-header':
@@ -42,14 +42,14 @@ export function UPage(props: PageProps) {
             header = <>{header}{<Error template={templateName} />}</>
             break;
     }
-    let cnPage = '-inner-page flex-grow-1 ';
-    //if (scrollContext === undefined) {
-    cnPage += 'overflow-auto';
-    //}
+    let cnPage = '-inner-page d-flex flex-grow-1 flex-column';
+    if (divRef === undefined) {
+        cnPage += ' overflow-auto';
+    }
     return <div ref={divRef} className={cnPage}>
         {header}
         <Content {...props}>{children}</Content>
-        {footer && <div className="position-sticky" style={{ bottom: '0' }}>{footer}</div>}
+        {footer && <div className="position-sticky tonwa-page-footer" style={{ bottom: '0' }}>{footer}</div>}
     </div>;
 }
 

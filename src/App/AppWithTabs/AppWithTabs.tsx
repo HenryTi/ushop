@@ -1,7 +1,8 @@
-import { useSnapshot } from "valtio";
+import { proxy, useSnapshot } from "valtio";
 import { AppTabs, useNav, useAppNav, UPage, TabNav, useTabNav, AppTabsContainer } from 'tonwa-com';
 import { TrialPage1 } from './TrialPage1';
 import { AppLogin } from "./AppImage";
+import { useEffect } from "react";
 
 const tabDraft = {
     key: 'draft',
@@ -87,16 +88,49 @@ function onAddTab(tabNav: TabNav) {
     tabNav.openTab(tabItem);
 }
 
+interface Item {
+    id: number;
+    name: string;
+}
+
+export interface Tick {
+    count: number;
+    text: string;
+    list: Item[];
+}
+
+const tick = proxy<Tick>({
+    count: 0,
+    text: 'ok',
+    list: [],
+});
+
+
 function TopBar() {
     let nav = useTabNav();
+    useEffect(() => {
+        let timer = setInterval(() => {
+            ++tick.count;
+            let item = tick.list[3];
+            if (item) {
+                if (item.name.length > 100) item.name = '';
+                item.name += ' - ' + Date.now();
+            }
+        }, 2000);
+        return () => {
+            clearInterval(timer);
+        }
+    }, []);
+    let snap = useSnapshot(tick);
     return <div className="py-3">
         <h4 className="px-3">Tabs <button onClick={() => onAddTab(nav)}>+</button></h4>
+        <div>vtest tick: {snap.count}</div>
     </div>;
 }
 
 function SideBar() {
     let nav = useTabNav();
-    return <div className="border px-3">
+    return <div className="border px-3 w-20c">
         <div className="my-2">left side bar</div>
         <button className="my-2" onClick={() => onAddTab(nav)}>新开页面</button>
     </div>;

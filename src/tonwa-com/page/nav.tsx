@@ -1,5 +1,5 @@
+import { useUqApp } from "App";
 import React, { useContext } from "react";
-import { NavigateOptions, To } from "react-router-dom";
 import { Spinner } from "tonwa-com";
 import { proxy, ref } from "valtio";
 import { AppNav, TabNav } from "./AppNav";
@@ -119,11 +119,11 @@ export class Nav extends StackNav<StackItem> {
         this.tabNav = tabNav;
         this.internalOpen(initPage as JSX.Element);
     }
-
-    navigate(to: To, options?: NavigateOptions) {
-        this.appNav.navigate(to, options);
-    }
-
+    /*
+        navigate(to: To, options?: NavigateOptions) {
+            this.appNav.navigate(to, options);
+        }
+    */
     openTab(tabItem: TabItem) {
         this.tabNav.openTab(tabItem);
     }
@@ -140,12 +140,14 @@ export class Nav extends StackNav<StackItem> {
     }
 }
 
-export const AppNavContext = React.createContext<AppNav>(undefined);
+//export const AppNavContext = React.createContext<AppNav>(undefined);
 export const TabNavContext = React.createContext<TabNav>(undefined);
 export const PageStackContext = React.createContext<Nav>(undefined);
 
 export function useAppNav() {
-    return useContext(AppNavContext);
+    //return useContext(AppNavContext);
+    let app = useUqApp();
+    return app.appNav;
 }
 
 export function useTabNav() {

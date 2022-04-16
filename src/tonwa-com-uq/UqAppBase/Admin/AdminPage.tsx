@@ -16,7 +16,7 @@ const info = <FA className="text-primary me-3" name="info-circle" size="lg" />;
 
 export function AdminPage(props: AdminProps) {
     let nav = useNav();
-    let { meAdmin, sysAdmins, admins, me, setMeAdmin, setAdmin } = props;
+    let { meAdmin, sysAdmins, admins, setAdmin } = props;
 
     let showMeSysAdmin = () => {
         nav.open(<MeSysAdminPage {...props} />);

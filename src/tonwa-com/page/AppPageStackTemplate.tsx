@@ -4,14 +4,14 @@ import { usePageTemplate } from "./PageTemplate";
 import "./tonwa-page.css";
 import { Back } from "./BackTemplate";
 
-const contentClassName = ' bg-white ';
+const defaultContentClassName = ' bg-white ';
 
 function Header(props: PageProps) {
     let { back, header, right, template: templateName } = props;
     let template = usePageTemplate(templateName);
     let { Back } = template;
     return <div>
-        <div className="tonwa-page-container d-flex py-2 border-bottom align-items-center bg-light">
+        <div className="tonwa-page-container d-flex h-min-3c border-bottom align-items-center tonwa-page-header-content">
             <Back back={back} />
             <div className="flex-grow-1">{header}</div>
             <div className="mx-2">{right}</div>
@@ -20,7 +20,7 @@ function Header(props: PageProps) {
 }
 
 function Footer(props: PageFooterProps) {
-    return <div className="tonwa-page-container d-flex flex-column">
+    return <div className="tonwa-page-container d-flex flex-column tonwa-page-footer-content">
         {props.footer}
     </div>;
 }
@@ -31,7 +31,7 @@ function Content(props: PageProps) {
     if (!contentClassName) {
         let { contentClassName: templateContentClassName } = template;
         contentClassName = templateContentClassName;
-        if (!contentClassName) contentClassName = ' bg-white ';
+        if (!contentClassName) contentClassName = defaultContentClassName;
     }
     return <div className={'tonwa-page-content tonwa-page-container ' + contentClassName} style={{ display: 'flow-root' }}>
         {props.children}
@@ -43,7 +43,7 @@ export const appPageStackTemplate: PageTemplateProps = {
     Header,
     Footer,
     Content,
-    contentClassName,
+    contentClassName: defaultContentClassName,
     Error,
     errorPosition: 'under-header',
 }

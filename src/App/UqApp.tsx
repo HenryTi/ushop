@@ -1,7 +1,9 @@
-import { useContext } from 'react';
-import { AutoRefresh, UqAppBase, UqAppContext } from 'tonwa-com-uq';
+import { useContext, useRef } from 'react';
+import { AppConfig, AutoRefresh, UqAppBase, UqAppBaseView, UqAppContext } from 'tonwa-com-uq';
+import { UqConfig } from 'tonwa-uq';
 import { UQs } from "uqs";
 import { Role } from "uqs/BzWorkshop";
+import { AppRoutes } from './AppWithTabs';
 
 type Roles = { [role in Role]: number };
 
@@ -75,6 +77,41 @@ export class UqApp extends UqAppBase<UQs> {
         }
         return roles;
     }
+}
+
+const appConfig: AppConfig = {
+    version: '0.1.0',
+    //uqs: uqsFromConfigs(),
+    noUnit: true,
+    oem: undefined,
+    htmlTitle: 'UShop',
+};
+
+const bizDev = {
+    "name": "bizdev",
+    "alias": "bz"
+};
+
+const uqConfigs: UqConfig[] = [
+    {
+        "dev": bizDev,
+        "name": "workshop",
+        "alias": "Workshop"
+    },
+    {
+        "dev": bizDev,
+        "name": "workshop-bus-test",
+        "alias": "WorkshopBusTest"
+    }
+];
+
+//const uqApp = new UqApp(appConfig, uqConfigs);
+
+export function UqAppView() {
+    let { current: uqApp } = useRef(new UqApp(appConfig, uqConfigs));
+    return <UqAppBaseView uqApp={uqApp}>
+        <AppRoutes />
+    </UqAppBaseView>
 }
 
 export function useUqApp() {

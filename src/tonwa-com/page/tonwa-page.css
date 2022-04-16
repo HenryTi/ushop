@@ -6,6 +6,36 @@
   margin-left: auto;
 }
 
+.tonwa-page-header {
+  background-color: aquamarine;
+}
+
+.tonwa-page-header-content {
+  background-color: aqua;
+}
+
+.tonwa-page-footer {
+  background-color: bisque;
+}
+
+.tonwa-page-footer-content {
+  background-color: beige;
+}
+
+.tonwa-page-tabs {
+  background-color: #f0f0f0;
+}
+
+.tonwa-tab-pane {
+  display: none;
+}
+
+.tonwa-tab-pane.active {
+  display: flex;
+  flex-direction: column;
+  flex-grow: 1;
+}
+
 .fs-big {
   font-size: 1.25em;
 }

@@ -16,14 +16,21 @@ export class AppNav extends StackNav<StackItem> {
         isLogined: undefined,
         error: undefined,
     });
-    navigateFunc: NavigateFunction;
+    readonly tabNav = new TabNav(this);
+
+    private navigateFunc: NavigateFunction;
 
     init(initPage: React.ReactNode, navigateFunc: NavigateFunction) {
-        this.navigate = navigateFunc;
+        if (this.navigateFunc) return;
+        this.navigateFunc = navigateFunc;
         if (initPage) {
             this.data.stack.splice(0);
             this.internalOpen(<>{initPage}</>);
         }
+    }
+
+    navigate(to: To, options?: NavigateOptions) {
+        this.navigateFunc(to, options);
     }
 
     onLoginChanged = (isLogined: boolean) => {
@@ -37,10 +44,6 @@ export class AppNav extends StackNav<StackItem> {
     }
     setError(err: string, message: string) { this.response.error = ref({ err, message }) }
     clearError() { this.response.error = undefined; }
-
-    navigate(to: To, options?: NavigateOptions) {
-        this.navigateFunc(to, options);
-    }
 }
 
 export class TabNav extends StackNav<TabItem> {
@@ -60,10 +63,6 @@ export class TabNav extends StackNav<TabItem> {
         });
     }
 
-    navigate(to: To, options?: NavigateOptions) {
-        this.appNav.navigateFunc(to, options);
-    }
-
     setInitTabs(initPageItems: TabItem[], defaultActive: TabItem) {
         this.defaultActive = defaultActive;
         initPageItems = initPageItems ?? [];
@@ -73,26 +72,12 @@ export class TabNav extends StackNav<TabItem> {
         this.data.stack.push(...(initPageItems).map(v => ref(v)));
     }
 
-    start__to_be_removed(to: To) {
-        let location = window.location;
-        let href = location.href;
-        let { stack } = this.data;
-        let arr = stack.splice(0);
-        this.navigate(to, { replace: true });
-        if (location.href === href) {
-            let len = arr.length;
-            if (len > 0) {
-                stack.push(arr[len - 1]);
-            }
-        }
-    }
-
     openTab(pageItem: TabItem) {
         let refPageItem = ref(pageItem);
         this.response.active = refPageItem;
         this.data.stack.push(refPageItem);
-        this.navigate(`/${pageItem.key}`);
         this.itemsArr.push(pageItem);
+        this.appNav.navigate(`/${pageItem.key}`);
     }
 
     activate(pageItem: TabItem) {
@@ -102,7 +87,7 @@ export class TabNav extends StackNav<TabItem> {
             let p = this.itemsArr.findIndex(v => v.key === name);
             let ret = this.itemsArr.splice(p, 1);
             this.itemsArr.push(...ret);
-            this.navigate(name);
+            this.appNav.navigate(name);
         }
     }
 
@@ -120,7 +105,7 @@ export class TabNav extends StackNav<TabItem> {
                 let item = this.itemsArr[len - 1];
                 this.response.active = item;
                 let active = item.key;
-                this.navigate(`/${active}`);
+                this.appNav.navigate(`/${active}`);
             }
         }
     }

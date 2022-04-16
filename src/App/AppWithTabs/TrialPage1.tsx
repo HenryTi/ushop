@@ -12,12 +12,12 @@ export function TrialPage1({ id }: { id: number }) {
     }
     let { id: userId, name, nick, icon, token } = user;
     return <UPage header="aaa" footer={<div>footer</div>}>
-        <div>
+        <div className="text-break">
             userId:{userId}, name:{name}, nick:{nick}, icon:{icon}, token:{token}
         </div>
         <div className="p-3">
             trial page id: {id}
-            {Array(50).fill(0).map((v, index) => <br key={index} />)}
+            {Array(50).fill(0).map((v, index) => <p key={index}>{index}</p>)}
             <div>
                 <button onClick={onClick}>show page</button>
                 <button onClick={() => nav.tabNav.closeTab()}>close me</button>

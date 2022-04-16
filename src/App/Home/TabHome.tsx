@@ -30,7 +30,7 @@ const tick = proxy<Tick>({
 
 export function TabHome() {
 	useEffect(() => {
-		setInterval(() => {
+		let timer = setInterval(() => {
 			++tick.count;
 			let item = tick.list[3];
 			if (item) {
@@ -38,6 +38,9 @@ export function TabHome() {
 				item.name += ' - ' + Date.now();
 			}
 		}, 2000);
+		return () => {
+			clearInterval(timer);
+		}
 	}, []);
 
 	let items: string[] = [

@@ -7,7 +7,6 @@ export function AppRoutes() {
     return <Routes>
         <Route path="/" element={<AppWithTabs />}>
             <Route path=":active_page" element={<AppWithTabs />} />
-            <Route path=":active_page/:sub" element={<AppWithTabs />} />
         </Route>
     </Routes>;
 }

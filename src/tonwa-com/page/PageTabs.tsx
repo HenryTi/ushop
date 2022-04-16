@@ -1,4 +1,4 @@
-import React, { ReactElement, useRef } from "react";
+import React, { ReactElement, ReactNode, useRef } from "react";
 import { proxy, useSnapshot } from "valtio";
 import { InScrollContext, useScroll } from "./useScroll";
 
@@ -51,7 +51,7 @@ interface PageTabsProps {
 }
 
 export function PageTabs(props: PageTabsProps) {
-    let divRef = useScroll();
+    let upScroll = useScroll();
     let tabProxy = useRef(proxy({ active: 0 }));
     let { active } = useSnapshot(tabProxy.current);
     let { current: tabs } = useRef(createTabsFromChildren(props.children, active));
@@ -61,13 +61,24 @@ export function PageTabs(props: PageTabsProps) {
         if (!tab) return;
         tab.mountable = true;
     }
-    return <InScrollContext.Provider value={true}>
-        <div className="flex-grow-1 d-flex flex-column" style={{ overflowY: 'scroll' }}>
-            <div ref={divRef} className="tonwa-page-content tab-content flex-grow-1">
-                {tabs.map((v, index) => <div key={v.name}
-                    className={'tab-pane ' + (active === index ? 'active' : '')}>
-                    {v.mountable === true && v.content}
-                </div>)}
+    function TabPane({ children, active }: { children: ReactNode; active: string; }) {
+        let divRef = useScroll();
+        return <div ref={divRef} className={'tab-pane ' + active}>
+            {children}
+        </div>
+    }
+    return <InScrollContext.Provider value={upScroll === undefined}>
+        <div className="flex-grow-1 d-flex flex-column" style={{ overflowY: 'scroll', }}>
+            <div className="tonwa-page-content tab-content flex-grow-1">
+                {
+                    tabs.map((v, index) => {
+                        let { name, mountable, content } = v;
+                        if (mountable === false) return null;
+                        return <TabPane key={name} active={active === index ? 'active' : ''}>
+                            {content}
+                        </TabPane>;
+                    })
+                }
             </div>
             <ul className="nav nav-tabs position-sticky tonwa-page-container justify-content-evenly bg-light" style={{ bottom: '0' }}>
                 {tabs.map((v, index) => <li key={v.name} className="nav-item flex-fill align-self-stretch">

@@ -3,13 +3,13 @@ import { PageFooterProps, PageHeaderProps, PageProps, PageTemplateProps } from "
 import { usePageTemplate } from "./PageTemplate";
 import { Back } from "./BackTemplate";
 
-const contentClassName = ' bg-white ';
+const defaultContentClassName = ' bg-white ';
 
 function Header(props: PageHeaderProps) {
     let { back, header, right } = props;
     let { Back } = appTabsTemplate;
     return <div>
-        <div className="d-flex py-2 border-bottom align-items-center bg-light">
+        <div className="d-flex py-2 border-bottom align-items-center tonwa-page-header-content">
             <Back back={back} />
             <div className="">{header}</div>
             <div className="ms-3">{right}</div>
@@ -18,7 +18,7 @@ function Header(props: PageHeaderProps) {
 }
 
 function Footer(props: PageFooterProps) {
-    return <div className="d-flex flex-column">
+    return <div className="d-flex flex-column tonwa-page-header-content">
         {props.footer}
     </div>;
 }
@@ -29,7 +29,7 @@ function Content(props: PageProps) {
     if (!contentClassName) {
         let { contentClassName: templateContentClassName } = template;
         contentClassName = templateContentClassName;
-        if (!contentClassName) contentClassName = ' bg-white ';
+        if (!contentClassName) contentClassName = defaultContentClassName;
     }
     return <div className={'tonwa-page-content ' + contentClassName}>
         {props.children}
@@ -41,7 +41,7 @@ export const appTabsTemplate: PageTemplateProps = {
     Header,
     Footer,
     Content,
-    contentClassName,
+    contentClassName: defaultContentClassName,
     Error,
     errorPosition: 'above-header',
 }
