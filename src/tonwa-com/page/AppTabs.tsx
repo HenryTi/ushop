@@ -4,7 +4,7 @@ import { FA } from 'tonwa-com';
 import { useSnapshot } from 'valtio';
 import { TabItem, TabNavContext, useAppNav, useTabNav } from './nav';
 import { StackContainer } from './StackContainer';
-import { InScrollContext } from './useScroll';
+import { ScrollContext } from './useScroll';
 
 interface AppTabsProps {
     pages?: TabItem[];
@@ -79,12 +79,13 @@ export function AppTabs(props: AppTabsProps) {
             {vTab}
         </li>
     }
-    return <InScrollContext.Provider value={undefined}>
-        <div className="d-flex flex-column flex-fill overflow-hidden">
-            <ul className="nav nav-tabs">{tabs.map(tab => TabContainer(tab))}</ul>
+
+    return <div className="d-flex flex-column flex-fill overflow-hidden">
+        <ul className="nav nav-tabs">{tabs.map(tab => TabContainer(tab))}</ul>
+        <ScrollContext.Provider value='app-tabs'>
             <StackContainer active={activePage} stackItems={tabs} />
-        </div>
-    </InScrollContext.Provider>;
+        </ScrollContext.Provider>
+    </div>;
 }
 
 export function AppTabsContainer({ children }: { children: React.ReactNode; }) {

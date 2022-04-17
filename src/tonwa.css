@@ -203,6 +203,18 @@ div#root>div {
     max-width: 12rem !important;
 }
 
+.w-16c {
+    width: 16rem !important;
+}
+
+.w-min-16c {
+    min-width: 16rem !important;
+}
+
+.w-max-16c {
+    max-width: 16rem !important;
+}
+
 .w-20c {
     width: 20rem !important;
 }
@@ -216,7 +228,7 @@ div#root>div {
 }
 
 .w-30c {
-    width: 20rem !important;
+    width: 30rem !important;
 }
 
 .w-max-30c {
@@ -225,6 +237,18 @@ div#root>div {
 
 .w-min-30c {
     min-width: 30rem !important;
+}
+
+.w-40c {
+    width: 40rem !important;
+}
+
+.w-max-40c {
+    max-width: 40rem !important;
+}
+
+.w-min-40c {
+    min-width: 40rem !important;
 }
 
 .h-1c {
@@ -371,6 +395,18 @@ div#root>div {
     max-height: 12rem !important;
 }
 
+.h-16c {
+    height: 16rem !important;
+}
+
+.h-min-16c {
+    min-height: 16rem !important;
+}
+
+.h-max-16c {
+    max-height: 16rem !important;
+}
+
 .h-20c {
     height: 20rem !important;
 }
@@ -393,4 +429,16 @@ div#root>div {
 
 .h-min-30c {
     min-height: 30rem !important;
+}
+
+.h-40c {
+    height: 40rem !important;
+}
+
+.h-max-40c {
+    max-height: 40rem !important;
+}
+
+.h-min-40c {
+    min-height: 40rem !important;
 }

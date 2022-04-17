@@ -115,7 +115,7 @@ export abstract class UqAppBase<U = any> {
         else {
             let guest: Guest = this.localData.guest.get();
             if (guest === undefined) {
-                guest = await this.net.guestApi.guest();
+                guest = await this.net.userApi.guest();
             }
             if (!guest) {
                 debugger;

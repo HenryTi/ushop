@@ -3,7 +3,8 @@ import { AppConfig, AutoRefresh, UqAppBase, UqAppBaseView, UqAppContext } from '
 import { UqConfig } from 'tonwa-uq';
 import { UQs } from "uqs";
 import { Role } from "uqs/BzWorkshop";
-import { AppRoutes } from './AppWithTabs';
+//import { AppRoutes } from './AppWithTabs';
+import { AppRoutes } from './AppWithPageStack';
 
 type Roles = { [role in Role]: number };
 

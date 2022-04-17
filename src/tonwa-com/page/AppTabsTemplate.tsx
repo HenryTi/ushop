@@ -31,7 +31,7 @@ function Content(props: PageProps) {
         contentClassName = templateContentClassName;
         if (!contentClassName) contentClassName = defaultContentClassName;
     }
-    return <div className={'tonwa-page-content ' + contentClassName}>
+    return <div className={'tonwa-page-content ' + contentClassName} style={{ display: 'flow-root' }}>
         {props.children}
     </div>;
 }

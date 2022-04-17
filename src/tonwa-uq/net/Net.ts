@@ -4,7 +4,6 @@ import { CenterApi } from "./centerApi";
 import { CallCenterApi, UqTokenApi } from "./uqApi";
 import { UserApi } from "./userApi";
 import { HttpChannel } from './httpChannel';
-import { GuestApi } from "./guestApi";
 import { MessageHub } from "./messageHub";
 import { WsBridge, WSChannel } from "./wsChannel";
 import { Host, resUrlFromHost } from './host';
@@ -41,7 +40,7 @@ export class Net {
     readonly userApi: UserApi;
     readonly uqTokenApi: UqTokenApi;
     readonly callCenterapi: CallCenterApi;
-    readonly guestApi: GuestApi;
+    //readonly guestApi: GuestApi;
     readonly messageHub: MessageHub;
     readonly wsBridge: WsBridge;
     readonly host: Host;
@@ -65,7 +64,7 @@ export class Net {
         this.userApi = new UserApi(this, 'tv/');
         this.uqTokenApi = new UqTokenApi(this, 'tv/tie/');
         this.callCenterapi = new CallCenterApi(this, '');
-        this.guestApi = new GuestApi(this, 'tv/guest/');
+        //this.guestApi = new GuestApi(this, 'tv/guest/');
         this.messageHub = new MessageHub(this);
         this.wsBridge = new WsBridge(this);
         this.host = Host.createHost(this.isDevelopment);

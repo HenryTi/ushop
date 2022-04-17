@@ -5,11 +5,12 @@ import { PageProps } from "./PageProps";
 import { usePageTemplate } from "./PageTemplate";
 import { useScroll } from "./useScroll";
 import 'font-awesome/css/font-awesome.min.css';
+//import { useContext } from "react";
 
 // unanthorized page
 export function UPage(props: PageProps) {
     let divRef = useScroll();
-    let { children, header, back, right, footer, template: templateName } = props;
+    let { children, header, back, right, footer, template: templateName, id } = props;
     let template = usePageTemplate(templateName);
     if (header || back || right) {
         let { Header } = props;
@@ -42,14 +43,11 @@ export function UPage(props: PageProps) {
             header = <>{header}{<Error template={templateName} />}</>
             break;
     }
-    let cnPage = '-inner-page d-flex flex-grow-1 flex-column';
-    if (divRef === undefined) {
-        cnPage += ' overflow-auto';
-    }
-    return <div ref={divRef} className={cnPage}>
+    //let cnPage = '-inner-page d-flex flex-grow-1 flex-column';
+    return <div ref={divRef} className="-inner-page" id={id}>
         {header}
         <Content {...props}>{children}</Content>
-        {footer && <div className="position-sticky tonwa-page-footer" style={{ bottom: '0' }}>{footer}</div>}
+        {footer && <div className="tonwa-page-footer" style={{ position: 'sticky', bottom: '0px' }}>{footer}</div>}
     </div>;
 }
 

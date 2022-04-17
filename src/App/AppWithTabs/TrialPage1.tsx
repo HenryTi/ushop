@@ -17,6 +17,10 @@ export function TrialPage1({ id }: { id: number }) {
         </div>
         <div className="p-3">
             trial page id: {id}
+            <div>
+                <button onClick={onClick}>show page</button>
+                <button onClick={() => nav.tabNav.closeTab()}>close me</button>
+            </div>
             {Array(50).fill(0).map((v, index) => <p key={index}>{index}</p>)}
             <div>
                 <button onClick={onClick}>show page</button>

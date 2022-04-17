@@ -48,4 +48,5 @@ export interface PageTemplateProps {
 
 export interface PageProps extends PageHeaderProps, PageFooterProps, PageContentProps, PageTemplateProps {
     template?: string;
+    id?: string;
 }

@@ -1,6 +1,7 @@
-import React, { useRef } from "react";
+import React, { useContext, useRef } from "react";
 import { useSnapshot } from "valtio";
 import { Nav, PageStackContext, StackItem, useAppNav, useTabNav } from "./nav";
+import { ScrollContext } from "./useScroll";
 
 export function StackContainer({ active, stackItems }: { active?: string; stackItems: readonly StackItem[] }) {
     let last = stackItems.length - 1;
@@ -24,17 +25,27 @@ export function StackContainer({ active, stackItems }: { active?: string; stackI
 function Stack({ display, children }: { display: boolean; children: React.ReactNode; }) {
     let appNav = useAppNav();
     let tabNav = useTabNav();
+    let scrollContext = useContext(ScrollContext);
     let nav = useRef(new Nav(appNav, tabNav, children));
     let { data } = nav.current;
     let snapshot = useSnapshot(data);
     let { stack: snapshotStack } = snapshot;
     let len = snapshotStack.length;
     let last = len - 1;
-    const flexFill = '-page-stack-layer flex-column flex-grow-1 overflow-hidden '
+    const flexFill = '-page-stack-layer flex-column flex-grow-1 '
+    let overflowY: any;
+    switch (scrollContext) {
+        default: overflowY = 'auto'; break;
+        case 'app-tabs': overflowY = 'auto'; break;
+        case 'page-tabs': overflowY = 'scroll'; break;
+    }
     return <PageStackContext.Provider value={nav.current}>
         {snapshotStack.map((v, index) => {
             let { key: pageKey, page } = v;
-            return <div key={pageKey} className={flexFill + (display === true && index === last ? 'd-flex' : 'd-none')}>
+            return <div key={pageKey}
+                className={flexFill + (display === true && index === last ? 'd-flex' : 'd-none')}
+                style={{ overflowY }}
+            >
                 {page}
             </div>
         })}

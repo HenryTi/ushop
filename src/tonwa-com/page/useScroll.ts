@@ -1,27 +1,30 @@
-import React, { useContext, useEffect, useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 export function useScroll() {
+    //return undefined;
     let divRef = useRef();
-    let inScroll = useContext(InScrollContext);
+    //let inScroll = useContext(ScrollContext);
     useEffect(() => {
-        if (inScroll !== true) return;
+        //if (inScroll !== true) return;
         let resize = () => {
             let el = divRef.current as HTMLElement;
-            if (!el) { return; }
+            if (!el) return;
+            if (el.offsetParent === null) return;
             let els = el.getElementsByClassName('tonwa-page-content');
             if (els.length === 0) return;
             let elContent = els[0];
-            let elContainer = getTabContentElement(elContent); // elContent.parentElement;
+            let elContainer = getScrollContainer(elContent);
             if (!elContainer) return;
-            let h = elContainer.parentElement.clientHeight;
+            let h = elContainer.clientHeight;
             if (h < 1) return;
             elContent.parentElement.childNodes.forEach(v => {
                 if (v.nodeType === Node.ELEMENT_NODE) {
                     if (v === elContent) return;
-                    h -= (v as HTMLElement).clientHeight;
+                    h -= (v as HTMLElement).offsetHeight;
                 };
             });
-            h -= (((el as Element)?.parentElement?.nextSibling as Element)?.clientHeight ?? 0);
+            let tabs = getPageTabsContainerFromScrollContainer(elContainer);
+            if (tabs) h -= tabs.clientHeight;
             if (h < 10) return;
             (elContent as any).style.minHeight = (h - 2) + 'px';
         }
@@ -32,17 +35,21 @@ export function useScroll() {
             window.removeEventListener('resize', resize);
             window.removeEventListener('DOMSubtreeModified', resize);
         }
-    }, [inScroll]);
-    if (inScroll !== true) return;
+    }, [/*inScroll*/]);
+    //if (inScroll !== true) return;
     return divRef;
 }
 
-function getTabContentElement(el: Element) {
+function getScrollContainer(el: Element) {
     for (let p = el; p; p = p.parentElement) {
-        if ((p?.className ?? '').indexOf('tab-content') >= 0) {
-            return p;
-        }
+        let { overflowY } = (p as HTMLElement).style;
+        if (overflowY) return p;
     }
 }
 
-export const InScrollContext = React.createContext<boolean>(undefined);
+function getPageTabsContainerFromScrollContainer(scrollContainer: Element) {
+    let el = scrollContainer.getElementsByClassName('nav nav-tabs position-sticky');
+    if (el && el.length > 0) return el[0];
+}
+
+export const ScrollContext = React.createContext<'app-tabs' | 'page-tabs'>(undefined);
