@@ -6,8 +6,9 @@ import { UserApi } from "./userApi";
 import { HttpChannel } from './httpChannel';
 import { MessageHub } from "./messageHub";
 import { WsBridge, WSChannel } from "./wsChannel";
-import { Host, resUrlFromHost } from './host';
-import { LocalDb } from "tonwa-uq/tool";
+import { buildDebugHosts, buildHosts, HostMan, Hosts, resUrlFromHost } from './host';
+import { LocalDb } from "../tool";
+import { env } from "tonwa-com";
 
 export interface PromiseValue<T> {
     resolve: (value?: T | PromiseLike<T>) => void;
@@ -15,6 +16,8 @@ export interface PromiseValue<T> {
 }
 
 export interface NetProps {
+    center: string;
+    debug: Hosts;
     unit: number;
     testing: boolean;
     buildingUq?: boolean;           // default false
@@ -26,6 +29,9 @@ export class Net {
     logout() {
         throw new Error('Method not implemented.');
     }
+    private hosts: Hosts;
+    private testing: boolean;
+
     centerHost: string;
     centerToken: string | undefined = undefined;
     loginedUserId: number = 0;
@@ -43,7 +49,7 @@ export class Net {
     //readonly guestApi: GuestApi;
     readonly messageHub: MessageHub;
     readonly wsBridge: WsBridge;
-    readonly host: Host;
+    //readonly hostMan: HostMan;
 
     language: string;
     culture: string;
@@ -57,6 +63,7 @@ export class Net {
     constructor(props: NetProps) {
         this.props = props;
         this.isDevelopment = process.env.NODE_ENV === 'development';
+        this.testing = env.testing;
         this.localDb = this.props.localDb;
         this.createObservableMap = this.props.createObservableMap;
         this.centerApi = new CenterApi(this, 'tv/');
@@ -67,15 +74,22 @@ export class Net {
         //this.guestApi = new GuestApi(this, 'tv/guest/');
         this.messageHub = new MessageHub(this);
         this.wsBridge = new WsBridge(this);
-        this.host = Host.createHost(this.isDevelopment);
+        //this.hostMan = HostMan.createHost(this.isDevelopment);
     }
 
-    async init(testing: boolean) {
-        await this.host.start(testing)
-        let { url, ws, resHost } = this.host;
-        //this.resUrl = this.resUrlFromHost(resHost);
-        //this.wsHost = ws;
-        this.setCenterUrl(url);
+    async init() {
+        let { center, debug } = this.props;
+        this.hosts = this.isDevelopment === true ?
+            await buildHosts(center)
+            :
+            await buildDebugHosts(center, debug);
+        //await this.hostMan.start(testing)
+        //let { url } = this.hostMan;
+        this.setCenterUrl(this.hosts.center);
+    }
+
+    getResUrl(res: string): string {
+        return this.hosts.res + res;
     }
 
     //abstract createLocalDb(): LocalDb;
@@ -106,11 +120,32 @@ export class Net {
 
     getCenterChannel(): HttpChannel {
         if (this.centerChannel !== undefined) return this.centerChannel;
-        let centerHost = this.host.url;
+        let centerHost = this.hosts.center;
         return this.centerChannel = new HttpChannel(this, centerHost, this.centerToken);
     }
 
     resUrlFromHost(host: string): string {
         return resUrlFromHost(host);
+    }
+
+    buildUqUrl(db: string, url: string, urlTest: string): string {
+        let testOrProd: string;
+        if (this.testing === true) {
+            let { uq } = this.hosts;
+            if (uq) {
+                urlTest = uq;
+            }
+            else if (urlTest === '-') {
+                urlTest = url;
+            }
+            testOrProd = 'test';
+        }
+        else {
+            testOrProd = 'prod';
+        }
+        if (url.endsWith('/') === false) {
+            url += '/';
+        }
+        return `${url}uq/${testOrProd}/${db}/`;
     }
 }

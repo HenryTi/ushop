@@ -130,7 +130,7 @@ function TopBar() {
 
 function SideBar() {
     let nav = useTabNav();
-    return <div className="border px-3 w-20c">
+    return <div className="border px-3 w-min-20c">
         <div className="my-2">left side bar</div>
         <button className="my-2" onClick={() => onAddTab(nav)}>新开页面</button>
     </div>;

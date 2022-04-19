@@ -1,7 +1,7 @@
 import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AppNav } from 'tonwa-com';
-import { Guest, LocalDb, NetProps, UqConfig, User, UserApi } from 'tonwa-uq';
+import { Guest, Hosts, LocalDb, NetProps, UqConfig, User, UserApi } from 'tonwa-uq';
 //import { AuthProvider } from './AuthProvider';
 
 import { UQsLoader, Net } from "tonwa-uq";
@@ -23,6 +23,8 @@ export interface AppConfig { //extends UqsConfig {
     };
     */
     //appName: string;        // 格式: owner/appName
+    center: string;
+    debug: Hosts;
     version: string;        // 版本变化，缓存的uqs才会重载
     //tvs?: TVs;
     //uqNameMap?: {[uqName:string]: string};      // uqName='owner/uq' 映射到内存简单名字：uq, 可以注明映射，也可以自动。有可能重
@@ -60,6 +62,8 @@ export abstract class UqAppBase<U = any> {
             user: undefined,
         });
         let props: NetProps = {
+            center: appConfig.center,
+            debug: appConfig.debug,
             unit: env.unit,
             testing: env.testing,
             localDb: new LocalStorageDb(),
@@ -107,7 +111,7 @@ export abstract class UqAppBase<U = any> {
         let { version } = this.appConfig;
         if (this.responsive.user?.id === this.uqsUserId) return;
 
-        await this.net.init(env.testing);
+        await this.net.init();
         let user = this.localData.user.get();
         if (user) {
             this.logined(user);

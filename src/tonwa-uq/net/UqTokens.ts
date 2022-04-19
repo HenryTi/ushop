@@ -37,9 +37,9 @@ export class UqTokens {
         let uqToken = await this.net.uqTokenApi.uq({ unit, uqOwner, uqName });
         if (uqToken.token === undefined) uqToken.token = this.net.centerToken;
         let { db, url, urlTest } = uqToken;
-        let realUrl = this.net.host.getUrlOrTest(db, url, urlTest);
-        console.log('realUrl: %s', realUrl);
-        uqToken.url = realUrl;
+        let uqUrl = this.net.buildUqUrl(db, url, urlTest);
+        console.log('realUrl: %s', uqUrl);
+        uqToken.url = uqUrl;
         this.uqTokens[uq] = uqToken;
         return uqToken;
     }

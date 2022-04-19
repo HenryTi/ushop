@@ -160,7 +160,7 @@ export class UqTokenApi extends CenterApiBase {
                 }
             }
             let uqParams: any = Object.assign({}, params);
-            uqParams.testing = this.net.host.testing;
+            //uqParams.testing = this.net.hostMan.testing;
             let ret = await this.get('uq-token', uqParams);
             if (ret === undefined) {
                 let { unit, uqOwner, uqName } = params;

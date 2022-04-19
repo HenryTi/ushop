@@ -104,7 +104,7 @@ export function TestPage({ tick }: PTestProps) {
     function PickValue({ value }: { value: any }) {
         return <>value {JSON.stringify(value)} value</>;
     }
-    return <Page header="Test page" footer={<div className="h-3c">HHH</div>}>
+    return <Page header="Test page" footer={<div className="h-3c d-flex align-items-center mx-3">Footer content</div>}>
         <div className="m-3">
             <Tick />
         </div>

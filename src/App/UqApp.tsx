@@ -82,7 +82,12 @@ export class UqApp extends UqAppBase<UQs> {
 
 const appConfig: AppConfig = {
     version: '0.1.0',
-    //uqs: uqsFromConfigs(),
+    center: 'https://dev.tonwa.ca',
+    debug: {
+        center: 'localhost:3000',
+        uq: 'localhost:3015',
+        res: 'localhost:3015',
+    },
     noUnit: true,
     oem: undefined,
     htmlTitle: 'UShop',

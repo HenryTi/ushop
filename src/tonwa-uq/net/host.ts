@@ -5,6 +5,13 @@ const resHost = centerHost ?? rootCenterHost;
 const resDebugHost = 'localhost:3015'; //'192.168.86.63';
 const uqDebugHost = 'localhost:3015'; //'192.168.86.63';
 const uqDebugBuilderHost = 'localhost:3009';
+
+export interface Hosts {
+    center: string;
+    uq: string;
+    res: string;
+}
+
 interface HostValue {
     value: string;
     local: boolean;
@@ -74,10 +81,66 @@ const fetchOptions = {
     },
 };
 
-export class Host {
-    static createHost(isDevelopment: boolean): Host {
+export async function buildHosts(center: string): Promise<Hosts> {
+    let uq: string, res: string;
+    if (center.endsWith('/') === false) {
+        center += '/';
+    }
+    return { center, uq, res };
+}
+
+export async function buildDebugHosts(center: string, debugHosts: Hosts): Promise<Hosts> {
+    if (center.endsWith('/') === false) {
+        center += '/';
+    }
+    if (!debugHosts) {
+        return { center, uq: undefined, res: undefined };
+    }
+    let { center: debugCenter, uq, res } = debugHosts;
+    let promises: PromiseLike<any>[] = [debugCenter, uq, res].map(v => localCheck(v));
+    let results = await Promise.all(promises);
+    if (results[0] === true) center = `http://${debugCenter}/`;
+    if (results[1] === true) uq = `http://${uq}/`;
+    if (results[2] === true) res = `http://${res}/`;
+    return { center, uq, res };
+}
+
+// 因为测试的都是局域网服务器，甚至本机服务器，所以一秒足够了
+// 网上找了上面的fetch timeout代码。
+// 尽管timeout了，fetch仍然继续，没有cancel
+
+// 实际上，一秒钟不够。web服务器会自动停。重启的时候，可能会比较长时间。也许两秒甚至更多。
+//const timeout = 2000;
+const timeout = 2000;
+
+function fetchLocalCheck(url: string): Promise<any> {
+    return new Promise((resolve, reject) => {
+        fetch(url, fetchOptions as any)
+            .then(v => {
+                v.text().then(resolve).catch(reject);
+            })
+            .catch(reject);
+        const e = new Error("Connection timed out");
+        setTimeout(reject, timeout, e);
+    });
+}
+
+async function localCheck(host: string): Promise<boolean> {
+    if (!host) return false;
+    let url = `http://${host}/hello`;
+    try {
+        await fetchLocalCheck(url);
+        return true;
+    }
+    catch (err) {
+        return false;
+    }
+}
+
+export class HostMan {
+    static createHost(isDevelopment: boolean): HostMan {
         if (isDevelopment === true) return new HostForDeveloping();
-        return new Host();
+        return new HostMan();
     }
 
     testing: boolean;
@@ -156,7 +219,7 @@ export class Host {
     }
 }
 
-class HostForDeveloping extends Host {
+class HostForDeveloping extends HostMan {
     private debugHostUrl(host: string) { return `http://${host}/hello` }
     protected async tryLocal() {
         let promises: PromiseLike<any>[] = [];
@@ -214,39 +277,3 @@ class HostForDeveloping extends Host {
 
 //export const host:Host = new Host();
 
-// 因为测试的都是局域网服务器，甚至本机服务器，所以一秒足够了
-// 网上找了上面的fetch timeout代码。
-// 尽管timeout了，fetch仍然继续，没有cancel
-
-// 实际上，一秒钟不够。web服务器会自动停。重启的时候，可能会比较长时间。也许两秒甚至更多。
-//const timeout = 2000;
-const timeout = 2000;
-
-function fetchLocalCheck(url: string): Promise<any> {
-    return new Promise((resolve, reject) => {
-        fetch(url, fetchOptions as any)
-            .then(v => {
-                v.text().then(resolve).catch(reject);
-            })
-            .catch(reject);
-        const e = new Error("Connection timed out");
-        setTimeout(reject, timeout, e);
-    });
-}
-
-async function localCheck(url: string): Promise<boolean> {
-    try {
-        await fetchLocalCheck(url);
-        return true;
-    }
-    catch (err) {
-        return false;
-    }
-}
-
-/*
-export interface IUqForChannel {
-    uq: string;
-    uqVersion: number;
-}
-*/
