@@ -1,4 +1,3 @@
-import { useUqApp } from "App";
 import React, { useContext } from "react";
 import { Spinner } from "tonwa-com";
 import { proxy, ref } from "valtio";
@@ -140,14 +139,12 @@ export class Nav extends StackNav<StackItem> {
     }
 }
 
-//export const AppNavContext = React.createContext<AppNav>(undefined);
+export const AppNavContext = React.createContext<AppNav>(undefined);
 export const TabNavContext = React.createContext<TabNav>(undefined);
 export const PageStackContext = React.createContext<Nav>(undefined);
 
 export function useAppNav() {
-    //return useContext(AppNavContext);
-    let app = useUqApp();
-    return app.appNav;
+    return useContext(AppNavContext);
 }
 
 export function useTabNav() {

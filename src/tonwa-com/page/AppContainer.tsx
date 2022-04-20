@@ -1,10 +1,13 @@
 import { useSnapshot } from "valtio";
-import { useUqAppBase } from "tonwa-com-uq";
 import { StackContainer } from "./StackContainer";
+import { AppNavContext } from "./nav";
+import { useRef } from "react";
+import { AppNav } from "./AppNav";
 
 export function AppContainer() {
-    let uqApp = useUqAppBase();
-    let { appNav } = uqApp;
+    let { current: appNav } = useRef(new AppNav());
     let { stack } = useSnapshot(appNav.data);
-    return <StackContainer stackItems={stack} />;
+    return <AppNavContext.Provider value={appNav}>
+        <StackContainer stackItems={stack} />
+    </AppNavContext.Provider>;
 }
