@@ -442,3 +442,15 @@ div#root>div {
 .h-min-40c {
     min-height: 40rem !important;
 }
+
+.image-none {
+    background-color: #f4f4f4;
+    color: #e4e4e4;
+    display: inline-flex;
+    width: 100%;
+    height: 100%;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #e8e8e8;
+    border-radius: 0.5rem;
+}

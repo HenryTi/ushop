@@ -1,29 +1,71 @@
-import { useSnapshot } from "valtio";
-import { Page, useNav, FA } from "tonwa-com";
+import { useState } from "react";
+import { Page, useNav, FA, Form } from "tonwa-com";
+import { LMR, MutedSmall } from "tonwa-com";
+import { String } from "tonwa-com/fields";
+import { Submit } from "tonwa-com/form";
 import { User } from "tonwa-uq";
-import { UserView } from "../UserView";
-import { Image } from "../Image";
-import { Admin, AdminProps, EnumAdminRoleInEdit } from "./AdminLink";
+import { UserView, Image } from "../coms";
+import { Admin, EnumAdminRoleInEdit } from "./AdminLink";
+import { cnBg, cnMYSm, cnRow } from "./consts";
 
-export function UserPage({ sysAdmins, admins, admin, me, setAdmin }: AdminProps & { admin: Admin; }) {
+interface Props {
+    me: number;
+    admin: Admin;
+    setAdmin: (assinged: string) => Promise<void>;
+    delAdmin: () => Promise<void>;
+}
+
+export function UserTemplate({ user, assigned }: { user: User; assigned: string; }) {
+    let { name, nick, icon } = user;
+    return <LMR className={cnRow + cnMYSm + cnBg}>
+        <Image src={icon} className="me-4 align-self-start w-2-5c h-2-5c" />
+        <div>
+            <div><b>{assigned ?? name}</b></div>
+            <div>
+                <span className="me-3">{assigned ? name : ''}</span>
+                <MutedSmall className="text-muted me-3">{nick}</MutedSmall>
+            </div>
+        </div>
+        <FA name="angle-right" className="cursor-pointer" />
+    </LMR>;
+};
+
+export function UserPage({ admin, me, setAdmin, delAdmin }: Props) {
     let nav = useNav();
     let { id, role, operator, update } = admin;
+    let [assigned, setAssigned] = useState(admin.assigned);
     let onDelAdmin = async () => {
         let ret = await nav.confirm('do you really want to delete the admin?');
         if (ret === true) {
+            await delAdmin();
+            /*
             let { role } = admin;
             await setAdmin(admin.id, -role, null);
             let list = role === 1 ? sysAdmins : admins;
             removeAdmin(list, admin);
+            */
             nav.close();
         }
     }
+    /*
     let removeAdmin = (list: Admin[], admin: Admin) => {
         let p = list.findIndex(v => v.id === admin.id);
         if (p >= 0) list.splice(p, 1);
     }
+    */
     let onEditRemark = async () => {
-        alert('on edit remark');
+        async function onSubmit(data: any) {
+            let { assigned: newAssigned } = data;;
+            await setAdmin(newAssigned);
+            setAssigned(newAssigned)
+            nav.close();
+        }
+        nav.open(<Page header="Remark">
+            <Form values={admin}>
+                <String name="assigned" />
+                <Submit onSubmit={onSubmit} />
+            </Form>
+        </Page>)
         /*
         let cStringEdit = new CStringEdit(app, {
             itemSchema: { name: 'remark', type: 'string', required: true },
@@ -39,7 +81,6 @@ export function UserPage({ sysAdmins, admins, admin, me, setAdmin }: AdminProps 
         */
     }
 
-    let { assigned } = useSnapshot(admin);
     function UserTemplate({ user }: { user: User; }) {
         let { name, nick, icon } = user;
         let vDel: any;
@@ -52,8 +93,8 @@ export function UserPage({ sysAdmins, admins, admin, me, setAdmin }: AdminProps 
         }
 
         return <div>
-            <div className="d-flex border m-3 rounded-3 bg-white px-5 py-4">
-                <Image src={icon} className="me-4 w-2-5c h-2-5c" />
+            <div className="d-flex border m-3 rounded-3 bg-white pe-5 py-4">
+                <Image src={icon} className="mx-5 w-2-5c h-2-5c" />
                 <div>
                     <div className="cursor-pointer"
                         onClick={() => onEditRemark()}>
@@ -73,6 +114,6 @@ export function UserPage({ sysAdmins, admins, admin, me, setAdmin }: AdminProps 
         </div>
     }
     return <Page header=" ">
-        <UserView id={id} Template={UserTemplate} />
+        <UserView id={id} assigned={assigned} Template={UserTemplate} />
     </Page>;
 }

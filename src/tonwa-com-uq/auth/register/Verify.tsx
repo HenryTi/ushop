@@ -1,8 +1,8 @@
 import { Page } from "tonwa-com";
 import { BandInt, Form } from "tonwa-com";
 import { ruleIsRequired } from "tonwa-com";
-import { Band, BandContainerContext } from "tonwa-com/band";
-import { Submit } from "tonwa-com/form";
+import { Band, BandContainerContext } from "tonwa-com";
+import { Submit } from "tonwa-com";
 import { Pass } from './Pass';
 
 type OnVerify = (verify: string) => Promise<number>;

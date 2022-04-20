@@ -1,8 +1,8 @@
 import React, { useEffect, useRef } from 'react';
-import { useBandContainer } from 'tonwa-com/band';
-import { ButtonAsync, FA } from 'tonwa-com/coms';
-import { EnumString, resStrings } from 'tonwa-com/res';
 import { proxy, useSnapshot } from 'valtio';
+import { useBandContainer } from '../band';
+import { ButtonAsync, FA } from '../coms';
+import { EnumString, resStrings } from '../res';
 import { checkRule, FieldItem } from '../fields';
 import { useForm } from './FormContext';
 

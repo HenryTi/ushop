@@ -1,20 +1,10 @@
-//import { Page } from "tonwa-controller";
-//import { TabCaptionComponent, TabProp, TabsProps, t } from "tonwa";
-//import { app } from "./App";
 import { TabHome } from "./Home";
 import { IDsPage } from "./IDs";
-//import { VMe } from "./Me/VMe";
 import { ActsPage } from "./Acts";
 import { Page, PageTabs, Tab, FA, useT } from "tonwa-com";
 import { appT } from "./res";
 import { MeLink } from "./Me";
 
-/*
-const color = (selected: boolean) => selected === true ? 'text-primary' : 'text-muted';
-function caption(label: string | JSX.Element, icon: string) {
-    return (selected: boolean) => TabCaptionComponent(label, icon, color(selected));
-}
-*/
 export function MainPage() {
     let t = useT(appT);
     function TabTag({ caption, icon }: { caption?: string | JSX.Element; icon?: string; }) {

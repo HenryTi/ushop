@@ -1,3 +1,4 @@
+/*
 const rootCenterHost = 'https://tv.jkchemical.com';
 const centerHost = process.env['REACT_APP_CENTER_HOST'] ?? rootCenterHost;
 const centerDebugHost = 'localhost:3000'; //'192.168.86.64';
@@ -5,36 +6,36 @@ const resHost = centerHost ?? rootCenterHost;
 const resDebugHost = 'localhost:3015'; //'192.168.86.63';
 const uqDebugHost = 'localhost:3015'; //'192.168.86.63';
 const uqDebugBuilderHost = 'localhost:3009';
-
+*/
 export interface Hosts {
     center: string;
     uq: string;
     res: string;
 }
-
+/*
 interface HostValue {
     value: string;
     local: boolean;
 }
 const hosts: { [name: string]: HostValue } = {
     centerhost: {
-        value: /*process.env['REACT_APP_CENTER_DEBUG_HOST']*/ undefined || centerDebugHost,
+        value: undefined || centerDebugHost, // process.env['REACT_APP_CENTER_DEBUG_HOST']
         local: false,
     },
     reshost: {
-        value: /*process.env['REACT_APP_RES_DEBUG_HOST']*/ undefined || resDebugHost,
+        value: undefined || resDebugHost, // process.env['REACT_APP_RES_DEBUG_HOST']
         local: false,
     },
     uqhost: {
-        value: /*process.env['REACT_APP_UQ_DEBUG_HOST']*/ undefined || uqDebugHost,
+        value: undefined || uqDebugHost, // process.env['REACT_APP_UQ_DEBUG_HOST']
         local: false,
     },
     unitxhost: {
-        value: /*process.env['REACT_APP_UQ_DEBUG_HOST']*/ undefined || uqDebugHost,
+        value: undefined || uqDebugHost, // process.env['REACT_APP_UQ_DEBUG_HOST']
         local: false,
     },
     "uq-build": {
-        value: /*process.env['REACT_APP_UQ_DEBUG_BUILDER_HOST']*/ undefined || uqDebugBuilderHost,
+        value: undefined || uqDebugBuilderHost, // process.env['REACT_APP_UQ_DEBUG_BUILDER_HOST']
         local: false,
     }
 }
@@ -72,6 +73,7 @@ export function resUrlFromHost(host: string) {
     let url = urlFromHost(host);
     return url + 'res/';
 }
+*/
 
 const fetchOptions = {
     method: "GET",
@@ -136,144 +138,3 @@ async function localCheck(host: string): Promise<boolean> {
         return false;
     }
 }
-
-export class HostMan {
-    static createHost(isDevelopment: boolean): HostMan {
-        if (isDevelopment === true) return new HostForDeveloping();
-        return new HostMan();
-    }
-
-    testing: boolean;
-    url: string;
-    ws: string;
-    resHost: string;
-    hash: string;
-
-    async start(testing: boolean) {
-        if (!centerHost) debugger;
-        let doc = (global as any).document;
-        if (doc) {
-            this.hash = doc.location.hash;
-        }
-        else {
-            this.hash = '';
-        }
-        this.testing = testing;
-        await this.tryLocal();
-        let host = this.getCenterHost();
-        this.url = centerUrlFromHost(host);
-        this.ws = centerWsFromHost(host);
-        this.resHost = this.getResHost();
-    }
-
-    protected async tryLocal() { }
-
-    protected getCenterHost(): string {
-        let { value } = hosts.centerhost;
-        if (this.hash.includes('sheet_debug') === true) {
-            return value;
-        }
-        return centerHost;
-    }
-
-    protected getResHost(): string {
-        let { value } = hosts.reshost;
-        if (this.hash.includes('sheet_debug') === true) {
-            return value;
-        }
-        return resHost;
-    }
-
-    getUrlOrDebug(url: string, debugHost: string = 'uqhost'): string {
-        return url;
-    }
-
-    getUrlOrTest(db: string, url: string, urlTest: string): string {
-        if (!urlTest) {
-            urlTest = url;
-            if (!urlTest) {
-                console.error('no server set for ' + db);
-                debugger;
-            }
-        }
-        else if (!url) {
-            url = urlTest;
-        }
-        let testProd: string;
-        if (this.testing === true) {
-            if (urlTest !== '-') url = urlTest;
-            testProd = 'test';
-        }
-        else {
-            testProd = 'prod';
-        }
-        url = this.getUrlOrDebug(url);
-        if (url.endsWith('/') === false) {
-            url += '/';
-        }
-        return `${url}uq/${testProd}/${db}/`;
-    }
-
-    async localCheck(urlDebug: string): Promise<boolean> {
-        return await localCheck(urlDebug);
-    }
-}
-
-class HostForDeveloping extends HostMan {
-    private debugHostUrl(host: string) { return `http://${host}/hello` }
-    protected async tryLocal() {
-        let promises: PromiseLike<any>[] = [];
-        let hostArr: string[] = [];
-        for (let i in hosts) {
-            let hostValue = hosts[i];
-            let { value } = hostValue;
-            if (hostArr.findIndex(v => v === value) < 0) hostArr.push(value);
-        }
-
-        for (let host of hostArr) {
-            let fetchUrl = this.debugHostUrl(host);
-            promises.push(localCheck(fetchUrl));
-        }
-        let results = await Promise.all(promises);
-        let len = hostArr.length;
-        for (let i = 0; i < len; i++) {
-            let local = results[i];
-            let host = hostArr[i];
-            for (let j in hosts) {
-                let hostValue = hosts[j];
-                if (hostValue.value === host) {
-                    hostValue.local = local;
-                }
-            }
-        }
-    }
-
-    protected getCenterHost(): string {
-        let { value, local } = hosts.centerhost;
-        if (this.hash.includes('sheet_debug') === true) {
-            return value;
-        }
-        if (local === true) return value;
-        return centerHost;
-    }
-
-    protected getResHost(): string {
-        let { value, local } = hosts.reshost;
-        if (this.hash.includes('sheet_debug') === true) {
-            return value;
-        }
-        if (local === true) return value;
-        return resHost;
-    }
-
-    getUrlOrDebug(url: string, debugHost: string = 'uqhost'): string {
-        let host = hosts[debugHost];
-        if (host === undefined) return url;
-        let { value, local } = host;
-        if (local === false) return url;
-        return `http://${value}/`;
-    }
-}
-
-//export const host:Host = new Host();
-

@@ -1,12 +1,6 @@
-import { useNav, Page, FA, LMR } from "tonwa-com";
+import { useNav, Page, LMR } from "tonwa-com";
 import { AdminProps } from "./AdminLink";
-
-const cnRow = ' px-3 py-2 ';
-const cnBg = ' bg-white ';
-const cnMYLg = ' my-2 ';
-//const cnMYSm = ' my-1 ';
-const cnSmallMuted = ' small text-muted ';
-const info = <FA className="text-primary me-3 mt-1" name="info-circle" size="lg" />;
+import { cnBg, cnMYLg, cnRow, cnSmallMuted, faInfo } from "./consts";
 
 export function MeSysAdminPage(props: AdminProps) {
     let nav = useNav();
@@ -37,7 +31,7 @@ export function MeSysAdminPage(props: AdminProps) {
             <LMR className={cnRow + cnBg + cnMYLg + ' text-danger cursor-pointer'}
                 onClick={showMeSysAdmin}>
                 <div className="d-flex justify-content-center p-3">
-                    {info}<b>I am quiting system admim</b>
+                    {faInfo}<b>I am quiting system admim</b>
                 </div>
                 <div className={cnSmallMuted + ' my-3 d-flex justify-content-center '}>
                     You quit at {dateUpdate.toLocaleDateString()} {dateUpdate.toLocaleTimeString()},
@@ -57,12 +51,10 @@ export function MeSysAdminPage(props: AdminProps) {
 
     function renderAm() {
         return <div>
-            <LMR className={cnRow + cnBg + cnMYLg + ' text-danger cursor-pointer'}
+            <div className={cnRow + cnBg + cnMYLg + ' text-danger cursor-pointer text-center mt-5'}
                 onClick={showMeSysAdmin}>
-                <div className="d-flex justify-content-center p-3">
-                    {info}<b>I am a system admim</b>
-                </div>
-            </LMR>
+                {faInfo}<b>I am a system admim</b>
+            </div>
             <div className="pt-3">
                 <div className="d-flex justify-content-center my-3">
                     <button className="btn btn-outline-primary"
@@ -78,7 +70,7 @@ export function MeSysAdminPage(props: AdminProps) {
         </div>;
     }
 
-    return <Page header="Sys admin">
+    return <Page header="System admin">
         {content()}
     </Page>;
 }

@@ -31,10 +31,11 @@ export class UqApp extends UqAppBase<UQs> {
     }
 
     async getIsAdminOrRole(roles: Role[]): Promise<boolean> {
-        if (this.meAdmin === true) return true;
-        if (!roles) return false;
+        let promises = [this.loadIsMeAdmin()];
+        if (roles) promises.push(this.loadMeRoles());
         await Promise.all([this.loadMeRoles(), this.loadIsMeAdmin()]);
-        return this.getIsRole(roles);
+        if (this.meAdmin === true) return true;
+        return await this.getIsRole(roles);
     }
 
     async getIsPersonMe(person: number): Promise<boolean> {

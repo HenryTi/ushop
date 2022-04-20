@@ -9,7 +9,7 @@ interface ForRoleProps {
 
 export function ForAdmin({ roles, children }: ForRoleProps) {
     let app = useUqApp();
-    let [isAdminOrRole, setIsAdminOrRole] = useState<boolean>(undefined);
+    let [isAdminOrRole, setIsAdminOrRole] = useState<boolean>(false);
     useEffect(() => {
         async function loadIsAdminOrRole() {
             let ret = await app.getIsAdminOrRole(roles);

@@ -1,8 +1,8 @@
-import React, { ReactElement, ReactNode, useContext, useRef } from "react";
-import { proxy, useSnapshot } from "valtio";
+import React, { ReactElement, useContext, useRef, useState } from "react";
 import { ScrollContext, useScroll } from "./useScroll";
 
 interface TabObject {
+    id: number;
     name: string;
     tag: string | JSX.Element;
     content: JSX.Element;
@@ -19,7 +19,8 @@ export function Tab(props: TabProps): JSX.Element {
     return null;
 }
 
-function createTabsFromChildren(children: React.ReactNode, active: number) {
+let tabId = 1;
+function createTabsFromChildren(children: React.ReactNode) {
     let tabs: TabObject[] = [];
     React.Children.forEach(children, (element) => {
         if (React.isValidElement(element) === false) return;
@@ -32,6 +33,7 @@ function createTabsFromChildren(children: React.ReactNode, active: number) {
         );
         let { props } = element as ReactElement;
         let tab: TabObject = {
+            id: tabId++,
             name: props.name,
             tag: props.tag,
             content: <>{props.children}</>,
@@ -39,33 +41,24 @@ function createTabsFromChildren(children: React.ReactNode, active: number) {
         };
         tabs.push(tab);
     });
-    let tabActive = tabs[active];
-    if (tabActive) {
-        tabActive.mountable = true;
-    }
     return tabs;
 }
 
-interface PageTabsProps {
-    children: React.ReactNode;
+export function PageTabs({ children }: { children: React.ReactNode; }) {
+    let { current: tabs } = useRef(createTabsFromChildren(children));
+    return <InnerPageTabs tabs={tabs} />;
 }
 
-export function PageTabs(props: PageTabsProps) {
+function InnerPageTabs({ tabs }: { tabs: TabObject[]; }) {
     let scrollContext = useContext(ScrollContext);
-    let tabProxy = useRef(proxy({ active: 0 }));
-    let { active } = useSnapshot(tabProxy.current);
-    let { current: tabs } = useRef(createTabsFromChildren(props.children, active));
+    let [active, setActive] = useState(0);
+    tabs[active].mountable = true;
     function onTabClick(tabIndex: number) {
-        tabProxy.current.active = tabIndex;
+        if (tabIndex === active) return;
         let tab = tabs[tabIndex];
         if (!tab) return;
         tab.mountable = true;
-    }
-    function TabPane({ children, active }: { children: ReactNode; active: string; }) {
-        let divRef = useScroll();
-        return <div ref={divRef} className={'tab-pane ' + active}>
-            {children}
-        </div>
+        setActive(tabIndex);
     }
     scrollContext = scrollContext ?? 'page-tabs';
     let overflowY: any;
@@ -78,19 +71,12 @@ export function PageTabs(props: PageTabsProps) {
         <div className="flex-grow-1 d-flex flex-column" style={{ overflowY }}>
             <div className="tonwa-page-content tab-content flex-grow-1">
                 {
-                    tabs.map((v, index) => {
-                        let { name, mountable, content } = v;
-                        if (mountable === false) return null;
-                        return <TabPane key={name} active={active === index ? 'active' : ''}>
-                            {content}
-                        </TabPane>;
-                    })
+                    tabs.map((v, index) => <TabPane key={v.id} tab={v} active={active} index={index} />)
                 }
             </div>
             <ul className="nav nav-tabs position-sticky tonwa-page-container justify-content-evenly bg-light" style={{ bottom: '0' }}>
                 {tabs.map((v, index) => <li key={v.name} className="nav-item flex-fill align-self-stretch">
-                    <div
-                        onClick={() => onTabClick(index)}
+                    <div onClick={() => onTabClick(index)}
                         className={'nav-link h-100 p-0 ' + (index === active ? 'active' : 'cursor-pointer')}>
                         {v.tag}
                     </div>
@@ -98,6 +84,15 @@ export function PageTabs(props: PageTabsProps) {
             </ul>
         </div>
     </ScrollContext.Provider>;
+}
+
+function TabPane({ tab, active, index }: { tab: TabObject; active: number; index: number; }) {
+    let divRef = useScroll();
+    let { mountable, content } = tab;
+    if (mountable === false) return null;
+    return <div ref={divRef} className={'tab-pane ' + (active === index ? 'active' : '')}>
+        {content}
+    </div>
 }
 
 function invariant(condition: boolean, message: string): asserts condition {

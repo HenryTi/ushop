@@ -4,6 +4,7 @@ import { Form, Submit } from "tonwa-com";
 import { Band } from "tonwa-com";
 import { UqTag, Tag, TagWithItems } from "./UqTag";
 import { IDListEdit, useIdListEdit } from "../ID";
+import { ButtonAsync } from "tonwa-com";
 
 interface Props {
     uqTag: UqTag;
@@ -19,11 +20,27 @@ export function EditTagPage({ uqTag, tag, onRemoveTag, renderFields }: Props) {
         <FA name="trash" /> Delete
     </button>;
 
-    function FormView({ tagItem, onSubmit }: { tagItem: Tag; onSubmit: (data: Tag) => Promise<void> }) {
+    async function onDeleteItem(tagItem: Tag) {
+        let { name } = tagItem;
+        let ret = await nav.confirm(`Do you really want to remove tag '${name}'?`);
+        if (ret === true) {
+            await uqTag.removeTagItem(tag, tagItem);
+            listEditContext.onItemDeleted(tagItem);
+            nav.close();
+        }
+    }
+
+    function FormTagItem({ tagItem, onSubmit, withDelete }: { tagItem: Tag; onSubmit: (data: Tag) => Promise<void>; withDelete?: boolean; }) {
         return <Form values={tagItem} className="container my-3">
             <BandString name="name" label="Name" />
             <Band>
-                <Submit onSubmit={onSubmit} />
+                <LMR>
+                    <Submit onSubmit={onSubmit} />
+                    {withDelete && <ButtonAsync className="btn btn-sm btn-outline-primary me-2"
+                        onClick={() => onDeleteItem(tagItem)}>
+                        Delete
+                    </ButtonAsync>}
+                </LMR>
             </Band>
         </Form>;
     }
@@ -31,27 +48,19 @@ export function EditTagPage({ uqTag, tag, onRemoveTag, renderFields }: Props) {
     function onItemAdd() {
         function AddPage() {
             async function onAddSubmit(data: Tag) {
-                await uqTag.saveTagItem(data);
+                let tagItemId = await uqTag.saveTagItem(tag, data);
+                data.id = tagItemId;
                 listEditContext.onItemChanged(data);
                 nav.close();
             }
             return <Page header="Add tag">
-                <FormView tagItem={undefined} onSubmit={onAddSubmit} />
+                <FormTagItem tagItem={undefined} onSubmit={onAddSubmit} />
             </Page>;
         }
         nav.open(<AddPage />);
     }
 
     function onItemEdit(tagItem: Tag) {
-        async function onDeleteItem() {
-            let { name } = tagItem;
-            let ret = await nav.confirm(`Do you really want to remove tag '${name}'?`);
-            if (ret === true) {
-                await uqTag.removeTagItem(tagItem);
-                listEditContext.onItemDeleted(tagItem);
-                nav.close();
-            }
-        }
         async function onEditSubmit(data: Tag) {
             let name = data['name']
             await uqTag.saveTagItemName(data, name);
@@ -59,12 +68,8 @@ export function EditTagPage({ uqTag, tag, onRemoveTag, renderFields }: Props) {
             nav.close();
         }
         function EditPage() {
-            let right = <button className="btn btn-sm btn-outline-primary me-2"
-                onClick={onDeleteItem}>
-                Delete
-            </button>;
-            return <Page header="Edit 1 tag item" right={right}>
-                <FormView tagItem={tagItem} onSubmit={onEditSubmit} />
+            return <Page header="Edit 1 tag item">
+                <FormTagItem tagItem={tagItem} onSubmit={onEditSubmit} withDelete={true} />
             </Page>;
         }
         nav.open(<EditPage />)
@@ -77,7 +82,7 @@ export function EditTagPage({ uqTag, tag, onRemoveTag, renderFields }: Props) {
             <Sep sep={2} />
             <LMR className="mt-4 mb-1 px-3 bg-light">
                 <b>Items</b>
-                <button className="btn btn-sm btn-success"
+                <button className="btn btn-sm btn-primary"
                     onClick={onItemAdd}>
                     <FA name="plus" /> Item
                 </button>

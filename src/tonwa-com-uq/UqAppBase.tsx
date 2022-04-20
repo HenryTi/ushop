@@ -2,32 +2,19 @@ import React, { ReactNode, useContext, useEffect, useState } from 'react';
 import { NavigateFunction, useNavigate } from 'react-router-dom';
 import { AppNav } from 'tonwa-com';
 import { Guest, Hosts, LocalDb, NetProps, UqConfig, User, UserApi } from 'tonwa-uq';
-//import { AuthProvider } from './AuthProvider';
 
 import { UQsLoader, Net } from "tonwa-uq";
-import { uqsProxy } from '../uq';
+import { uqsProxy } from './uq';
 import { env, LocalData } from 'tonwa-com';
 import { ObservableMap } from 'mobx';
 import { proxy } from 'valtio';
 import { Spinner } from 'tonwa-com';
 import { AppContainer } from 'tonwa-com';
-//import { VErrorsPage, VStartError } from "./vMain";
-//import { uqsProxy } from "../uq";
 
 export interface AppConfig { //extends UqsConfig {
-    /*
-    app?: {
-        name: string;
-        version: string;
-        ownerMap?: {[key:string]: string};
-    };
-    */
-    //appName: string;        // 格式: owner/appName
     center: string;
     debug: Hosts;
     version: string;        // 版本变化，缓存的uqs才会重载
-    //tvs?: TVs;
-    //uqNameMap?: {[uqName:string]: string};      // uqName='owner/uq' 映射到内存简单名字：uq, 可以注明映射，也可以自动。有可能重
     loginTop?: JSX.Element;
     oem?: string;               // 用户注册发送验证码的oem厂家，默认同花
     privacy?: string;
@@ -42,7 +29,6 @@ export abstract class UqAppBase<U = any> {
     private localData: LocalData;
     readonly uqAppBaseId: number;
     readonly net: Net;
-    //readonly auth: AuthProvider;
     readonly appNav: AppNav;
     readonly userApi: UserApi;
     readonly version: string;    // version in appConfig;
@@ -50,7 +36,6 @@ export abstract class UqAppBase<U = any> {
         user: User;
     }
     guest: number;
-    //user: User;
     uqs: U;
 
     constructor(appConfig: AppConfig, uqConfigs: UqConfig[]) {
@@ -72,7 +57,6 @@ export abstract class UqAppBase<U = any> {
         this.net = new Net(props);
         this.localData = new LocalData();
 
-        //this.auth = new AuthProvider(this);
         this.appNav = new AppNav();
         this.userApi = this.net.userApi;
     }
@@ -85,7 +69,6 @@ export abstract class UqAppBase<U = any> {
         this.net.logoutApis();
         this.responsive.user = user;
         this.appNav.onLoginChanged(true);
-        //this.auth.loginChanged(user);
         if (user) {
             this.net.setCenterToken(user.id, user.token);
         }
@@ -125,23 +108,17 @@ export abstract class UqAppBase<U = any> {
                 debugger;
                 throw Error('guest can not be undefined');
             }
-            //this.setGuest(guest);
             this.net.setCenterToken(0, guest.token);
             this.localData.guest.set(guest);
         }
 
         this.uqsUserId = this.responsive.user?.id;
-        //this.net.logoutApis();
         let uqsLoader = new UQsLoader(this.net, version, this.uqConfigs);
 
         let retErrors = await uqsLoader.build();
-        //this.uqsMan = uqsLoader.uqsMan;
         this.uqs = uqsProxy(uqsLoader.uqsMan) as any; //  this.uqsMan.proxy;
-        //this.afterBuiltUQs(this._uqs);
-        // await this.loadBaseData();
         return retErrors;
     }
-    // protected abstract loadBaseData(): Promise<void>;
 }
 
 class LocalStorageDb extends LocalDb {

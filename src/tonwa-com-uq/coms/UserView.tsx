@@ -1,16 +1,17 @@
 import { useEffect, useState } from "react";
 import { User } from "tonwa-uq";
-import { useUqAppBase } from "./UqAppBase";
+import { useUqAppBase } from "../UqAppBase";
 
 interface Props {
     id: number;
+    assigned?: string;
     className?: string;
-    Template?: (props: { user: User; }) => JSX.Element;
+    Template?: (props: { user: User; assigned: string; }) => JSX.Element;
 }
 
 const usersCache: { [id: number]: User } = {};
 
-export function UserView({ id, className, Template }: Props) {
+export function UserView({ id, assigned, className, Template }: Props) {
     let app = useUqAppBase();
     let [user, setUser] = useState<User>(undefined);
     useEffect(() => {
@@ -26,7 +27,7 @@ export function UserView({ id, className, Template }: Props) {
     }, [app, id]);
     if (user === null || user === undefined) return <span className={className}>{id}</span>;
     if (Template) {
-        return <Template user={user} />
+        return <Template user={user} assigned={assigned} />
     }
     else {
         return <span className={className}>

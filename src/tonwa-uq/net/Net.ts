@@ -6,7 +6,7 @@ import { UserApi } from "./userApi";
 import { HttpChannel } from './httpChannel';
 import { MessageHub } from "./messageHub";
 import { WsBridge, WSChannel } from "./wsChannel";
-import { buildDebugHosts, buildHosts, HostMan, Hosts, resUrlFromHost } from './host';
+import { buildDebugHosts, buildHosts, Hosts } from './host';
 import { LocalDb } from "../tool";
 import { env } from "tonwa-com";
 
@@ -80,9 +80,9 @@ export class Net {
     async init() {
         let { center, debug } = this.props;
         this.hosts = this.isDevelopment === true ?
-            await buildHosts(center)
+            await buildDebugHosts(center, debug)
             :
-            await buildDebugHosts(center, debug);
+            await buildHosts(center);
         //await this.hostMan.start(testing)
         //let { url } = this.hostMan;
         this.setCenterUrl(this.hosts.center);
@@ -123,20 +123,20 @@ export class Net {
         let centerHost = this.hosts.center;
         return this.centerChannel = new HttpChannel(this, centerHost, this.centerToken);
     }
-
+    /*
     resUrlFromHost(host: string): string {
         return resUrlFromHost(host);
     }
-
+    */
     buildUqUrl(db: string, url: string, urlTest: string): string {
         let testOrProd: string;
         if (this.testing === true) {
             let { uq } = this.hosts;
             if (uq) {
-                urlTest = uq;
+                url = uq;
             }
-            else if (urlTest === '-') {
-                urlTest = url;
+            else if (urlTest !== '-') {
+                url = urlTest;
             }
             testOrProd = 'test';
         }

@@ -25,6 +25,7 @@ export function List<T>(props: ListProps<T>) {
     let { items, className, itemKey, ItemView, onItemClick, onItemSelect, sep, none, loading } = props;
     className = className ?? '';
     useEffect(() => {
+        // loading超过200ms，显示spinner
         setTimeout(() => {
             setShowLoding(true);
         }, 200);

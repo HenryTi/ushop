@@ -2,8 +2,8 @@ import { useState } from "react";
 import { MutedSmall, Page, SearchBox, useNav } from "tonwa-com";
 import { FA } from "tonwa-com";
 import { User } from "tonwa-uq";
+import { useUqAppBase } from "../UqAppBase";
 import { Image } from "./Image";
-import { useUqAppBase } from "./UqAppBase";
 
 interface Props {
     header?: string | JSX.Element;

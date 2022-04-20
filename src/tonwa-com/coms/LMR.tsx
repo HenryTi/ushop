@@ -12,6 +12,10 @@ export function LMR(props: Props) {
     if (onClick !== undefined) cn += ' cursor-pointer ';
     let arr = React.Children.toArray(children);
     let len = arr.length;
+    if (len > 0) {
+        arr.splice(len - 1, 0, <div className="me-auto" />);
+    }
+    /*
     if (len > 1) {
         let el = arr[len - 2];
         let elNew: any;
@@ -25,6 +29,7 @@ export function LMR(props: Props) {
         }
         arr.splice(len - 2, 1, elNew);
     }
+    */
     return <div className={'d-flex ' + cn} onClick={onClick}>
         {arr.map((v, index) => <React.Fragment key={index}>{v}</React.Fragment>)}
     </div>;

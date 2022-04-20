@@ -1,160 +1,155 @@
-import { FA, List, LMR, Page, useNav } from "tonwa-com";
+import { FA, LMR, Page, useNav } from "tonwa-com";
 import { User } from "tonwa-uq";
-import { Image } from "../Image";
-import { SelectUser } from "../SelectUser";
-import { UserView } from "../UserView";
+import { UserView } from "../coms";
+import { SelectUser } from "../coms/SelectUser";
 import { Admin, AdminProps, EnumAdminRoleInEdit } from "./AdminLink";
-import { UserPage } from "./UserPage";
+import { UserPage, UserTemplate } from "./UserPage";
 import { MeSysAdminPage } from "./MeSysAdminPage";
-
-const cnRow = ' px-3 py-2 ';
-const cnBg = ' bg-white ';
-const cnMYLg = ' my-2 ';
-const cnMYSm = ' my-1 ';
-//const cnSmallMuted = ' small text-muted ';
-const info = <FA className="text-primary me-3" name="info-circle" size="lg" />;
+import { cnBg, cnMYLg, cnRow, faInfo } from "./consts";
+import { ListEdit } from "tonwa-com-uq";
+import { ListEditContext, useListEdit } from "tonwa-com-uq";
 
 export function AdminPage(props: AdminProps) {
     let nav = useNav();
-    let { meAdmin, sysAdmins, admins, setAdmin } = props;
-
+    let { me, meAdmin, sysAdmins, admins, setAdmin } = props;
     let showMeSysAdmin = () => {
         nav.open(<MeSysAdminPage {...props} />);
     }
-    let onAddAdmin = async (role: EnumAdminRoleInEdit) => {
-        let captionSelectUser = 'Add ' + (role === EnumAdminRoleInEdit.sys ? 'system admin' : 'admin');
-        //let cSelectUser = new CUser(this.nav, captionSelectUser, this)
-        //let ret = await this.app.cUser.select<Admin>(captionSelectUser);
-        let ret = await nav.call<User>(<SelectUser header={captionSelectUser} />);
-        // let ret = await this.call<any, CAdminBase>(VAddUser, role);
-        if (!ret) return;
-        let { id: user, assigned } = ret;
-        await setAdmin(user, role, assigned);
-        let tick = Date.now() / 1000;
-        let admin: Admin = {
-            id: user,
-            user,
-            role,
-            operator: undefined,
-            assigned,
-            create: tick,
-            update: tick,
+
+    let onUser = async (admin: Admin, listEditContext: ListEditContext<Admin>) => {
+        async function setAdminUser(assigned: string) {
+            let { id, role } = admin;
+            await setAdmin(id, role, assigned);
+            listEditContext.onItemChanged({ ...admin, assigned });
         }
-        let listAdd: Admin[], listDel: Admin[];
-        if (role === 1) {
-            listAdd = sysAdmins;
-            listDel = admins;
+        async function delAdmin() {
+            let { id, role } = admin;
+            await setAdmin(id, -role, null);
+            listEditContext.onItemDeleted(admin);
         }
-        else {
-            listAdd = admins;
-            listDel = sysAdmins;
-        }
-        listAdd.unshift(admin);
-        removeAdmin(listDel, admin);
+        nav.open(<UserPage me={me} admin={admin} setAdmin={setAdminUser} delAdmin={delAdmin} />);
     }
 
-    let removeAdmin = (list: Admin[], admin: Admin) => {
-        let p = list.findIndex(v => v.id === admin.id);
-        if (p >= 0) list.splice(p, 1);
-    }
-
-    let onUser = async (admin: Admin) => {
-        nav.open(<UserPage {...props} admin={admin} />);
-    }
-
-    let renderMe = (): JSX.Element => {
+    function Me(): JSX.Element {
         switch (meAdmin.role) {
             default: return null;
             case EnumAdminRoleInEdit.nSys:
-                return renderMeSystemAdmin(true);
+                return <MeSystemAdmin quiting={true} />;
             case EnumAdminRoleInEdit.sys:
-                return renderMeSystemAdmin(false);
+                return <MeSystemAdmin quiting={false} />;
             case EnumAdminRoleInEdit.admin:
                 return <div className={cnRow + cnBg + cnMYLg}>
-                    {info} I am an admin
+                    {faInfo} I am an admin
                 </div>;
         }
     }
 
-    let renderMeSystemAdmin = (quiting: boolean) => {
+    function MeSystemAdmin({ quiting }: { quiting: boolean }) {
         let msg = quiting === true ?
             'I am quiting system admin'
             :
             'I am a system admin';
-        return <LMR className={cnRow + cnBg + cnMYLg + ' text-danger cursor-pointer'}
+        return <LMR className={'px-3 py-3 align-items-center text-danger cursor-pointer border-top border-bottom'}
             onClick={showMeSysAdmin}>
-            {info}
+            {faInfo}
             <b>{msg}</b>
             <FA name="angle-right" />
         </LMR>;
     }
 
-    let renderSysAdmins = (): JSX.Element => {
+    /*
+    function SysAdmins(): JSX.Element {
+        const listEditContext = useListEdit(sysAdmins, (item1, item2) => item1.id === item2.id);
         switch (meAdmin.role) {
             case EnumAdminRoleInEdit.nSys: return null;
             case EnumAdminRoleInEdit.admin: return null;
         }
 
-        return <div className="mt-3">
-            <div className={cnRow + ' small '}>
+        return <div className="m-3 border rounded-3 border-2">
+            <div className={cnRow + ' small bg-light border-bottom rounded-top rounded-3'}>
                 <LMR className="align-items-end">
                     <div>System admins</div>
-                    <div className="small text-muted">System admin is an admin, and can add or delete admin</div>
-                    {renderAdd(EnumAdminRoleInEdit.sys)}
+                    <div className="ms-3 small text-muted">System admin is an admin, and can add or delete admin</div>
+                    <Add role={EnumAdminRoleInEdit.sys} />
                 </LMR>
             </div>
-            <List items={sysAdmins} ItemView={AdminItem} onItemClick={onUser} />
+            <ListEdit context={listEditContext} ItemView={AdminItem} onItemClick={admin => onUser(admin, listEditContext)} />
         </div>;
     }
-
-    function VAdmins() {
+    */
+    function Admins({ list, enumAdminRoleInEdit, caption, memo }:
+        { list: Admin[]; enumAdminRoleInEdit: EnumAdminRoleInEdit; caption: string; memo: string; }) {
+        const listEditContext = useListEdit(list, (item1, item2) => item1.id === item2.id);
         switch (meAdmin.role) {
             case EnumAdminRoleInEdit.nSys: return null;
             case EnumAdminRoleInEdit.admin: return null;
         }
-        return <div className="mt-3">
-            <div className={cnRow + ' small'}>
+        async function onAddAdmin() {
+            let captionSelectUser = 'Add ' + (enumAdminRoleInEdit === EnumAdminRoleInEdit.sys ? 'system admin' : 'admin');
+            //let cSelectUser = new CUser(this.nav, captionSelectUser, this)
+            //let ret = await this.app.cUser.select<Admin>(captionSelectUser);
+            let ret = await nav.call<User>(<SelectUser header={captionSelectUser} />);
+            // let ret = await this.call<any, CAdminBase>(VAddUser, role);
+            if (!ret) return;
+            let { id: user, assigned } = ret;
+            await setAdmin(user, enumAdminRoleInEdit, assigned);
+            let tick = Date.now() / 1000;
+            let admin: Admin = {
+                id: user,
+                user,
+                role: enumAdminRoleInEdit,
+                operator: undefined,
+                assigned,
+                create: tick,
+                update: tick,
+            }
+            let listAdd: Admin[], listDel: Admin[];
+            if (enumAdminRoleInEdit === 1) {
+                listAdd = sysAdmins;
+                listDel = admins;
+            }
+            else {
+                listAdd = admins;
+                listDel = sysAdmins;
+            }
+            listAdd.unshift(admin);
+            removeAdmin(listDel, admin);
+        }
+
+        function removeAdmin(list: Admin[], admin: Admin) {
+            let p = list.findIndex(v => v.id === admin.id);
+            if (p >= 0) list.splice(p, 1);
+        }
+        return <div className="m-3 border rounded-3 border-2">
+            <div className="pt-2 pb-1 ps-3 pe-1 small bg-light border-bottom rounded-top rounded-3">
                 <LMR className="align-items-end">
-                    <div>Admins</div>
-                    <div className="small text-muted">Admin can define user roles</div>
-                    {renderAdd(EnumAdminRoleInEdit.admin)}
+                    <div><b>{caption}</b></div>
+                    <div className="ms-4 small text-muted">{memo}</div>
+                    <button className="btn btn-sm btn-outline-success" onClick={onAddAdmin}>
+                        <FA name="plus" />
+                    </button>
                 </LMR>
             </div>
-            <List items={admins} ItemView={AdminItem} onItemClick={onUser} />
+            <ListEdit context={listEditContext} ItemView={AdminItem} onItemClick={admin => onUser(admin, listEditContext)} />
         </div>;
     }
 
     function AdminItem({ value: admin }: { value: Admin; }) {
         let { id, assigned } = admin;
-        function UserTemplate({ user }: { user: User; }) {
-            let { name, nick, icon } = user;
-            return <LMR key={id} className={cnRow + cnMYSm + cnBg}>
-                <Image src={icon} className="me-4 align-self-start w-2-5c h-2-5c" />
-                {
-                    assigned && <div>
-                        <small className="text-muted me-3">Remark:</small>
-                        {assigned}
-                    </div>
-                }
-                <div><small className="text-muted me-3">Name:</small>{name}</div>
-                {nick && <div><small className="text-muted me-3">Nick:</small>{nick}</div>}
-                <FA name="angle-right" className="cursor-pointer" />
-            </LMR>;
-        };
-        return <UserView id={id} Template={UserTemplate} />;
-    }
-
-    let renderAdd = (role: EnumAdminRoleInEdit): JSX.Element => {
-        return <button className="btn btn-sm btn-outline-success" onClick={() => onAddAdmin(role)}>
-            <FA name="plus" />
-        </button>;
+        return <UserView id={id} assigned={assigned} Template={UserTemplate} />;
     }
 
     return <Page header="Admin">
         <div>
-            {renderMe()}
-            {renderSysAdmins()}
-            <VAdmins />
+            <Me />
+            <Admins list={sysAdmins}
+                enumAdminRoleInEdit={EnumAdminRoleInEdit.sys}
+                caption="System admins"
+                memo="System admin is an admin, and can add or delete admin" />
+            <Admins list={admins}
+                enumAdminRoleInEdit={EnumAdminRoleInEdit.admin}
+                caption="Admins"
+                memo="Admin can define user roles" />
         </div>
     </Page>;
 }

@@ -1,7 +1,7 @@
 import { useRef } from "react";
-import { List, ListPropsWithoutItems } from "tonwa-com";
-import { ListEditContext } from "tonwa-com-uq/ListEdit";
 import { useSnapshot } from "valtio";
+import { List, ListPropsWithoutItems } from "tonwa-com";
+import { ListEditContext } from "../ListEdit";
 
 interface Props<T extends { id?: number; }> extends ListPropsWithoutItems<T> {
     context: IDListEditContext<T>;

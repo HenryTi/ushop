@@ -50,7 +50,7 @@ export class UqTag {
     private readonly IxIDTag: IX;
     private readonly groups: Tag[];
     private readonly tagGroups: { [group: string]: TagGroup } = {};
-    currentTag: TagWithItems;
+    // currentTag: TagWithItems;
 
     private constructor({ uq, TagGroup, Tag, TagItem, IxTag, IxIDTag, groups }: UqTagProps) {
         this.uq = uq;
@@ -133,22 +133,26 @@ export class UqTag {
         await this.uq.ActIDProp(this.TagItem, tagItem.id, 'name', value);
     }
 
-    async removeTagItem(tagItem: Tag) {
-        let { id, items } = this.currentTag;
+    async removeTagItem(tag: Tag, tagItem: Tag) {
+        let { id } = tag;
         await this.uq.ActIX({
             IX: this.IxTag,
             values: [{ ix: id, xi: -tagItem.id }]
         });
+        /*
         let p = items.findIndex(v => v.id === tagItem.id);
         if (p >= 0) items.splice(p, 1);
+        */
     }
 
-    async saveTagItem(tagItem: Tag): Promise<number> {
+    async saveTagItem(tag: Tag, tagItem: Tag): Promise<number> {
         let ret = await this.uq.ActIX<Tag>({
             IX: this.IxTag,
             ID: this.TagItem,
-            values: [{ ix: this.currentTag.id, xi: tagItem }]
+            values: [{ ix: tag.id, xi: tagItem }]
         });
+        return ret[0];
+        /*
         let { items } = this.currentTag;
         let id = ret[0];
         tagItem.id = id;
@@ -157,9 +161,10 @@ export class UqTag {
             Object.assign(items[p], tagItem);
         }
         else {
-            this.currentTag.items.push(tagItem);
+            this.currentTag.items.push({ ...tagItem });
         }
         return id;
+        */
     }
 
     async saveTagItems(values: { ix: number; xi: number; index: number }[]): Promise<void> {

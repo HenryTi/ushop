@@ -47,13 +47,13 @@ export function TagGroupPage(props: Props) {
 
     let onTagClick = (tag: TagWithItems) => {
         nav.open(async () => {
-            uqTag.currentTag = tag;
+            //uqTag.currentTag = tag;
             let onRemoveTag = async () => {
-                let { currentTag } = uqTag;
-                let { name } = currentTag;
+                //let { currentTag } = uqTag;
+                let { name } = tag;
                 let ret = await nav.confirm(`Do you really want to remove tag '${name}'?`);
                 if (ret === true) {
-                    await uqTag.removeTag(group, currentTag);
+                    await uqTag.removeTag(group, tag);
                     //onTagChanged(tag, true);
                     listEditContext.onItemDeleted(tag);
                     nav.close();
@@ -82,7 +82,7 @@ export function TagGroupPage(props: Props) {
     }
 
     let { name, vice } = group;
-    let right = <button className="btn btn-sm btn-success me-2"
+    let right = <button className="btn btn-sm btn-outline-primary me-2"
         onClick={onTagAdd}>
         <FA name="plus" /> Tag
     </button>;
