@@ -10,7 +10,6 @@ export function AppRoutes() {
         <Route path="/register" element={<AppRegister />} />
         <Route path="/" element={<AppWithPageStack />}>
             <Route path=":active_page" element={<AppWithPageStack />} />
-            <Route path=":active_page/:sub" element={<AppWithPageStack />} />
         </Route>
     </Routes>;
 }

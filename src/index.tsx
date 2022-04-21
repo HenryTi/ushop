@@ -2,7 +2,6 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import 'bootstrap/dist/css/bootstrap.css';
 import './index.css';
-import './tonwa.css';
 import { BrowserRouter } from 'react-router-dom';
 import { UqAppView } from 'App';
 //import reportWebVitals from './reportWebVitals';
